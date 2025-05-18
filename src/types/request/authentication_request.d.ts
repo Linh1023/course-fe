@@ -1,0 +1,3 @@
+interface AuthenticationRequest {
+    accessToken:string;
+}
