@@ -23,18 +23,20 @@ const LoginForm = () => {
   useEffect(() => {
     const fectAPI = async () => {
       const code = searchParams.get('code')
-      console.log("code >>> ", code);
+
       if (code != null) {
         const req: AuthenticationRequest = {
           accessToken: code,
         }
         const data = await FetchServerPostApiNoToken(API.AUTH.AUTH_GOOGLE, req);
         if (data && data.status === 200) {
-          console.log("Login successfull >>> ", data)
+          const authenticationResponse:AuthenticationResponse = data.result
+          await setAccessToken(authenticationResponse.accessToken)
+          await setRefreshToken(authenticationResponse.refreshToken)
+          router.push("/")
         }
       }
     }
-
 
     fectAPI()
   }, [])
