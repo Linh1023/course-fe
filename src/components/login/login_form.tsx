@@ -2,52 +2,49 @@
 
 import API from "@/api/api";
 import { Button } from "../ui/button";
-import FacebookLogin from '@greatsumini/react-facebook-login';
+
 import { useEffect, useState } from "react";
-import { FACEBOOK_CLIENT_ID } from "@/utils/env";
 import { setAccessToken, setRefreshToken } from "@/actions/server/token_store";
 import { FetchServerPostApiNoToken } from "@/actions/server/fetch_server_api";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
-
-
+import { LoginAction } from "@/actions/server/login_action";
 
 const LoginForm = () => {
 
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // login fb
-  const responseFacebook = async (response: any) => {
-    const req: AuthenticationRequest = {
-      accessToken: response.accessToken,
-    }
 
-    if (req) {
-      const res = await FetchServerPostApiNoToken(API.AUTH.AUTH_FACEBOOK, req)
-      if (res && res.status === 200) {
-        const authentiactionResponse: AuthenticationResponse = res.result
-        await setRefreshToken(authentiactionResponse.refreshToken)
-        await setAccessToken(authentiactionResponse.accessToken)
-        console.log("Backend response:", authentiactionResponse);
-        router.push("/")
+  const handleLogin = async () => {
+    await LoginAction()
+  }
+
+  useEffect(() => {
+    const fectAPI = async () => {
+      const code = searchParams.get('code')
+      console.log("code >>> ", code);
+      if (code != null) {
+        const req: AuthenticationRequest = {
+          accessToken: code,
+        }
+        const data = await FetchServerPostApiNoToken(API.AUTH.AUTH_GOOGLE, req);
+        if (data && data.status === 200) {
+          console.log("Login successfull >>> ", data)
+        }
       }
-
     }
-  };
 
 
-
+    fectAPI()
+  }, [])
 
   return (
     <>
 
-      <FacebookLogin
-        appId={FACEBOOK_CLIENT_ID!}
-        onSuccess={responseFacebook}
-        onFail={(error) => console.error(error)}
-        onProfileSuccess={(profile) => console.log(profile)}
-      />
-
+      <Button
+        onClick={() => { handleLogin() }}
+      >Login Google</Button>
 
     </>
 
