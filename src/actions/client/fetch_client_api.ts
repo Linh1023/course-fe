@@ -16,9 +16,9 @@ export const FetchClientGetApi = async (api: string) => {
         console.log("refresh_token >>> ",refresh_token)
 
 
-        if (refresh_token === undefined) {
-            throw new Error("Session ID is undefined");
-        }
+        // if (refresh_token === undefined) {
+        //     throw new Error("Session ID is undefined");
+        // }
 
         if (access_token === undefined) {
             await refreshToken()
@@ -33,7 +33,7 @@ export const FetchClientGetApi = async (api: string) => {
         return data;
 
     } catch (error) {
-        //  window.location.href = '/login';
+         window.location.href = '/login';
     }
 }
 
@@ -43,9 +43,9 @@ export const FetchClientPostApi = async (api: string, bodyData: any) => {
          const refresh_token = await getToken("refresh_token")
         const access_token = await getToken("access_token")
 
-        if (refresh_token === undefined) {
-            throw new Error("refresh token is undefined");
-        }
+        // if (refresh_token === undefined) {
+        //     throw new Error("refresh token is undefined");
+        // }
 
         if (access_token === undefined) {
             await refreshToken()
@@ -67,12 +67,12 @@ export const FetchClientPostApi = async (api: string, bodyData: any) => {
 // Ham fetch put api tu dong
 export const FetchClientPutApi = async (api: string, bodyData: any) => {
     try {
-          const refresh_token = await getToken("refresh_token")
+        const refresh_token = await getToken("refresh_token")
         const access_token = await getToken("access_token")
 
-        if (refresh_token === undefined) {
-            throw new Error("refresh token is undefined");
-        }
+        // if (refresh_token === undefined) {
+        //     throw new Error("refresh token is undefined");
+        // }
 
         if (access_token === undefined) {
             await refreshToken()

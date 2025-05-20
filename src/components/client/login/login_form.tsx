@@ -26,7 +26,7 @@ const LoginForm = () => {
 
       if (code != null) {
         const req: AuthenticationRequest = {
-          accessToken: code,
+          code: code,
         }
         const data = await FetchServerPostApiNoToken(API.AUTH.AUTH_GOOGLE, req);
         if (data && data.status === 200) {

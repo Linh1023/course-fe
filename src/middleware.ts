@@ -3,11 +3,11 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { FetchServerPostApiNoToken, refreshToken } from './actions/server/fetch_server_api';
 import API from './api/api';
-import { getToken } from './actions/server/token_store';
+import { getToken, removeToken } from './actions/server/token_store';
 
 export async function middleware(request: NextRequest) {
     const currentPath = request.nextUrl.pathname; // Lấy path hiện tại
-   console.log("vao ne 1 >>>>")
+    console.log("vao ne 1 >>>>")
     // Kiểm tra xem yêu cầu có phải là yêu cầu call api
     const isHTMLRequest = request.headers.get('accept')?.includes('text/x-component');
 
@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
     if (isHTMLRequest) {
         return NextResponse.next();
     }
-  console.log("vao ne 2 >>>>")
+    console.log("vao ne 2 >>>>")
 
     if (currentPath === "/login") {
         const req: RefreshTokenRequest = {
@@ -26,23 +26,35 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-      console.log("vao ne 3 >>>>")
+    console.log("vao ne 3 >>>>")
 
     const isPublicRoute = currentPath === "/" || currentPath.startsWith("/course");
     if (isPublicRoute) {
         return NextResponse.next();
     }
 
-         console.log("vao ne 4 >>>>")
+    console.log("vao ne 4 >>>>")
 
-
-    if (await getToken("refresh_token") === undefined) { return NextResponse.redirect(new URL('/login', request.url)) }
-
-    const req: RefreshTokenRequest = {
-        refreshToken: await getToken("refresh_token")
+    const req:AccessTokenRequest = {
+        accessToken:await getToken("access_token")
     }
-    const res = await FetchServerPostApiNoToken(API.AUTH.INTROSPECT_REFRESH_TOKEN, req)
-    if (res && res.status === 401) { return NextResponse.redirect(new URL('/login', request.url)) }
+    const res = await FetchServerPostApiNoToken(API.AUTH.INTROSPECT_ACCESS_TOKEN, req )
+
+
+    if (await getToken("access_token") === undefined || (res && res.status !== 200)) {
+        if (await getToken("refresh_token") === undefined) { 
+            return NextResponse.redirect(new URL('/login', request.url)) }
+
+        const req: RefreshTokenRequest = {
+            refreshToken: await getToken("refresh_token")
+        }
+        const res = await FetchServerPostApiNoToken(API.AUTH.INTROSPECT_REFRESH_TOKEN, req)
+        if (res && res.status === 401) { 
+            return NextResponse.redirect(new URL('/login', request.url)) }
+
+    }
+
+
 
 }
 
