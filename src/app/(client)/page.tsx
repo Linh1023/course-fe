@@ -1,14 +1,14 @@
 "use server"
 
-import HomeContent from "@/components/home/home_content";
+import HomeWrapper from "@/components/client/home/home_wrapper";
 
 const HomePage = () => {
   return (
     <>
       HomePage
 
-        <HomeContent />
-    
+     <HomeWrapper/>
+
     </>
   );
 }

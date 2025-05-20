@@ -1,7 +1,7 @@
 "use client";
 
 import API from "@/api/api";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 
 import { useEffect, useState } from "react";
 import { setAccessToken, setRefreshToken } from "@/actions/server/token_store";
@@ -30,7 +30,7 @@ const LoginForm = () => {
         }
         const data = await FetchServerPostApiNoToken(API.AUTH.AUTH_GOOGLE, req);
         if (data && data.status === 200) {
-          const authenticationResponse:AuthenticationResponse = data.result
+          const authenticationResponse: AuthenticationResponse = data.result
           await setAccessToken(authenticationResponse.accessToken)
           await setRefreshToken(authenticationResponse.refreshToken)
           router.push("/")
