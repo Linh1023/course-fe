@@ -1,6 +1,6 @@
 "use server"
 import API from '@/api/api';
-import { getToken, setAccessToken } from './token_store';
+import { getToken, removeToken, setAccessToken } from './token_store';
 
 
 import { redirect } from 'next/navigation'; // Import hàm redirect
@@ -31,9 +31,9 @@ export const FetchServerPostApi = async (api: string, bodyData: any) => {
     const access_token = await getToken("access_token")
     
 
-    if (refresh_token === undefined) {
-      throw new Error("Session ID is undefined");
-    }
+    // if (refresh_token === undefined) {
+    //   throw new Error("Session ID is undefined");
+    // }
 
     if (access_token === undefined) {
       await refreshToken()
@@ -61,9 +61,9 @@ export const FetchServerPutApi = async (api: string, bodyData: any) => {
     const refresh_token = await getToken("refresh_token")
     const access_token = await getToken("access_token")
 
-    if (refresh_token === undefined) {
-      throw new Error("Session ID is undefined");
-    }
+    // if (refresh_token === undefined) {
+    //   throw new Error("Session ID is undefined");
+    // }
 
     if (access_token === undefined) {
       await refreshToken()
@@ -89,9 +89,9 @@ export const FetchServerGetApi = async (api: string) => {
     const refresh_token = await getToken("refresh_token")
     const access_token = await getToken("access_token")
 
-    if ( refresh_token === undefined) {
-      throw new Error("Session ID is undefined");
-    }
+    // if ( refresh_token === undefined) {
+    //   throw new Error("Session ID is undefined");
+    // }
 
     if (access_token === undefined) {
       await refreshToken()
@@ -106,7 +106,7 @@ export const FetchServerGetApi = async (api: string) => {
     return data;
 
   } catch (error) {
-    // redirect('/login');
+    redirect('/login');
   }
 }
 
@@ -140,6 +140,8 @@ export const refreshToken = async () => {
     }
 
   } catch (error) {
+    await removeToken("access_token")
+    await removeToken("refresh_token")
     console.error("error vip >>>", error);
     redirect('/login');
   }

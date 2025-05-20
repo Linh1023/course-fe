@@ -1,3 +1,3 @@
 interface AuthenticationRequest {
-    accessToken:string;
+    code:string;
 }
