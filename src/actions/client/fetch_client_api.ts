@@ -1,6 +1,5 @@
 "use client"
 import API from "@/api/api";
-import cookie from "js-cookie";
 import { getToken, setAccessToken } from "../server/token_store";
 
 import { refreshToken } from "../server/fetch_server_api";
@@ -11,16 +10,17 @@ import { refreshToken } from "../server/fetch_server_api";
 // Ham fetch get api khi can access token tu dong
 export const FetchClientGetApi = async (api: string) => {
     try {
+        const refresh_token = await getToken("refresh_token")
+        const access_token = await getToken("access_token")
+        console.log("access_token>>> ", access_token)
+        console.log("refresh_token >>> ",refresh_token)
 
-        console.log("access_token>>> ", cookie.get("access_token"))
-        console.log("refresh_token >>> ",await getToken("refresh_token"))
 
-
-        if (await getToken("refresh_token") === undefined) {
+        if (refresh_token === undefined) {
             throw new Error("Session ID is undefined");
         }
 
-        if (cookie.get("access_token") === undefined) {
+        if (access_token === undefined) {
             await refreshToken()
         }
 
@@ -40,12 +40,14 @@ export const FetchClientGetApi = async (api: string) => {
 // Ham fetch post tu dong
 export const FetchClientPostApi = async (api: string, bodyData: any) => {
     try {
+         const refresh_token = await getToken("refresh_token")
+        const access_token = await getToken("access_token")
 
-        if (await getToken("refresh_token") === undefined) {
+        if (refresh_token === undefined) {
             throw new Error("refresh token is undefined");
         }
 
-        if (cookie.get("access_token") === undefined) {
+        if (access_token === undefined) {
             await refreshToken()
         }
 
@@ -65,12 +67,14 @@ export const FetchClientPostApi = async (api: string, bodyData: any) => {
 // Ham fetch put api tu dong
 export const FetchClientPutApi = async (api: string, bodyData: any) => {
     try {
+          const refresh_token = await getToken("refresh_token")
+        const access_token = await getToken("access_token")
 
-        if (await getToken("refresh_token") === undefined) {
+        if (refresh_token === undefined) {
             throw new Error("refresh token is undefined");
         }
 
-        if (cookie.get("access_token") === undefined) {
+        if (access_token === undefined) {
             await refreshToken()
         }
 
@@ -132,7 +136,7 @@ export const clientPostPutApi = async (api: string, bodyData: any, methodReq: st
             headers: {
                 Accept: "application/json, text/plain, */*",
                 "Content-Type": "application/json", // Đặt Content-Type là JSON
-                Authorization: `Bearer ${cookie.get("access_token")}`, // Set Authorization header
+                Authorization: `Bearer ${await getToken("access_token")}`, // Set Authorization header
             },
             body: JSON.stringify(bodyData), // Gửi dữ liệu JSON
         });
@@ -154,7 +158,7 @@ export const clientGetApi = async (api: string) => {
             headers: {
                 Accept: "application/json, text/plain, */*",
                 "Content-Type": "application/json", // Đặt Content-Type là JSON
-                Authorization: `Bearer ${cookie.get("access_token")}`, // Set Authorization header
+                Authorization: `Bearer ${await getToken("access_token")}`, // Set Authorization header
             },
         });
 

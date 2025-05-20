@@ -140,6 +140,7 @@ export const refreshToken = async () => {
     }
 
   } catch (error) {
+    console.error("error vip >>>", error);
     redirect('/login');
   }
 }
