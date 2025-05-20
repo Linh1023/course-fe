@@ -1,12 +1,13 @@
+
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { FetchServerPostApiNoToken } from './actions/server/fetch_server_api';
+import { FetchServerPostApiNoToken, refreshToken } from './actions/server/fetch_server_api';
 import API from './api/api';
 import { getToken } from './actions/server/token_store';
 
 export async function middleware(request: NextRequest) {
     const currentPath = request.nextUrl.pathname; // Lấy path hiện tại
-
+   console.log("vao ne 1 >>>>")
     // Kiểm tra xem yêu cầu có phải là yêu cầu call api
     const isHTMLRequest = request.headers.get('accept')?.includes('text/x-component');
 
@@ -14,7 +15,7 @@ export async function middleware(request: NextRequest) {
     if (isHTMLRequest) {
         return NextResponse.next();
     }
-
+  console.log("vao ne 2 >>>>")
 
     if (currentPath === "/login") {
         const req: RefreshTokenRequest = {
@@ -25,12 +26,17 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
+      console.log("vao ne 3 >>>>")
+
     const isPublicRoute = currentPath === "/" || currentPath.startsWith("/course");
     if (isPublicRoute) {
         return NextResponse.next();
     }
 
-    if (getToken("refresh_token") === undefined) { return NextResponse.redirect(new URL('/login', request.url)) }
+         console.log("vao ne 4 >>>>")
+
+
+    if (await getToken("refresh_token") === undefined) { return NextResponse.redirect(new URL('/login', request.url)) }
 
     const req: RefreshTokenRequest = {
         refreshToken: await getToken("refresh_token")

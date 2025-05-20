@@ -15,10 +15,10 @@ export async function setRefreshToken(refreshToken: string) {
 }
 
 // Xoa refresh token khoi cookies
-export async function removeRefreshToken() {
+export async function removeToken(nameToken: string) {
   const cookieStore = cookies();
 
-  cookieStore.delete('refresh_token');
+  cookieStore.delete(nameToken);
 }
 
 // set access token vao cookes 
@@ -28,7 +28,7 @@ export async function setAccessToken(accessToken: string) {
   const cookieStore = cookies();
 
   cookieStore.set('access_token', accessToken, {
-    httpOnly: false,
+    httpOnly: true,
     path: '/',
     maxAge,
   });
