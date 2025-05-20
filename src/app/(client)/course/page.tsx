@@ -2,7 +2,7 @@
 const CoursePage = () => {
     return(
         <>
-           "Course page"
+           CoursePage
         </>
     )
 }
