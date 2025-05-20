@@ -4,8 +4,8 @@ import { Button } from "../ui/button"
 import API from "@/api/api"
 import cookie from "js-cookie";
 import { useRouter } from "next/navigation";
-import { removeRefreshToken } from "@/actions/server/token_store";
-import { FetchServerGetApi } from "@/actions/server/fetch_server_api";
+import { getToken, removeRefreshToken } from "@/actions/server/token_store";
+import { FetchServerGetApi, FetchServerPostApi, FetchServerPostApiNoToken } from "@/actions/server/fetch_server_api";
  
 const HomeContent = () => {
 
@@ -21,10 +21,15 @@ const HomeContent = () => {
     }
 
     const handleLogout = async () => {
+        const req:RefreshTokenRequest = {
+            refreshToken: await getToken("refresh_token")
+        }
+        const data = await FetchServerPostApi(API.REFRESH_TOKEN.DELETE_REFRESH_TOKEN,req)
+        if (data && data.status ===200){
         cookie.remove("access_token");
         await  removeRefreshToken()
         router.push("/login")
-
+        }
     }
 
 
