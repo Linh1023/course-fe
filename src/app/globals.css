@@ -92,3 +92,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* custom css */
+/* Áp dụng cho toàn trang */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: white; /* Nền thanh cuộn */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0; /* Màu thanh trượt */
+  border-radius: 4px;
+}
+
+.custom-bg {
+  background-color: rgba(229, 231, 235, 0.8) !important;
+}

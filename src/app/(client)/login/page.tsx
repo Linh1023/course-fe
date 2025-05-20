@@ -6,7 +6,6 @@ import { Suspense } from 'react';
 const LoginPage = () => {
     return (
         <>
-            LoginPage
             <Suspense>
                 <LoginWrapper/>
             </Suspense>
