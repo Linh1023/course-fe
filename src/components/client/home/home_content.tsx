@@ -41,18 +41,7 @@ const HomeContent = () => {
             <Button
                 onClick={() => { handleLogout() }}
             >Đăng xuất</Button>
-           <img
-                src="https://res.cloudinary.com/moment-images/logo_demo1_xzxrxd"
-                alt="Image"
-                className="h-[600px] w-[600px]"
-             
-              />
-                        <img
-                src="https://res.cloudinary.com/moment-images/logo_demo1_xzxrxd"
-                alt="Image"
-                className="h-[600px] w-[600px]"
-             
-              />
+  
           
         </>
     )
