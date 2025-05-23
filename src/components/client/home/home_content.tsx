@@ -20,29 +20,11 @@ const HomeContent = () => {
         }
     }
 
-    const handleLogout = async () => {
-        const req: RefreshTokenRequest = {
-            refreshToken: await getToken("refresh_token")
-        }
-        const data = await FetchServerPostApi(API.REFRESH_TOKEN.DELETE_REFRESH_TOKEN, req)
-        if (data && data.status === 200) {
-            await removeToken("access_token")
-            await removeToken("refresh_token")
-            router.push("/login")
-        }
-    }
-
-
     return (
         <>
           <Button
                 onClick={() => { handleFetchData() }}
             >Fetch dữ liệu</Button>
-            <Button
-                onClick={() => { handleLogout() }}
-            >Đăng xuất</Button>
-  
-          
         </>
     )
 }
