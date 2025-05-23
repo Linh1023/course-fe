@@ -110,6 +110,49 @@ export const FetchServerGetApi = async (api: string) => {
   }
 }
 
+// Ham fetch get api khi can access token tu dong
+export const FetchServerGetApiNoRediect = async (api: string) => {
+    const access_token = await getToken("access_token")
+
+    if (access_token === undefined) {
+      await refreshTokenNoRediect()
+    }
+
+    let data = await serverGetApi(api);
+
+    if (data && data.status === 401) {
+      await refreshTokenNoRediect()
+      data = await serverGetApi(api);
+    }
+    return data;
+}
+
+
+export const refreshTokenNoRediect = async () => {
+    const req: RefreshTokenRequest = {
+      refreshToken: await getToken("refresh_token")
+    }
+
+    const res = await fetch(API.AUTH.REFRESH_TOKEN, {
+      method: "POST", // Đúng phương thức POST
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json", // Đặt Content-Type là JSON
+      },
+      body: JSON.stringify(req), // Gửi dữ liệu JSON
+    });
+    const data = await res.json();
+
+    // neu access token chua het han
+    if (data && data.status === 200) {
+      const authenticationResponse: AuthenticationResponse = data.result
+     await setAccessToken(authenticationResponse.accessToken)
+    }
+    // neu refresh token het han ra trang login
+
+}
+
+
 
 
 // Ham tao moi accesstoken
@@ -142,7 +185,6 @@ export const refreshToken = async () => {
   } catch (error) {
     await removeToken("access_token")
     await removeToken("refresh_token")
-    console.error("error vip >>>", error);
     redirect('/login');
   }
 }

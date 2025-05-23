@@ -5,6 +5,23 @@ import { getToken, setAccessToken } from "../server/token_store";
 import { refreshToken } from "../server/fetch_server_api";
 
 
+export const FetchClientPostApiNoToken = async (api: string, bodyData: any) => {
+  try {
+    const res = await fetch(api, {
+      method: "POST", // Đúng phương thức
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json", // Đặt Content-Type là JSON
+      },
+      body: JSON.stringify(bodyData), // Gửi dữ liệu JSON
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+  }
+}
+
 
 
 // Ham fetch get api khi can access token tu dong
@@ -36,6 +53,8 @@ export const FetchClientGetApi = async (api: string) => {
          window.location.href = '/login';
     }
 }
+
+
 
 // Ham fetch post tu dong
 export const FetchClientPostApi = async (api: string, bodyData: any) => {

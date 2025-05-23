@@ -34,9 +34,19 @@ import {
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
+import { useCurrentAccountContext } from "@/context/current_account_context";
+import { getToken, removeToken } from "@/actions/server/token_store";
+import { FetchServerPostApi } from "@/actions/server/fetch_server_api";
+import API from "@/api/api";
+import { useRouter } from "next/navigation";
 
 
 const Navigation = () => {
+
+    const { currentAccount, fetchGetCurrentAccount } = useCurrentAccountContext()
+    const router = useRouter()
+
+
     const features = [
         {
             title: "Dashboard",
@@ -69,6 +79,19 @@ const Navigation = () => {
             href: "#",
         },
     ];
+
+    const handleLogout = async () => {
+        const req: RefreshTokenRequest = {
+            refreshToken: await getToken("refresh_token")
+        }
+        const data = await FetchServerPostApi(API.REFRESH_TOKEN.DELETE_REFRESH_TOKEN, req)
+        if (data && data.status === 200) {
+            await removeToken("access_token")
+            await removeToken("refresh_token")
+            await fetchGetCurrentAccount()
+            router.push("/login")
+        }
+    }
 
     return (
         <>
@@ -139,34 +162,52 @@ const Navigation = () => {
                         <div className="hidden items-center gap-4 lg:flex">
                             <Input type="text" placeholder="Tìm kiếm khóa học" className="w-[300px]"></Input>
                             <Popover>
-                                <PopoverTrigger asChild>
-                                    <img
-                                        src="https://res.cloudinary.com/moment-images/1_2_r15hh3"
-                                        className=" rounded-[100px] h-[45px] w-[45px] cursor-pointer"
-                                        alt="Shadcn UI Navbar"
-                                    />
-                                </PopoverTrigger>
-                                <PopoverContent className="mr-[20px]">
-                                    <div className="flex items-center">
+
+                                {currentAccount == null ? (<>
+                                    <Link href={"/login"}>
+                                        <Button className="bg-[#FE4444] hover:bg-[#F87171]"> Đăng nhập </Button>
+                                    </Link>
+
+                                </>) : (<>
+                                    <PopoverTrigger asChild>
                                         <img
-                                            src="https://res.cloudinary.com/moment-images/1_2_r15hh3"
-                                            className=" rounded-[100px] h-[45px] w-[45px]"
+                                            src={currentAccount.avatarUrl}
+                                            className=" rounded-[100px] h-[45px] w-[45px] cursor-pointer"
                                             alt="Shadcn UI Navbar"
                                         />
-                                        <div className="ml-[10px] flex flex-col justify-center ">
-                                            <span>Lê Ngọc Dương</span>
-                                            <span>duongngocle@gmail.com</span>
+                                    </PopoverTrigger>
+
+                                    <PopoverContent className="mr-[20px]">
+
+                                        <div className="flex items-center">
+                                            <img
+                                                src={currentAccount.avatarUrl}
+                                                className=" rounded-[100px] h-[45px] w-[45px]"
+                                                alt="Shadcn UI Navbar"
+                                            />
+                                            <div className="ml-[10px] flex flex-col justify-center ">
+                                                <span>{currentAccount.name}</span>
+                                                <span>{currentAccount.email}</span>
+                                            </div>
+
+                                        </div>
+                                        <DropdownMenuSeparator className="mt-[20px] bg-gray-200 h-[1px]" />
+                                        <div className=" flex flex-col gap-2">
+                                            <div className="mt-[10px] dropdown-item-custom">Trang cá nhân</div>
+                                            <div className="dropdown-item-custom" >Cài đặt</div>
+                                            <div className=" bg-gray-200 h-[1px]" />
+                                            <div className="dropdown-item-custom"
+                                                onClick={() => { handleLogout() }}
+                                            >Đăng xuất</div>
                                         </div>
 
-                                    </div>
-                                    <DropdownMenuSeparator className="mt-[20px] bg-gray-200 h-[1px]" />
-                                    <div className=" flex flex-col gap-2">
-                                        <div className="mt-[10px] dropdown-item-custom">Trang cá nhân</div>
-                                        <div className="dropdown-item-custom" >Cài đặt</div>
-                                        <div className=" bg-gray-200 h-[1px]" />
-                                        <div className="dropdown-item-custom">Đăng xuất</div>
-                                    </div>
-                                </PopoverContent>
+
+                                    </PopoverContent>
+
+                                </>)}
+
+
+
                             </Popover>
 
                         </div>
@@ -195,6 +236,69 @@ const Navigation = () => {
                                     </SheetTitle>
                                 </SheetHeader>
                                 <div className="flex flex-col p-4">
+
+                                    {currentAccount != null && (
+                                        <>
+                                            <Accordion type="single" collapsible className="mt-1 mb-2">
+                                                <AccordionItem value="solutions" className="border-none">
+                                                    <AccordionTrigger className="text-base hover:no-underline">
+                                                        <div className="flex items-center">
+                                                            <img
+                                                                src={currentAccount.avatarUrl}
+                                                                className=" rounded-[100px] h-[45px] w-[45px]"
+                                                                alt="Shadcn UI Navbar"
+                                                            />
+                                                            <div className="ml-[10px] flex flex-col justify-center ">
+                                                                <span>{currentAccount.name}</span>
+                                                                <span>{currentAccount.email}</span>
+                                                            </div>
+
+                                                        </div>
+                                                    </AccordionTrigger>
+                                                    <AccordionContent>
+                                                        <div className="grid md:grid-cols-2">
+
+                                                            <Link
+                                                                href={"/"}
+
+                                                                className="rounded-md p-3 transition-colors hover:bg-muted/70"
+                                                            >
+                                                                <div>
+                                                                    <p className="mb-1 font-semibold text-foreground">
+                                                                        Thông tin cá nhân
+                                                                    </p>
+                                                                </div>
+                                                            </Link>
+                                                            <Link
+                                                                href={"/"}
+
+                                                                className="rounded-md p-3 transition-colors hover:bg-muted/70"
+                                                            >
+                                                                <div>
+                                                                    <p className="mb-1 font-semibold text-foreground">
+                                                                        Cài đặt
+                                                                    </p>
+                                                                </div>
+                                                            </Link>
+                                                            <div
+                                
+                                                                className="rounded-md p-3 transition-colors hover:bg-muted/70"
+                                                             onClick={() => {handleLogout()}}
+                                                           >
+                                                                <div>
+                                                                    <p className="mb-1 font-semibold text-foreground">
+                                                                        Đăng xuất
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </AccordionContent>
+                                                </AccordionItem>
+                                            </Accordion>
+
+                                        </>
+                                    )}
 
                                     <div className="flex flex-col gap-6">
                                         <Input type="text" placeholder="Tìm kiếm khóa học"></Input>
@@ -237,12 +341,17 @@ const Navigation = () => {
 
                                     </div>
 
+                                    {currentAccount === null && (
+                                        <>
+                                            <div className="mt-6 flex flex-col gap-4">
+                                            
+                                                <Link href={"/login"}>
+                                                    <Button className="bg-[#FE4444] hover:bg-[#F87171] w-full"> Đăng nhập </Button>
+                                                </Link>
+                                            </div>
+                                        </>
+                                    )}
 
-                                    <div className="mt-6 flex flex-col gap-4">
-
-                                        <Button className="bg-red-500 hover:bg-red-400" >Đăng nhập</Button>
-
-                                    </div>
                                 </div>
                             </SheetContent>
                         </Sheet>

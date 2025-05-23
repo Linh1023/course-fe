@@ -1,3 +1,4 @@
+import ACCOUNT_API from "./endpoints/account";
 import AUTH_API from "./endpoints/auth";
 import CATEGORY_API from "./endpoints/category";
 import COMMENT_API from "./endpoints/comment";
@@ -12,7 +13,7 @@ import SUBMISSION_API from "./endpoints/submission";
 const API = {
   AUTH: AUTH_API,
   REFRESH_TOKEN: REFRESH_TOKEN_API, 
-  ACCOUNT:AUTH_API,
+  ACCOUNT:ACCOUNT_API,
   CATEGORY:CATEGORY_API,
   COMMENT:COMMENT_API,
   COURSE_ENROLLMENT:COURSE_ENROLLMENT_API,

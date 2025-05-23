@@ -15,11 +15,13 @@ import { Label } from "@/components/ui/label"
 
 
 import { LoginAction } from "@/actions/server/login_action";
+import { useCurrentAccountContext } from "@/context/current_account_context";
 
 const LoginForm = () => {
 
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { fetchGetCurrentAccount } = useCurrentAccountContext()
 
 
   const handleLogin = async () => {
@@ -39,6 +41,7 @@ const LoginForm = () => {
           const authenticationResponse: AuthenticationResponse = data.result
           await setAccessToken(authenticationResponse.accessToken)
           await setRefreshToken(authenticationResponse.refreshToken)
+          await fetchGetCurrentAccount()
           router.push("/")
         }
       }
@@ -57,6 +60,14 @@ const LoginForm = () => {
 
             <form className="p-6 md:p-8 flex items-center justify-center min-h-[500px]">
               <div className="flex flex-col gap-6 w-full">
+
+                <div className=" logo-mobile">
+                  <img
+                    src="https://res.cloudinary.com/moment-images/logo_demo1_xzxrxd"
+                    alt="Image"
+                    className=" object-cover w-[100px] h-[100px] rounded-[100px]"
+                  />
+                </div >
 
 
                 <div className="flex flex-col items-center text-center">
