@@ -3,6 +3,7 @@ import { API_HOST } from "@/utils/env";
 
 const AUTH_API = {
   AUTH_GOOGLE: `${API_HOST}/api/auth/google`,
+  LOGIN: `${API_HOST}/api/auth/login`,
   REFRESH_TOKEN : `${API_HOST}/api/auth/refresh`,
   INTROSPECT_REFRESH_TOKEN : `${API_HOST}/api/auth/introspect-refresh-token`,
   INTROSPECT_ACCESS_TOKEN : `${API_HOST}/api/auth/introspect-access-token`,

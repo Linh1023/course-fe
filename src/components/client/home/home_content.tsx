@@ -6,18 +6,27 @@ import cookie from "js-cookie";
 import { useRouter } from "next/navigation";
 import { getToken, removeToken } from "@/actions/server/token_store";
 import { FetchServerGetApi, FetchServerPostApi, FetchServerPostApiNoToken } from "@/actions/server/fetch_server_api";
+import { useLoadingContext } from "@/context/loading_context";
+import { time } from "console";
 
 const HomeContent = () => {
 
     const router = useRouter()
+   const {startLoadingSpiner, stopLoadingSpiner} = useLoadingContext()
+   
 
     const handleFetchData = async () => {
+        startLoadingSpiner()
+
+        //  await new Promise(resolve => setTimeout(resolve, 9000));
 
         console.log("click ")
         const data = await FetchServerGetApi(API.AUTH.HELLO_TEST)
         if (data && data.status === 200) {
             console.log("call success >>> ", data)
         }
+        
+        stopLoadingSpiner()
     }
 
     return (
