@@ -34,6 +34,7 @@ import { getToken, removeToken } from "@/actions/server/token_store";
 import { FetchServerPostApi } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
 import { useRouter } from "next/navigation";
+import { useLoadingContext } from "@/context/loading_context";
 
 const user = {
   name: "shadcn",
@@ -44,8 +45,10 @@ export const SidebarUser = () => {
   const { isMobile } = useSidebar();
   const { currentAccount, fetchGetCurrentAccount } = useCurrentAccountContext()
   const router = useRouter()
-
+  const {startLoadingSpiner, stopLoadingSpiner} = useLoadingContext()
+  
       const handleLogout = async () => {
+        startLoadingSpiner()
           const req: RefreshTokenRequest = {
               refreshToken: await getToken("refresh_token")
           }
@@ -56,6 +59,7 @@ export const SidebarUser = () => {
               await fetchGetCurrentAccount()
               router.push("/login")
           }
+          stopLoadingSpiner()
       }
   
 

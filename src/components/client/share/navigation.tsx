@@ -51,13 +51,14 @@ import { getToken, removeToken } from "@/actions/server/token_store";
 import { FetchServerPostApi } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
 import { useRouter } from "next/navigation";
+import { useLoadingContext } from "@/context/loading_context";
 
 
 const Navigation = () => {
 
     const { currentAccount, fetchGetCurrentAccount } = useCurrentAccountContext()
     const router = useRouter()
-    console.log("avatar url >>> ", currentAccount?.avatarUrl)
+  const {startLoadingSpiner, stopLoadingSpiner} = useLoadingContext()
 
     const features = [
         {
@@ -93,6 +94,7 @@ const Navigation = () => {
     ];
 
     const handleLogout = async () => {
+        startLoadingSpiner()
         const req: RefreshTokenRequest = {
             refreshToken: await getToken("refresh_token")
         }
@@ -103,6 +105,7 @@ const Navigation = () => {
             await fetchGetCurrentAccount()
             router.push("/login")
         }
+        stopLoadingSpiner()
     }
 
     return (
