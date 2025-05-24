@@ -4,6 +4,7 @@ import HomeContent from "./home_content"
 
 const HomeWrapper = () => {
 
+
     return (
         <>
             <HomeContent/>
