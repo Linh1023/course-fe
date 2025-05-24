@@ -145,10 +145,6 @@ export const refreshTokenNoRediect = async () => {
     const data = await res.json();
 
     // neu access token chua het han
-    if (data && data.status === 200) {
-      const authenticationResponse: AuthenticationResponse = data.result
-     await setAccessToken(authenticationResponse.accessToken)
-    }
     // neu refresh token het han ra trang login
 
 }

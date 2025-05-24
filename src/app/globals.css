@@ -116,6 +116,7 @@
 }
 
 .dropdown-item-custom {
+  display: flex;
   cursor: pointer;
   padding: 10px;
   padding-left: 5px;
