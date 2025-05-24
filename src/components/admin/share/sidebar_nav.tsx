@@ -91,15 +91,11 @@ export const SidebarNav = () => {
 
             return (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton asChild size={"lg"}>
                   <Link
                     href={item.url}
                     title={item.title}
-                    className={`flex items-center gap-2 p-2 rounded border-[#fafafa] hover:border-destructive border hover hover:text-white active:text-white ${
-                      isActive
-                        ? "bg-destructive text-white hover:bg-destructive hover:text-white"
-                        : ""
-                    }`}
+                    className={`flex items-center gap-2 p-2 hover:border-destructive hover:text-white active:text-white `}
                   >
                     <item.icon className="h-5 w-5" />
                     <span className="truncate">{item.title}</span>
