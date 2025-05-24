@@ -4,8 +4,11 @@ import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
+  CircleUserRound,
   CreditCard,
+  House,
   LogOut,
+  Settings,
   Sparkles,
 } from "lucide-react";
 
@@ -25,6 +28,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useCurrentAccountContext } from "@/context/current_account_context";
+import Link from "next/link";
+import { getToken, removeToken } from "@/actions/server/token_store";
+import { FetchServerPostApi } from "@/actions/server/fetch_server_api";
+import API from "@/api/api";
+import { useRouter } from "next/navigation";
 
 const user = {
   name: "shadcn",
@@ -33,6 +42,22 @@ const user = {
 };
 export const SidebarUser = () => {
   const { isMobile } = useSidebar();
+  const { currentAccount, fetchGetCurrentAccount } = useCurrentAccountContext()
+  const router = useRouter()
+
+      const handleLogout = async () => {
+          const req: RefreshTokenRequest = {
+              refreshToken: await getToken("refresh_token")
+          }
+          const data = await FetchServerPostApi(API.REFRESH_TOKEN.DELETE_REFRESH_TOKEN, req)
+          if (data && data.status === 200) {
+              await removeToken("access_token")
+              await removeToken("refresh_token")
+              await fetchGetCurrentAccount()
+              router.push("/login")
+          }
+      }
+  
 
   return (
     <SidebarMenu>
@@ -44,12 +69,12 @@ export const SidebarUser = () => {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage src={currentAccount?.avatarUrl} alt={currentAccount?.name} />
+              
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">{currentAccount?.name}</span>
+                <span className="truncate text-xs">{currentAccount?.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -60,45 +85,53 @@ export const SidebarUser = () => {
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
+            <DropdownMenuLabel className="p-0 font-normal cursor-pointer">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage src={currentAccount?.avatarUrl} alt={currentAccount?.name} />
+                
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold">{currentAccount?.name}</span>
+                  <span className="truncate text-xs">{currentAccount?.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
+
+
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup >
+              <Link href={"/"}>
+                <DropdownMenuItem className="cursor-pointer">
+                  <House />
+                  Trang chủ
+                </DropdownMenuItem>
+              </Link>
+
+            </DropdownMenuGroup>
+
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+              <DropdownMenuItem className="cursor-pointer">
+               <CircleUserRound />
+                Thông tin cá nhân
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                <Settings />
+                Cài đặt
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            
+            
+            <DropdownMenuItem className="cursor-pointer"
+            onClick={() => {handleLogout()}}
+            >
               <LogOut />
-              Log out
+              Đăng xuất
             </DropdownMenuItem>
+          
+          
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
