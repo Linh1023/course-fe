@@ -27,7 +27,7 @@ export default async function  RootLayout({
   children: React.ReactNode;
 }>) {
   // const res = await FetchServerGetApiNoRediect(API.ACCOUNT.CURRENT_ACCOUNT);
-  let currentAccount:CurrentAccountResponse|null = null
+  const currentAccount:CurrentAccountResponse|null = null
   // if (res && res.status === 200) {
   //    currentAccount = res.result;
   // } 
