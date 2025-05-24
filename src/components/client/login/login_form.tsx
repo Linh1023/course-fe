@@ -20,8 +20,19 @@ import { useCurrentAccountContext } from "@/context/current_account_context";
 const LoginForm = () => {
 
   const router = useRouter();
+  const pathName = usePathname();
+
   const searchParams = useSearchParams();
-  const { fetchGetCurrentAccount } = useCurrentAccountContext()
+  const { fetchGetCurrentAccount, currentAccount } = useCurrentAccountContext()
+
+  // cho nay de khi bi loi
+  useEffect(() => {
+    if (currentAccount != null) {
+      fetchGetCurrentAccount()
+    }
+
+  }, [pathName])
+
 
 
   const handleLogin = async () => {

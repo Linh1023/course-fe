@@ -4,7 +4,7 @@ import { getToken, removeToken, setAccessToken } from './token_store';
 
 
 import { redirect } from 'next/navigation'; // Import hàm redirect
-import { useCurrentAccountContext } from '@/context/current_account_context';
+
 
 // Ham fetch post khong can token
 export const FetchServerPostApiNoToken = async (api: string, bodyData: any) => {
@@ -186,8 +186,6 @@ export const refreshToken = async () => {
   } catch (error) {
     await removeToken("access_token")
     await removeToken("refresh_token")
-    const {fetchGetCurrentAccount} = useCurrentAccountContext()
-    await fetchGetCurrentAccount()
     redirect('/login');
   }
 }
