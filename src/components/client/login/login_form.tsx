@@ -70,11 +70,12 @@ const LoginForm = () => {
   useEffect(() => {
 
     const fectAPI = async () => {
-      startLoadingSpiner()
+    
 
       const code = searchParams.get('code')
 
       if (code != null) {
+        startLoadingSpiner()
         const req: AuthenticationRequest = {
           code: code,
         }
