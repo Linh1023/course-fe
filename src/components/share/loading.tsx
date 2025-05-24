@@ -14,6 +14,7 @@ const Loading = () => {
 
     useEffect(() => {
         stopLoadingSpiner()
+        console.log("stop by pathname >>> ")
     }, [pathName])
 
     useEffect(() => {
