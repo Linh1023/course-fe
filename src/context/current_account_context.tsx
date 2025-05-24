@@ -16,6 +16,8 @@ export const CurrentAccountProvider = ({ children, currentAccountRes }: { childr
   const [currentAccount, setCurrentAccount] = useState<CurrentAccountResponse | null>(currentAccountRes);
 
 
+
+
   const fetchGetCurrentAccount = async () => {
     // lay thong tin user
     const res = await FetchServerGetApi(API.ACCOUNT.CURRENT_ACCOUNT)
@@ -27,13 +29,6 @@ export const CurrentAccountProvider = ({ children, currentAccountRes }: { childr
     }
   }
 
-  // useEffect(() => {
-  //   console.log("run current account context >>>")
-  //   const fetch = async () => {
-  //    await fetchGetCurrentAccount()
-  //   }
-  //   fetch()
-  // },[])
 
   return (
     <CurrentAccountContext.Provider value={{ currentAccount, setCurrentAccount, fetchGetCurrentAccount }}>

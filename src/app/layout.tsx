@@ -26,11 +26,12 @@ export default async function  RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const res = await FetchServerGetApiNoRediect(API.ACCOUNT.CURRENT_ACCOUNT);
-  const currentAccount:CurrentAccountResponse|null = null
-  // if (res && res.status === 200) {
-  //    currentAccount = res.result;
-  // } 
+  const res = await FetchServerGetApiNoRediect(API.ACCOUNT.CURRENT_ACCOUNT);
+  let currentAccount:CurrentAccountResponse|null = null
+  if (res && res.status === 200) {
+     currentAccount = res.result;
+    //  console.log("currentAccount >>> ", currentAccount)
+  } 
 
   return (
     <html lang="en">
