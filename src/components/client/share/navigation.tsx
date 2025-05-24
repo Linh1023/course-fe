@@ -104,8 +104,10 @@ const Navigation = () => {
             await removeToken("refresh_token")
             await fetchGetCurrentAccount()
             router.push("/login")
+        } else {
+
+            stopLoadingSpiner()
         }
-        stopLoadingSpiner()
     }
 
     return (
