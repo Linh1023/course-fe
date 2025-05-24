@@ -46,7 +46,7 @@ export const SidebarUser = () => {
   const { currentAccount, fetchGetCurrentAccount } = useCurrentAccountContext()
   const router = useRouter()
   const {startLoadingSpiner, stopLoadingSpiner} = useLoadingContext()
-  
+
       const handleLogout = async () => {
         startLoadingSpiner()
           const req: RefreshTokenRequest = {
@@ -58,8 +58,10 @@ export const SidebarUser = () => {
               await removeToken("refresh_token")
               await fetchGetCurrentAccount()
               router.push("/login")
+          } else {
+                   stopLoadingSpiner()
           }
-          stopLoadingSpiner()
+   
       }
   
 

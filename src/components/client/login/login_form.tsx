@@ -56,18 +56,22 @@ const LoginForm = () => {
       router.push("/")
     } else {
       setErrorLogin(true)
+      stopLoadingSpiner()
     }
-    stopLoadingSpiner()
+
   }
 
 
   const handleLoginGoole = async () => {
+    startLoadingSpiner()
     await LoginGoogleAction()
   }
 
   useEffect(() => {
-    startLoadingSpiner()
+
     const fectAPI = async () => {
+      startLoadingSpiner()
+
       const code = searchParams.get('code')
 
       if (code != null) {
@@ -79,13 +83,14 @@ const LoginForm = () => {
         if (data && data.status === 200) {
           await fetchGetCurrentAccount()
           router.push("/")
+        }  else {
+              stopLoadingSpiner()
         }
-
-
       }
     }
+
     fectAPI()
-    stopLoadingSpiner()
+
   }, [])
 
 
