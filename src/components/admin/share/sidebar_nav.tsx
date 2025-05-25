@@ -95,7 +95,10 @@ export const SidebarNav = () => {
                   <Link
                     href={item.url}
                     title={item.title}
-                    className={`flex items-center gap-2 p-2 hover:border-destructive hover:text-white active:text-white `}
+                    className={
+                      `flex items-center gap-2 p-2 hover:border-destructive hover:text-white active:text-white` +
+                      (isActive ? " bg-sidebar-accent text-white  " : "")
+                    }
                   >
                     <item.icon className="h-5 w-5" />
                     <span className="truncate">{item.title}</span>
