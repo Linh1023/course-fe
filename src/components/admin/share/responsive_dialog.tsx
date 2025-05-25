@@ -54,7 +54,7 @@ export function ResponsiveDialog({
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerContent>
+      <DrawerContent className='p-4'>
         <DrawerHeader className="text-left">
           <DrawerTitle>{title}</DrawerTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
@@ -62,7 +62,6 @@ export function ResponsiveDialog({
         {children}
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
-            <Button variant="outline">Hủy</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

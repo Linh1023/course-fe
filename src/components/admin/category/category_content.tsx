@@ -17,6 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 
 type Category = {
   name: string;
@@ -47,10 +48,14 @@ export function CategoryContent() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between">
         <Button className="bg-[#fe4444] hover:bg-[#ef4444]">
           Xóa tất cả mục đã chọn
         </Button>
+        <div className="flex items-center gap-2"> 
+         <Input placeholder="Nhập tên danh mục"/> 
+         <Button className="bg-[#fe4444] hover:bg-[#ef4444]">Tìm</Button>
+        </div>
       </div>
       <Table>
         <TableHeader>
