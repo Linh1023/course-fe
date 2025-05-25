@@ -40,7 +40,9 @@ const Loading = () => {
                     <>
                         <div id='loading-overlay'  >
                             <div className="w-[300px] max-w-[80%]">
-                                <Progress value={count} />
+                                <Progress className="bg-[#f1f5f9] [&>div]:bg-[#FE4444]" value={count} 
+                                
+                                />
                             </div>
                         </div>
                     </>

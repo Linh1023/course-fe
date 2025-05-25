@@ -70,12 +70,12 @@ const LoginForm = () => {
   useEffect(() => {
 
     const fectAPI = async () => {
-    
 
       const code = searchParams.get('code')
 
       if (code != null) {
         startLoadingSpiner()
+        await new Promise(resolve => setTimeout(resolve, 9000));
         const req: AuthenticationRequest = {
           code: code,
         }
