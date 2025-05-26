@@ -1,6 +1,6 @@
 "use client"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebarLesson } from "@/components/client/lesson/app_sidebar_lesson"
+import { AppSidebarLesson } from "@/components/client/lesson/lesson_app_sidebar"
 import LessonContent from "./lesson_content"
 import { Button } from "@/components/ui/button"
 import { BookCheck, ChevronLeft, ChevronRight, CirclePlay } from "lucide-react"
@@ -21,10 +21,7 @@ const LessonWrapper = () => {
                 <div className=" fixed bottom-0  z-50 flex items-center p-2 bg-gray-200  control-lesson-custom justify-between
                 w-full
                 ">
-                    <div className="flex items-center gap-4 content-footer-lesson-custom">
-                        <span className="font-bold flex items-center gap-2" > <BookCheck /> Lập trình C++ cơ bản</span>
-                         <span className="flex items-center gap-2" > <CirclePlay /> Chương 1. Cú pháp trong lập trình mới nhất hiện nay</span>
-                    </div>
+                    <span className="flex items-center font-bold gap-2 lesson-chapter-custom mr-[10px]" > <CirclePlay /> Chương 1. Cú pháp trong lập trình mới nhất hiện nay</span>
 
                     <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center">
@@ -48,8 +45,6 @@ const LessonWrapper = () => {
 
                 </div>
             </SidebarProvider>
-
-
         </>
     )
 }
