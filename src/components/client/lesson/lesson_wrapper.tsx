@@ -3,7 +3,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebarLesson } from "@/components/client/lesson/app_sidebar_lesson"
 import LessonContent from "./lesson_content"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { BookCheck, ChevronLeft, ChevronRight, CirclePlay } from "lucide-react"
 const LessonWrapper = () => {
     return (
         <>
@@ -13,29 +13,39 @@ const LessonWrapper = () => {
                 } as React.CSSProperties}
 
             >
-                <main className="flex-1 overflow-y-auto h-[calc(100vh-68px)] ">
+                <main className="flex-1 overflow-y-auto h-[calc(100vh-132px)] ">
                     <LessonContent />
                 </main>
                 <AppSidebarLesson />
 
-                <div className=" fixed bottom-0 right-0 z-50 flex items-center gap-4 p-2 bg-gray-300 rounded-tl-[15px] control-lesson-custom justify-between">
-                    <div className="flex items-center">
-                        <Button className="h-[40px] mr-[5px]">
-                            <ChevronLeft />
-                           <span className="button-next-lesson-custom"> Bài trước</span>
-                        </Button>
-                        <Button className="h-[40px] bg-[#3B82F6] hover:bg-[#6a95db]">
-                         <span className="button-next-lesson-custom ">  Bài tiếp</span> 
-                        <ChevronRight />
-                        </Button>
+                <div className=" fixed bottom-0  z-50 flex items-center p-2 bg-gray-200  control-lesson-custom justify-between
+                w-full
+                ">
+                    <div className="flex items-center gap-4 content-footer-lesson-custom">
+                        <span className="font-bold flex items-center gap-2" > <BookCheck /> Lập trình C++ cơ bản</span>
+                         <span className="flex items-center gap-2" > <CirclePlay /> Chương 1. Cú pháp trong lập trình mới nhất hiện nay</span>
                     </div>
 
-                    <SidebarTrigger
-                        className={`bg-[#FE4444] text-white hover:text-white px-4 py-3 rounded-lg shadow-lg
+                    <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center">
+                            <Button className="h-[40px] mr-[5px]">
+                                <ChevronLeft />
+                                <span className="button-next-lesson-custom"> Bài trước</span>
+                            </Button>
+                            <Button className="h-[40px] bg-[#3B82F6] hover:bg-[#6a95db]">
+                                <span className="button-next-lesson-custom ">  Bài tiếp</span>
+                                <ChevronRight />
+                            </Button>
+                        </div>
+
+                        <SidebarTrigger
+                            className={`bg-[#FE4444] text-white hover:text-white px-4 py-3 rounded-lg shadow-lg
                         hover:bg-[#F87171] transition-colors flex items-center gap-2 w-[120px] h-[40px]
                         before:content-['📖_Danh_sách'] 
                         [&>*]:hidden sidebar-trigger-custom`}
-                    />
+                        />
+                    </div>
+
                 </div>
             </SidebarProvider>
 

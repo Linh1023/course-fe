@@ -134,6 +134,13 @@
     text-align: center;
   }
 
+  .content-footer-lesson-custom{
+    display: none;
+  }
+
+  .control-lesson-custom{
+    justify-content: end;
+  }
 }
 
 

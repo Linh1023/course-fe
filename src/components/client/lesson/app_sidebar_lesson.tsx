@@ -32,16 +32,16 @@ export function AppSidebarLesson() {
                                 <SidebarGroup className="pt-0 pb-0" >
                                     
                                     <CollapsibleTrigger className="flex text-left bg-[#F1F5F9]  border-b-[1px] border-gray-200 p-1">
-                                        <span className="mr-[10px] font-bold"> Chương 2. Cú pháp trong lập trình mới nè hi hi hi </span>
+                                        <span className="mr-[10px] font-bold"> Chương 1. Cú pháp trong lập trình mới nhất hiện nay </span>
                                         <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
                                     </CollapsibleTrigger>
                                     
                                     <CollapsibleContent className="flex flex-col p-2 gap-4  pb-0">
                                         <div className="flex  items-center justify-between hover:bg-[#f1f5f9] p-1 rounded-[5px] cursor-pointer">
 
-                                            <div className="flex items-center mr-[15px]">
-                                                <Checkbox className="mr-[15px]  w-[25px] h-[25px] data-[state=checked]:!bg-[#3B82F6]" />
-                                                Bài 1. Cú pháp cơ bản C++
+                                            <div className="flex items-center mr-[15px] text-[14px]">
+                                                <Checkbox className="mr-[15px]  w-[20px] h-[20px] data-[state=checked]:!bg-[#3B82F6]" />
+                                                1. Cú pháp cơ bản C++
                                             </div>
 
                                             <span className="font-bold text-gray-500 text-[15px] flex items-center" >
@@ -54,11 +54,11 @@ export function AppSidebarLesson() {
                                         bg-[#fe4444] text-white
                                         ">
 
-                                            <div className="flex items-center mr-[15px] ">
-                                                <Checkbox className="mr-[15px]  w-[25px] h-[25px] data-[state=checked]:!bg-[#3B82F6]
-                                                 border-white
+                                            <div className="flex items-center mr-[15px] text-[14px] ">
+                                                <Checkbox className="mr-[15px]  w-[20px] h-[20px] data-[state=checked]:!bg-[#3B82F6]
+                                                 border-white bg-white
                                                 " />
-                                                Bài 1. Cú pháp cơ bản C++
+                                                2. Cú pháp điều kiện cơ bản C++
                                             </div>
 
                                             <span className="font-bold  text-[15px] flex items-center text-white" >
@@ -71,6 +71,8 @@ export function AppSidebarLesson() {
                                
                                 </SidebarGroup>
                             </Collapsible>
+
+
 
 
                         </SidebarMenu>
