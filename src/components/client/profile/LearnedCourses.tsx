@@ -1,5 +1,6 @@
-import CourseCard from "./CourseCard";
+import PaginationCourse from "./PaginationCourse";
 import CourseGrid from "./CourseGrid";
+import SearchHeader from "./SearchHeader";
 
 interface Course {
   id: string;
@@ -59,7 +60,9 @@ const LearnedCourses = () => {
 
   return (
     <div className="grid gap-4">
+        <SearchHeader />
      <CourseGrid courses={mockCourses} />
+    <PaginationCourse />
     </div>
   );
 };

@@ -1,9 +1,6 @@
 'use client';
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Copy } from 'lucide-react';
-import CourseGrid from './CourseGrid';
 import LearningCourse from './LearningCourses';
 import LearnedCourse from './LearnedCourses';
 
@@ -31,7 +28,7 @@ export default function MyCourse() {
             value={tab.value}
             className="rounded-none bg-background h-full data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
           >
-            <code className="text-[13px]">{tab.name}</code>{' '}
+            <code className="text-[15px]">{tab.name}</code>{' '}
             {tab.count ? (
               <span className="ml-1 inline-flex items-center justify-center h-4 px-2 text-xs font-medium bg-primary text-primary-foreground rounded-full">
                 {tab.count}

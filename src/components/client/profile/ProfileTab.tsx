@@ -1,75 +1,25 @@
 'use client'
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Bot, Home, Settings, Share2, User } from "lucide-react";
+import { Bot, Home, Settings, Share2, User, ListVideo } from "lucide-react";
 import CoursesGrid from "./CourseGrid";
 import MyCourse from './MyCourse';
 import { Button } from "@/components/ui/button";
+import MyInformation from "./MyInformation";
+
+
 const tabs = [
     {
-        name: "Home",
-        value: "home",
-        icon: Home,
-    },
-    {
-        name: "Profile",
+        name: "Thông tin cá nhân",
         value: "profile",
         icon: User,
     },
-];
-// Course type definition
-type Course = {
-    id: string;
-    title: string;
-    instructor: string;
-    ratings: number;
-    image: string;
-};
-
-// Mock courses data
-const mockCourses: Course[] = [
     {
-        id: "1",
-        title: "Beginner's Guide to Design",
-        instructor: "Ronald Richards",
-        ratings: 1200,
-        image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
+        name: "Khóa học của tôi",
+        value: "courses",
+        icon: ListVideo,
+       
     },
-    {
-        id: "2",
-        title: "Beginner's Guide to Design",
-        instructor: "Ronald Richards",
-        ratings: 1200,
-        image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
-    },
-    {
-        id: "3",
-        title: "Beginner's Guide to Design",
-        instructor: "Ronald Richards",
-        ratings: 1200,
-        image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
-    },
-    {
-        id: "4",
-        title: "Beginner's Guide to Design",
-        instructor: "Ronald Richards",
-        ratings: 1200,
-        image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
-    },
-    {
-        id: "5",
-        title: "Beginner's Guide to Design",
-        instructor: "Ronald Richards",
-        ratings: 1200,
-        image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
-    },
-    {
-        id: "6",
-        title: "Beginner's Guide to Design",
-        instructor: "Ronald Richards",
-        ratings: 1200,
-        image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
-    }
 ];
 
 export default function VerticalLeftBorderedTabsDemo() {
@@ -112,8 +62,8 @@ export default function VerticalLeftBorderedTabsDemo() {
             <div className="flex-1 p-6 min-h-[400px]">
                 {tabs.map((tab) => (
                     <TabsContent key={tab.value} value={tab.value} className="w-full">
-                        {tab.value === 'home' ? (
-                            <CoursesGrid courses={mockCourses} />
+                        {tab.value === 'profile' ? (
+                            <MyInformation />
                         ) : (
                             <div>
                                 <MyCourse />

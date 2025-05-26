@@ -2,20 +2,14 @@ import React from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
-interface SearchHeaderProps {
-  coursesCount: number;
-}
 
-const SearchHeader = ({ coursesCount }: SearchHeaderProps) => {
+const SearchHeader = () => {
   return (
-    <div className="flex items-center justify-between mb-8">
-      <h1 className="text-2xl font-bold text-gray-900">
-        Courses <span className="text-gray-500">({coursesCount})</span>
-      </h1>
+    <div className="flex items-center justify-between">
       <div className="relative w-80">
         <Input
           type="text"
-          placeholder="Search User"
+          placeholder="Tìm kiếm khóa học"
           className="pl-10"
         />
         <Search 
