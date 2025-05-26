@@ -134,6 +134,14 @@
     text-align: center;
   }
 
+
+  .control-lesson-custom{
+    justify-content: end;
+  }
+
+      .lesson-chapter-custom{
+    display: none;
+  }
 }
 
 
@@ -142,6 +150,9 @@
     width: 100%;
     border-radius: 0px;
   }
+
+
+
  
 }
 
