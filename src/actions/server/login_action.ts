@@ -1,16 +1,17 @@
-"use server"
+'use server'
+import API from "@/api/api";
+import { FetchServerPostApiNoToken } from "./fetch_server_api";
+import { setAccessToken, setRefreshToken } from "./token_store";
 
-import { GOOGLE_CLIENT_ID, GOOGLE_REDIRECT_URI } from '@/utils/env';
-import { redirect } from 'next/navigation'; // Import hàm redirect
-// action chuyen huong de login google
-export const  LoginAction = async () => {
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-        `client_id=${GOOGLE_CLIENT_ID}` +
-        `&redirect_uri=${encodeURIComponent(GOOGLE_REDIRECT_URI!)}` +
-        `&response_type=code` +     // Yêu cầu code thay vì token
-        `&scope=openid email profile` +
-        `&access_type=offline` +
-        `&prompt=consent`;
+export const LoginServerAction = async (loginRequest: LoginRequest) => {
 
-    redirect(googleAuthUrl);
+    // post login
+    const res = await FetchServerPostApiNoToken(API.AUTH.LOGIN, loginRequest);
+    // thanh cong
+    if (res && res.status === 200) {
+        const data: AuthenticationResponse = res.result
+        await setAccessToken(data.accessToken)
+        await setRefreshToken(data.refreshToken)
+    }
+    return res;
 }

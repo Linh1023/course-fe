@@ -6,54 +6,34 @@ import cookie from "js-cookie";
 import { useRouter } from "next/navigation";
 import { getToken, removeToken } from "@/actions/server/token_store";
 import { FetchServerGetApi, FetchServerPostApi, FetchServerPostApiNoToken } from "@/actions/server/fetch_server_api";
+import { useLoadingContext } from "@/context/loading_context";
+import { time } from "console";
 
 const HomeContent = () => {
 
     const router = useRouter()
+   const {startLoadingSpiner, stopLoadingSpiner} = useLoadingContext()
+   
 
     const handleFetchData = async () => {
+        startLoadingSpiner()
+
+         await new Promise(resolve => setTimeout(resolve, 9000));
 
         console.log("click ")
-        const data = await FetchClientGetApi(API.AUTH.HELLO_TEST)
+        const data = await FetchServerGetApi(API.AUTH.HELLO_TEST)
         if (data && data.status === 200) {
             console.log("call success >>> ", data)
         }
+        
+        stopLoadingSpiner()
     }
-
-    const handleLogout = async () => {
-        const req: RefreshTokenRequest = {
-            refreshToken: await getToken("refresh_token")
-        }
-        const data = await FetchServerPostApi(API.REFRESH_TOKEN.DELETE_REFRESH_TOKEN, req)
-        if (data && data.status === 200) {
-            await removeToken("access_token")
-            await removeToken("refresh_token")
-            router.push("/login")
-        }
-    }
-
 
     return (
         <>
           <Button
                 onClick={() => { handleFetchData() }}
             >Fetch dữ liệu</Button>
-            <Button
-                onClick={() => { handleLogout() }}
-            >Đăng xuất</Button>
-           <img
-                src="https://res.cloudinary.com/moment-images/logo_demo1_xzxrxd"
-                alt="Image"
-                className="h-[600px] w-[600px]"
-             
-              />
-                        <img
-                src="https://res.cloudinary.com/moment-images/logo_demo1_xzxrxd"
-                alt="Image"
-                className="h-[600px] w-[600px]"
-             
-              />
-          
         </>
     )
 }

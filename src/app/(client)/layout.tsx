@@ -1,4 +1,5 @@
 import Navbar from "@/components/client/share/navbar";
+import { Navigation } from "@/components/client/share/navigation";
 
 export default function ClientLayout({
   children,
@@ -8,7 +9,8 @@ export default function ClientLayout({
   return (
     <>
       {/* <h1>Layout Client</h1> */}
-      <Navbar></Navbar>
+      <Navigation></Navigation>
+      {/* <Navbar></Navbar> */}
         {children}
      
     </>
