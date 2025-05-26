@@ -29,7 +29,7 @@ export const SidebarNav = () => {
       icon: Home,
     },
     {
-      title: "Category",
+      title: "Danh mục",
       url: "/admin/category",
       icon: List,
     },
@@ -39,7 +39,7 @@ export const SidebarNav = () => {
       icon: MessageCircle,
     },
     {
-      title: "Course",
+      title: "Khóa học",
       url: "/admin/course",
       icon: BookOpen,
     },
