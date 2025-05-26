@@ -18,7 +18,7 @@ const HomeContent = () => {
     const handleFetchData = async () => {
         startLoadingSpiner()
 
-        //  await new Promise(resolve => setTimeout(resolve, 9000));
+         await new Promise(resolve => setTimeout(resolve, 9000));
 
         console.log("click ")
         const data = await FetchServerGetApi(API.AUTH.HELLO_TEST)
