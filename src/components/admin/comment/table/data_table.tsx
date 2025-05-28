@@ -30,21 +30,13 @@ import { DataTablePagination } from "./pagination";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { DataTableFilterField } from "@/types/ui/data-table";
+import { CommentResponse } from "@/types/response/comment_response";
 
-export type AdminComment = {
-  id: string;
-  lessonName: string;
-  lessonId: string;
-  accountName: string;
-  accountId: string;
-  status: "pending" | "processing" | "success" | "failed";
-  createdAt: string;
-  content: string;
-};
+
 
 interface DataTableProps {
-  columns: ColumnDef<AdminComment, any>[];
-  data: AdminComment[];
+  columns: ColumnDef<CommentResponse, any>[];
+  data: CommentResponse[];
 }
 
 export function DataTable(props: DataTableProps) {
@@ -53,7 +45,7 @@ export function DataTable(props: DataTableProps) {
   const [isSearching, setIsSearching] = useState(false);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [data, setData] = useState<AdminComment[]>(props.data || []);
+  const [data, setData] = useState<CommentResponse[]>(props.data || []);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("createdAt");
   const [order, setOrder] = useState("desc");
@@ -165,7 +157,7 @@ export function DataTable(props: DataTableProps) {
     },
   });
 
-  const filterFields: DataTableFilterField<AdminComment>[] = [
+  const filterFields: DataTableFilterField<CommentResponse>[] = [
     {
       label: "Tên bài học",
       value: "lessonName",

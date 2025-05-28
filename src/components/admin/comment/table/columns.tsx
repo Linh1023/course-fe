@@ -13,7 +13,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./data_table_column_header";
-import { AdminComment } from "./data_table";
+import { CommentResponse } from "@/types/response/comment_response";
 
 function formatStatus(status: string) {
   switch (status) {
@@ -29,7 +29,7 @@ function formatStatus(status: string) {
       return status;
   }
 }
-export const columns: ColumnDef<AdminComment>[] = [
+export const columns: ColumnDef<CommentResponse>[] = [
   {
     id: "select",
     header: ({ table }) => (
