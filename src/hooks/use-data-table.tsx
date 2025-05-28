@@ -93,7 +93,7 @@ interface UseDataTableProps<TData, TValue> {
 
 const schema = z.object({
   page: z.coerce.number().default(1),
-  per_page: z.coerce.number().optional(),
+  perPage: z.coerce.number().optional(),
   sort: z.string().optional(),
 })
 
@@ -112,7 +112,7 @@ export function useDataTable<TData, TValue>({
   // Search params
   const search = schema.parse(Object.fromEntries(searchParams))
   const page = search.page
-  const perPage = search.per_page ?? defaultPerPage
+  const perPage = search.perPage ?? defaultPerPage
   const sort = search.sort ?? defaultSort
   const [column, order] = sort?.split(".") ?? []
 
@@ -180,7 +180,7 @@ export function useDataTable<TData, TValue>({
       `${pathname}?${createQueryString(
         {
           page: pageIndex + 1,
-          per_page: pageSize,
+          perPage: pageSize,
         },
         searchParams
       )}`,

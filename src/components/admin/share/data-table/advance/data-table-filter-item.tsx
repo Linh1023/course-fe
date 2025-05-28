@@ -55,7 +55,7 @@ export function DataTableFilterItem<TData>({
 
   React.useEffect(() => {
     if (selectedOption.options.length > 0) {
-      // key=value1.value2.value3~operator
+      // key=value1.value2.value3
       const filterValues = selectedOption.filterValues ?? []
       const newSearchParams = createQueryString(
         {
@@ -67,7 +67,7 @@ export function DataTableFilterItem<TData>({
         scroll: false,
       })
     } else {
-      // key=value~operator
+      // key=value
       const newSearchParams = createQueryString(
         {
           [selectedOption.value]: debounceValue,
