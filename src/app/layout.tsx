@@ -7,6 +7,7 @@ import NextTopLoader from "nextjs-toploader";
 import API from "@/api/api";
 import { LoadingProvider } from "@/context/loading_context";
 import Loading from "@/components/share/loading";
+import { Toaster } from "sonner";
 
 
 const geistSans = localFont({
@@ -66,6 +67,7 @@ export default async function RootLayout({
           showSpinner={false}
         />
 
+        <Toaster richColors />
 
       </body>
     </html>

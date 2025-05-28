@@ -23,8 +23,8 @@ export function DataTablePagination({
   const { tableInstance: table } = useTableInstanceContext()
 
   const page = searchParams.get("page") ?? 1
-  const perPage = searchParams.get("per_page") ?? 10
-
+  const perPage = searchParams.get("perPage") ?? 10
+  // console.log(Object.fromEntries(searchParams.entries()))
   return (
     <div className="flex w-full flex-col-reverse items-center justify-between gap-4 overflow-auto p-1 sm:flex-row sm:gap-8">
       <div className="flex-1 whitespace-nowrap text-sm text-muted-foreground">

@@ -34,9 +34,14 @@ import { createCategorySchema, CreateCategorySchema } from "@/validation/categor
 import { PlusIcon } from "lucide-react"
 import { LoaderIcon } from "@/components/share/loading-icon"
 import { Input } from "@/components/ui/input"
+import { FetchClientPostApi } from "@/actions/client/fetch_client_api"
+import API from "@/api/api"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 
 export function CreateCategoryDialog() {
+  const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [isCreatePending, startCreateTransition] = React.useTransition()
 
@@ -46,9 +51,16 @@ export function CreateCategoryDialog() {
 
   function onSubmit(input: CreateCategorySchema) {
     startCreateTransition(async () => {
-      // thực hiện thêm
-      form.reset()
-      setOpen(false)
+      const res = await FetchClientPostApi(API.CATEGORY.ROOT, input)
+      if (res.status === 200) {
+        router.replace('?page=1')
+        router.refresh()
+        form.reset()
+        setOpen(false)
+        toast.success("Tạo danh mục thành công")
+      } else {
+        toast.error("Tạo danh mục thất bại, vui lòng thử lại sau")
+      }
     })
   }
 
@@ -82,6 +94,7 @@ export function CreateCategoryDialog() {
             <FormField
               control={form.control}
               name="name"
+              defaultValue=""
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tên danh mục</FormLabel>
@@ -99,6 +112,7 @@ export function CreateCategoryDialog() {
             <FormField
               control={form.control}
               name="detail"
+              defaultValue=""
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Mô tả</FormLabel>
