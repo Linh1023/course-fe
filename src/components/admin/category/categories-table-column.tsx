@@ -17,6 +17,7 @@ import { DataTableColumnHeader } from "../share/data-table/data-table-column-hea
 import { UpdateCategorySheet } from "./update-category-sheet"
 import { DeleteCategoriesDialog } from "./delete-categories-dialog"
 import { Ellipsis } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 
 export function getColumns(): ColumnDef<Category>[] {
   return [
@@ -69,6 +70,26 @@ export function getColumns(): ColumnDef<Category>[] {
           <div className="flex space-x-2">
             <span className="max-w-[31.25rem] truncate font-medium">
               {row.getValue("detail")}
+            </span>
+          </div>
+        )
+      },
+    },
+    {
+      accessorKey: "status",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Trạng thái" />
+      ),
+      cell: ({ row }) => {
+        return (
+          <div className="flex space-x-2">
+            <span className="max-w-[10rem] truncate font-medium">
+              <Badge
+                variant={
+                  row.getValue("status") === "active"
+                    ? "secondary"
+                    : "destructive"
+                }>{row.getValue("status") === "active" ? "Hoạt động" : "Ngưng hoạt động"}</Badge>
             </span>
           </div>
         )

@@ -144,7 +144,7 @@ export function MultiFilterRow<TData>({
     }
 
     if (option.options.length > 0) {
-      // key=value1.value2.value3~operator
+      // key=value1.value2.value3
       const filterValues = option.filterValues ?? []
       const paramsObj: Record<string, string | null> = {
         [String(option.value)]: filterValues.join("."),
@@ -157,7 +157,7 @@ export function MultiFilterRow<TData>({
         scroll: false,
       })
     } else {
-      // key=value~operator
+      // key=value
       const newSearchParams = createQueryString(
         {
           [String(option.value)]: debounceValue,

@@ -4,6 +4,36 @@ import { getToken, setAccessToken } from "../server/token_store";
 
 import { refreshToken } from "../server/fetch_server_api";
 
+export const FetchClientDeleteApi = async (api: string) => {
+    try {
+        const refresh_token = await getToken("refresh_token")
+        const access_token = await getToken("access_token")
+        console.log("access_token>>> ", access_token)
+        console.log("refresh_token >>> ",refresh_token)
+
+
+        // if (refresh_token === undefined) {
+        //     throw new Error("Session ID is undefined");
+        // }
+
+        if (access_token === undefined) {
+            await refreshToken()
+        }
+
+        let data = await clientDeleteApi(api);
+
+        if (data && data.status === 401) {
+            await refreshToken()
+            data = await clientDeleteApi(api);
+        }
+        return data;
+
+    } catch (error) {
+         window.location.href = '/login';
+    }
+}
+
+
 
 export const FetchClientPostApiNoToken = async (api: string, bodyData: any) => {
   try {
@@ -168,6 +198,7 @@ export const clientPostPutApi = async (api: string, bodyData: any, methodReq: st
 
 
 
+
 // ham fetch get api mac dinh
 export const clientGetApi = async (api: string) => {
 
@@ -186,4 +217,24 @@ export const clientGetApi = async (api: string) => {
     } catch (error) {
     }
 }
+
+export const clientDeleteApi = async (api: string) => {
+
+    try {
+        const res = await fetch(api, {
+            method: "DELETE", // Đúng phương thức
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json", // Đặt Content-Type là JSON
+                Authorization: `Bearer ${await getToken("access_token")}`, // Set Authorization header
+            },
+        });
+
+        const data = await res.json();
+        return data;
+    } catch (error) {
+    }
+}
+
+
 
