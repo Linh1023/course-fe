@@ -4,6 +4,7 @@ import { getToken, removeToken, setAccessToken } from './token_store';
 
 
 import { redirect } from 'next/navigation'; // Import hàm redirect
+import { revalidatePath, unstable_noStore } from 'next/cache';
 
 
 // Ham fetch post khong can token
@@ -27,6 +28,7 @@ export const FetchServerPostApiNoToken = async (api: string, bodyData: any) => {
 
 // Ham fetch post api khi can access token tu dong
 export const FetchServerPostApi = async (api: string, bodyData: any) => {
+  unstable_noStore();
   try {
     const refresh_token = await getToken("refresh_token")
     const access_token = await getToken("access_token")
@@ -46,6 +48,7 @@ export const FetchServerPostApi = async (api: string, bodyData: any) => {
       await refreshToken()
       data = await serverPostPutApi(api, bodyData, "POST");
     }
+    revalidatePath('/')
     return data;
 
   } catch (error) {
@@ -57,6 +60,7 @@ export const FetchServerPostApi = async (api: string, bodyData: any) => {
 
 // Ham fetch put api khi can access token tu dong
 export const FetchServerPutApi = async (api: string, bodyData: any) => {
+  unstable_noStore();
   try {
 
     const refresh_token = await getToken("refresh_token")
@@ -76,6 +80,7 @@ export const FetchServerPutApi = async (api: string, bodyData: any) => {
       await refreshToken()
       data = await serverPostPutApi(api, bodyData, "PUT");
     }
+    revalidatePath('/')
     return data;
 
   } catch (error) {
@@ -86,6 +91,7 @@ export const FetchServerPutApi = async (api: string, bodyData: any) => {
 
 // Ham fetch get api khi can access token tu dong
 export const FetchServerGetApi = async (api: string) => {
+  unstable_noStore();
   try {
     const refresh_token = await getToken("refresh_token")
     const access_token = await getToken("access_token")
@@ -104,6 +110,37 @@ export const FetchServerGetApi = async (api: string) => {
       await refreshToken()
       data = await serverGetApi(api);
     }
+    revalidatePath('/')
+    return data;
+
+  } catch (error) {
+    redirect('/login');
+  }
+}
+
+// Ham fetch post api khi can access token tu dong
+export const FetchServerDeleteApi = async (api: string) => {
+  unstable_noStore();
+  try {
+    const refresh_token = await getToken("refresh_token")
+    const access_token = await getToken("access_token")
+    
+
+    // if (refresh_token === undefined) {
+    //   throw new Error("Session ID is undefined");
+    // }
+
+    if (access_token === undefined) {
+      await refreshToken()
+    }
+
+    let data = await serverDeleteApi(api);
+
+    if (data && data.status === 401) {
+      await refreshToken()
+      data = await serverDeleteApi(api);
+    }
+    revalidatePath('/')
     return data;
 
   } catch (error) {
@@ -227,4 +264,19 @@ export const serverGetApi = async (api: string) => {
   }
 }
 
+export const serverDeleteApi = async (api: string) => {
 
+  try {
+    const res = await fetch(api, {
+      method: "DELETE", // Đúng phương thức
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json", // Đặt Content-Type là JSON
+        Authorization: `Bearer ${await getToken("access_token")}`, // Set Authorization header
+      },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+  }
+}
