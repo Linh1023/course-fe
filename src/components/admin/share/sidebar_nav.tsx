@@ -91,7 +91,7 @@ export const SidebarNav = () => {
 
             return (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild size={"lg"}>
+                  <SidebarMenuButton asChild >
                   <Link
                     href={item.url}
                     title={item.title}

@@ -53,13 +53,13 @@ export const columns: ColumnDef<CommentResponse>[] = [
       title: "Chọn",
     },
   },
-  {
-    accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Mã Comment" />
-    ),
-    meta: { title: "Mã Comment" },
-  },
+  // {
+  //   accessorKey: "id",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Mã Comment" />
+  //   ),
+  //   meta: { title: "Mã Comment" },
+  // },
   {
     accessorKey: "lessonName",
     header: ({ column }) => (
@@ -68,7 +68,7 @@ export const columns: ColumnDef<CommentResponse>[] = [
     meta: { title: "Tên bài học" },
   },
   {
-    accessorKey: "accountName",
+    accessorKey: "authorName",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Tên tài khoản" />
     ),
@@ -87,14 +87,14 @@ export const columns: ColumnDef<CommentResponse>[] = [
     meta: { title: "Ngày tạo" },
   },
 
-  {
-    accessorKey: "status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Trạng thái" />
-    ),
-    cell: ({ getValue }) => formatStatus(getValue() as string),
-    meta: { title: "Trạng thái" },
-  },
+  // {
+  //   accessorKey: "status",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Trạng thái" />
+  //   ),
+  //   cell: ({ getValue }) => formatStatus(getValue() as string),
+  //   meta: { title: "Trạng thái" },
+  // },
   {
     id: "actions",
     meta: { title: "Hành động" },
