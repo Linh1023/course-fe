@@ -30,7 +30,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { createCategorySchema, CreateCategorySchema } from "@/validation/categorySchema"
+import { CreateCategorySchema, createCategorySchema } from "@/validation/categorySchema"
 import { PlusIcon } from "lucide-react"
 import { LoaderIcon } from "@/components/share/loading-icon"
 import { Input } from "@/components/ui/input"
@@ -46,11 +46,15 @@ export function CreateCategoryDialog() {
   const [isCreatePending, startCreateTransition] = React.useTransition()
   const form = useForm<CreateCategorySchema>({
     resolver: zodResolver(createCategorySchema),
+    defaultValues: {
+      name: "",
+      detail: "",
+    }
   })
 
   function onSubmit(input: CreateCategorySchema) {
     startCreateTransition(async () => {
-      const res = await FetchServerPostApi(API.CATEGORY.ROOT, input)
+      const res = await FetchServerPostApi(API.CATEGORY.ROOT, input, "/admin/category")
       if (res.status === 200) {
         router.replace("?page=1")
         form.reset()
