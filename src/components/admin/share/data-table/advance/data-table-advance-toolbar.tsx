@@ -4,7 +4,6 @@ import * as React from "react"
 import { useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { DataTableFilterField, DataTableFilterOption } from "@/types/ui/data-table"
-import { useTableInstanceContext } from "../table-instance-provider"
 import { Button } from "@/components/ui/button"
 import { ChevronsUpDown, PlusIcon } from "lucide-react"
 import { DataTableFilterCombobox } from "./data-table-filter-combobox"
@@ -23,7 +22,6 @@ export function DataTableAdvancedToolbar<TData>({
   ...props
 }: DataTableAdvancedToolbarProps<TData>) {
   const searchParams = useSearchParams()
-  const { tableInstance: table } = useTableInstanceContext()
 
   const options = React.useMemo<DataTableFilterOption<TData>[]>(() => {
     return filterFields.map((field) => ({
@@ -39,14 +37,9 @@ export function DataTableAdvancedToolbar<TData>({
       .filter((option) => searchParams.has(option.value as string))
       .map((option) => {
         const value = searchParams.get(String(option.value)) ?? ""
-        const [filterValue, filterOperator, isMulti] =
-          value.split("~").filter(Boolean) ?? []
-
         return {
           ...option,
-          filterValues: filterValue?.split(".") ?? [],
-          filterOperator,
-          isMulti: !!isMulti,
+          filterValues: value?.split(".") ?? [],
         }
       })
   }, [options, searchParams])

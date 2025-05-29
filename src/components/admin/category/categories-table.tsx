@@ -9,7 +9,6 @@ import { CategoriesTableToolbarActions } from "./categories-table-toolbar-action
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableFilterField } from "@/types/ui/data-table"
 import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table-advance-toolbar"
-import { useSearchParams } from "next/navigation"
 
 interface CategoriesTableProps {
   categoryPromise: Promise<CategoryPageResponse>
@@ -17,8 +16,9 @@ interface CategoriesTableProps {
 
 
 export function CategoriesTable({ categoryPromise }: CategoriesTableProps) {
-  const { result, totalPages } = React.use(categoryPromise)
+  // const { result, totalPages } = React.use(categoryPromise)
   // const views = React.use(viewsPromise)
+  const { result, totalPages } = React.use(categoryPromise)
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo(() => getColumns(), [])
@@ -57,7 +57,6 @@ export function CategoriesTable({ categoryPromise }: CategoriesTableProps) {
   ]
 
   // TODO: Replace with actual data fetching logic
-
   const { table } = useDataTable({
     data: result,
     columns,
