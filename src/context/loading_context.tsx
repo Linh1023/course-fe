@@ -4,9 +4,9 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 
 type LoadingContextType = {
 
-    startLoadingSpiner:() => void;
-    stopLoadingSpiner:() => void
-    isLoading:boolean
+    startLoadingSpiner: () => void;
+    stopLoadingSpiner: () => void
+    isLoading: boolean
 };
 
 const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
