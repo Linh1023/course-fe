@@ -58,7 +58,7 @@ const Navigation = () => {
 
     const { currentAccount, fetchGetCurrentAccount } = useCurrentAccountContext()
     const router = useRouter()
-  const {startLoadingSpiner, stopLoadingSpiner} = useLoadingContext()
+    const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext()
 
     const features = [
         {
@@ -105,8 +105,10 @@ const Navigation = () => {
             await fetchGetCurrentAccount()
             router.push("/login")
         } else {
-
-            stopLoadingSpiner()
+            await removeToken("access_token")
+            await removeToken("refresh_token")
+            await fetchGetCurrentAccount()
+            router.push("/login")
         }
     }
 
@@ -362,10 +364,10 @@ const Navigation = () => {
 
                                         <div className="flex items-center" >
                                             <Search className="mr-[15px]" />
-                                             <Input type="text" placeholder="Tìm kiếm khóa học"></Input>
+                                            <Input type="text" placeholder="Tìm kiếm khóa học"></Input>
                                         </div>
 
-                                    
+
                                         <Link href="/" className="font-medium">
                                             Trang chủ
                                         </Link>

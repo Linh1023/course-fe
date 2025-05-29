@@ -14,7 +14,13 @@ import {
 import { ChevronDown, Video } from "lucide-react"
 import LessonCollapsible from "./lesson_collapsible"
 
-export function AppSidebarLesson() {
+interface Props {
+    courseInfoResponse: CourseInfoResponse | null
+    clickedLessons:string[]
+}
+
+export function LessonAppSidebar(props: Props) {
+    const { courseInfoResponse, clickedLessons } = props
 
     return (
         <>
@@ -28,9 +34,18 @@ export function AppSidebarLesson() {
                         <span className="font-bold text-[18px] mb-[15px]">Danh sách bài học</span>
 
                         <SidebarMenu >
+                            {courseInfoResponse?.chapters.map((chapter, index) => (
+                                
+                                    <div key={index}>
+                                        <LessonCollapsible
+                                        chapterSidebarResponse={chapter}
+                                          clickedLessons={clickedLessons}
+                                        
+                                        />
+                                    </div>
 
-                            <LessonCollapsible/>
-
+                                
+                            ))}
 
 
 

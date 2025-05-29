@@ -8,6 +8,8 @@ import { getToken, removeToken } from "@/actions/server/token_store";
 import { FetchServerGetApi, FetchServerPostApi, FetchServerPostApiNoToken } from "@/actions/server/fetch_server_api";
 import { useLoadingContext } from "@/context/loading_context";
 import { time } from "console";
+import Link from "next/link";
+
 
 const HomeContent = () => {
 
@@ -34,6 +36,7 @@ const HomeContent = () => {
           <Button
                 onClick={() => { handleFetchData() }}
             >Fetch dữ liệu</Button>
+            <Link href="/admin">admin</Link>
         </>
     )
 }

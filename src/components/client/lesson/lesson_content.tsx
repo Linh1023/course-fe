@@ -2,14 +2,21 @@
 
 import LessonTabs from "./lesson_tabs"
 import LessonVideo from "./lesson_video"
-
-const LessonContent = () => {
+interface Props {
+    lessonResponse:LessonClientDetailResponse
+}
+const LessonContent = (props: Props) => {
+    const { lessonResponse } = props
     return (
         <>
-        <div className="p-2">
-           <LessonVideo/>
-           <LessonTabs/>
-        </div>
+        {/* <div className="p-2"> */}
+           <LessonVideo
+           lessonResponse = {lessonResponse}
+           />
+           <LessonTabs
+              lessonResponse = {lessonResponse}
+           />
+        {/* </div> */}
         </>
     )
 }
