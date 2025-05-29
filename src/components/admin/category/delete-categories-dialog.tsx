@@ -67,7 +67,7 @@ export function DeleteCategoriesDialog({
                 // thực hiện xóa danh mục
                 await Promise.all(
                   categories.map((category) =>
-                    FetchServerDeleteApi(`${API.CATEGORY.ROOT}/${category.id}`)
+                    FetchServerDeleteApi(`${API.CATEGORY.ROOT}/${category.id}`, "/admin/category")
                   ))
                 props.onOpenChange?.(false)
                 onSuccess?.()

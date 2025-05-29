@@ -11,7 +11,7 @@ export interface CategoryPageProps {
 
 const CategoryPage = async ({ searchParams }: CategoryPageProps) => {
     const query = new URLSearchParams(searchParams).toString();
-    const categoryPromise = FetchServerGetApi(API.CATEGORY.ROOT + `?${query}`);
+    const categoryPromise = FetchServerGetApi(API.CATEGORY.ROOT + `?${query}`, "/admin/category");
     return (
         <div className="flex flex-col gap-4">
             <div className="h-[100px] flex items-center justify-between gap-2">

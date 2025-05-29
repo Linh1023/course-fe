@@ -63,7 +63,8 @@ export function UpdateCategorySheet({ category, ...props }: UpdateCategorySheetP
       // update category in the database
       const updateCategoryResponse = await FetchServerPutApi(
         `${API.CATEGORY.ROOT}/${category.id}`,
-        input
+        input,
+        "/admin/category"
       )
       if (updateCategoryResponse.status == 200) {
         toast.success("Cập nhật thành công!")
