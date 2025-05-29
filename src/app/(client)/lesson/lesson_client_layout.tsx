@@ -14,7 +14,7 @@ export default function LessonClientLayout({ children }: { children: React.React
     const pathName = usePathname();
     const router = useRouter()
     const [courseInfoResponse, setCourseInfoResponse] = useState<CourseInfoResponse | null>(null);
-    const [chapter, setChapter] = useState<string>("");
+    const [chapter, setChapter] = useState<string>(courseInfoResponse?.chapters[0].name || "");
 
     const [clickedLessons, setClickedLessons] = useState<string[]>([]);
     const parts = pathName.split('/');
@@ -35,7 +35,9 @@ export default function LessonClientLayout({ children }: { children: React.React
 
 
     useEffect(() => {
+        
         const fetchGetCourseInfo = async () => {
+            startLoadingSpiner()
             const parts = pathName.split('/'); // ["", "lesson", "abc123"]
             const lessonId = parts[2]; // "abc123"
 
@@ -44,6 +46,7 @@ export default function LessonClientLayout({ children }: { children: React.React
                 const courseInfoResponse: CourseInfoResponse = res.result;
                 setCourseInfoResponse(courseInfoResponse);
             }
+            stopLoadingSpiner()
         }
         fetchGetCourseInfo()
     }, [])
@@ -75,7 +78,7 @@ export default function LessonClientLayout({ children }: { children: React.React
     const handlePreviousLesson = () => {
         if (!courseInfoResponse) return;
 
-
+       
         let found = false;
 
         for (let i = 0; i < courseInfoResponse.chapters.length; i++) {
@@ -83,6 +86,7 @@ export default function LessonClientLayout({ children }: { children: React.React
             const lessonIndex = chapter.lessons.findIndex(lesson => lesson.id === currentLessonId);
 
             if (lessonIndex !== -1) {
+                 startLoadingSpiner()
                 if (lessonIndex > 0) {
                     // Lùi về bài trước trong cùng chương
                     const prevLessonId = chapter.lessons[lessonIndex - 1].id;
@@ -108,7 +112,7 @@ export default function LessonClientLayout({ children }: { children: React.React
         if (!courseInfoResponse) return;
 
 
-
+       
         let found = false;
 
         for (let i = 0; i < courseInfoResponse.chapters.length; i++) {
@@ -116,6 +120,7 @@ export default function LessonClientLayout({ children }: { children: React.React
             const lessonIndex = chapter.lessons.findIndex(lesson => lesson.id === currentLessonId);
 
             if (lessonIndex !== -1) {
+                 startLoadingSpiner()
                 if (lessonIndex < chapter.lessons.length - 1) {
                     // Tới bài tiếp theo trong cùng chương
                     const nextLessonId = chapter.lessons[lessonIndex + 1].id;
