@@ -45,25 +45,28 @@ export const SidebarUser = () => {
   const { isMobile } = useSidebar();
   const { currentAccount, fetchGetCurrentAccount } = useCurrentAccountContext()
   const router = useRouter()
-  const {startLoadingSpiner, stopLoadingSpiner} = useLoadingContext()
+  const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext()
 
-      const handleLogout = async () => {
-        startLoadingSpiner()
-          const req: RefreshTokenRequest = {
-              refreshToken: await getToken("refresh_token")
-          }
-          const data = await FetchServerPostApi(API.REFRESH_TOKEN.DELETE_REFRESH_TOKEN, req)
-          if (data && data.status === 200) {
-              await removeToken("access_token")
-              await removeToken("refresh_token")
-              await fetchGetCurrentAccount()
-              router.push("/login")
-          } else {
-                   stopLoadingSpiner()
-          }
-   
-      }
-  
+  const handleLogout = async () => {
+    startLoadingSpiner()
+    const req: RefreshTokenRequest = {
+      refreshToken: await getToken("refresh_token")
+    }
+    const data = await FetchServerPostApi(API.REFRESH_TOKEN.DELETE_REFRESH_TOKEN, req)
+    if (data && data.status === 200) {
+      await removeToken("access_token")
+      await removeToken("refresh_token")
+      await fetchGetCurrentAccount()
+      router.push("/login")
+    } else {
+      await removeToken("access_token")
+      await removeToken("refresh_token")
+      await fetchGetCurrentAccount()
+      router.push("/login")
+    }
+
+  }
+
 
   return (
     <SidebarMenu>
@@ -95,7 +98,7 @@ export const SidebarUser = () => {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={currentAccount?.avatarUrl} alt={currentAccount?.name} />
-                
+
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{currentAccount?.name}</span>
@@ -119,7 +122,7 @@ export const SidebarUser = () => {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem className="cursor-pointer">
-               <CircleUserRound />
+                <CircleUserRound />
                 Thông tin cá nhân
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">
@@ -128,16 +131,16 @@ export const SidebarUser = () => {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            
-            
+
+
             <DropdownMenuItem className="cursor-pointer"
-            onClick={() => {handleLogout()}}
+              onClick={() => { handleLogout() }}
             >
               <LogOut />
               Đăng xuất
             </DropdownMenuItem>
-          
-          
+
+
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
