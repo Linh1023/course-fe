@@ -1,5 +1,7 @@
 import * as React from "react"
 import { type Table } from "@tanstack/react-table"
+// import { toast } from "sonner"
+
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -9,35 +11,34 @@ import {
 } from "@/components/ui/tooltip"
 
 import { TrashIcon, X } from "lucide-react"
-import { DeleteCategoriesDialog } from "./delete-categories-dialog"
-import { toast } from "sonner"
+import { LoaderIcon } from "@/components/share/loading-icon"
 
-interface CategoriesTableFloatingBarProps {
-  table: Table<Category>
+interface SubmissionTableFloatingBarProps {
+  table: Table<SubmissionResponse>
 }
 
-export function CategoriesTableFloatingBar({ table }: CategoriesTableFloatingBarProps) {
+export function SubmissionTableFloatingBar({ table }: SubmissionTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
-  const [isOpen, setIsOpen] = React.useState(false)
+
+  const [isPending, startTransition] = React.useTransition()
+  const [method, setMethod] = React.useState<
+    "update-status" | "update-priority" | "export" | "delete"
+  >()
+
+  // Clear selection on Escape key press
+  React.useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        table.toggleAllRowsSelected(false)
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [table])
+
   return (
     <div className="fixed inset-x-0 bottom-4 z-50 mx-auto w-fit px-4">
-      {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-        <DeleteCategoriesDialog
-          open={isOpen}
-          onOpenChange={setIsOpen}
-          categories={table
-            .getFilteredSelectedRowModel()
-            .rows.map((row) => row.original)}
-          onSuccess={() => {
-            toast.success(
-              `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} danh mục thành công!`
-            )
-            table.toggleAllRowsSelected(false)
-          }
-          }
-          showTrigger={false}
-        />
-      ) : null}
       <div className="w-full overflow-x-auto">
         <div className="mx-auto flex w-fit items-center gap-2 rounded-md border bg-card p-2 shadow-2xl">
           <div className="flex h-7 items-center rounded-md border border-dashed pl-2.5 pr-1">
@@ -73,14 +74,27 @@ export function CategoriesTableFloatingBar({ table }: CategoriesTableFloatingBar
                   size="icon"
                   className="size-7 border"
                   onClick={() => {
-                    setIsOpen(true)
+                    setMethod("delete")
+
+                    startTransition(async () => {
+                      // xóa hết các hàng đã chọn
+                      table.toggleAllRowsSelected(false)
+                    })
                   }}
+                  disabled={isPending}
                 >
-                  <TrashIcon className="size-3.5" aria-hidden="true" />
+                  {isPending && method === "delete" ? (
+                    <LoaderIcon
+                      className="size-3.5 animate-spin"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <TrashIcon className="size-3.5" aria-hidden="true" />
+                  )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent className="border bg-accent font-semibold text-foreground dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/40">
-                <p>Xóa danh mục</p>
+                <p>Xóa bài nộp</p>
               </TooltipContent>
             </Tooltip>
           </div>

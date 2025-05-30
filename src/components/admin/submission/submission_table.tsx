@@ -3,22 +3,37 @@
 import * as React from "react"
 import { TableInstanceProvider } from "../share/data-table/table-instance-provider"
 import { DataTable } from "../share/data-table/data-table"
-import { getColumns } from "./categories-table-column"
-import { CategoriesTableFloatingBar } from "./categories-table-floating-bar"
-import { CategoriesTableToolbarActions } from "./categories-table-toolbar-actions"
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableFilterField } from "@/types/ui/data-table"
 import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table-advance-toolbar"
+import { getColumns } from "./submission_table_column"
+import { SubmissionTableFloatingBar } from "./submission_table_floating_bar"
+import { SubmissionTableToolbarActions } from "./submission-table-toolbar-actions"
 
-interface CategoriesTableProps {
-  categoryPromise: Promise<CategoryPageResponse>
-}
 
 
-export function CategoriesTable({ categoryPromise }: CategoriesTableProps) {
-  // const { result, totalPages } = React.use(categoryPromise)
+export function SubmissionTable() {
+  // const { data, pageCount } = React.use(tasksPromise)
+  const data: SubmissionResponse[] = [
+    {
+      id: "68348f31-8ba8-800d-a232-ef738453771b", // id bai nop
+      courseName: "Khóa học làm giàu", // ten khoa hoc
+      lessonName: "1. Đa cấp", // ten bai hoc
+
+      submitterEmail: "nguyena@gmail.com",// email nguoi nop
+      submitterName: "Nguyễn A", // ten nguoi nop
+      submissionUrl: "https://bainop.pdf",
+
+      graderEmail: "duongle@gmail.com",
+      graderName: "Dương Lê",
+      score: 7.5,
+      comment: "Làm tốt lắm",
+      reviewedAt: "12:01 22/06/2025",
+      status: "ungraded", // trang thai
+    },
+  ] // Replace with actual data fetching logic  
+  const pageCount = 1// Replace with actual page count logic
   // const views = React.use(viewsPromise)
-  const { result, totalPages } = React.use(categoryPromise)
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo(() => getColumns(), [])
@@ -34,46 +49,39 @@ export function CategoriesTable({ categoryPromise }: CategoriesTableProps) {
    * @prop {React.ReactNode} [icon] - An optional icon to display next to the label.
    * @prop {boolean} [withCount] - An optional boolean to display the count of the filter option.
    */
-  const filterFields: DataTableFilterField<Category>[] = [
+  const filterFields: DataTableFilterField<SubmissionResponse>[] = [
     {
-      label: "Tên danh mục",
-      value: "name",
-      placeholder: "Lọc tên danh mục...",
-    },
-    {
-      label: "Mô tả",
-      value: "detail",
-      placeholder: "Lọc theo mô tả danh mục...",
+      label: "Bài học",
+      value: "lessonName",
+      placeholder: "Lọc tên bài học...",
     },
     {
       label: "Trạng thái",
       value: "status",
       placeholder: "Lọc theo trạng thái...",
-      options: [
-        { label: "Hoạt động", value: "active" },
-        { label: "Không hoạt động", value: "inactive" },
-      ],
     }
   ]
 
   // TODO: Replace with actual data fetching logic
+
   const { table } = useDataTable({
-    data: result,
+    data,
     columns,
-    pageCount: totalPages,
+    pageCount,
     // optional props
     filterFields,
     defaultPerPage: 10,
+    defaultSort: "lessonName.desc",
   })
 
   return (
     <TableInstanceProvider table={table}>
       <DataTable
         table={table}
-        floatingBar={<CategoriesTableFloatingBar table={table} />}
+        floatingBar={<SubmissionTableFloatingBar table={table} />}
       >
         <DataTableAdvancedToolbar filterFields={filterFields}>
-          <CategoriesTableToolbarActions table={table} />
+          <SubmissionTableToolbarActions table={table} />
         </DataTableAdvancedToolbar>
       </DataTable>
     </TableInstanceProvider>

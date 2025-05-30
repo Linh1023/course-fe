@@ -59,7 +59,7 @@ export const SidebarNav = () => {
       icon: CheckCircle,
     },
     {
-      title: "Submission",
+      title: "Bài nộp",
       url: "/admin/submission",
       icon: Inbox,
     },

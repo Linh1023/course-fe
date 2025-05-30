@@ -27,10 +27,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { updateCategorySchema, UpdateCategorySchema } from "@/validation/categorySchema"
 import { LoaderIcon } from "@/components/share/loading-icon"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { FetchClientPutApi } from "@/actions/client/fetch_client_api"
 import API from "@/api/api"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { FetchServerPutApi } from "@/actions/server/fetch_server_api"
 
 
 interface UpdateCategorySheetProps
@@ -61,14 +61,13 @@ export function UpdateCategorySheet({ category, ...props }: UpdateCategorySheetP
   function onSubmit(input: UpdateCategorySchema) {
     startUpdateTransition(async () => {
       // update category in the database
-      const updateCategoryResponse = await FetchClientPutApi(
+      const updateCategoryResponse = await FetchServerPutApi(
         `${API.CATEGORY.ROOT}/${category.id}`,
-        input
+        input,
+        "/admin/category"
       )
       if (updateCategoryResponse.status == 200) {
-        router.refresh();
         toast.success("Cập nhật thành công!")
-        form.reset()
         props.onOpenChange?.(false)
       }
       else {
