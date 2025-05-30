@@ -29,7 +29,7 @@ export const FetchServerPostApiNoToken = async (api: string, bodyData: any, path
 
 
 // Ham fetch post api khi can access token tu dong
-export const FetchServerPostApi = async (api: string, bodyData: any, path = "") => {
+export const FetchServerPostApi = async (api: string, bodyData: any = null, path = "") => {
   try {
     const refresh_token = await getToken("refresh_token")
     const access_token = await getToken("access_token")
