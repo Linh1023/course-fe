@@ -9,6 +9,7 @@ import { UsersTableToolbarActions } from "./users-table-toolbar-actions"
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableFilterField } from "@/types/ui/data-table"
 import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table-advance-toolbar"
+import { UserPageResponse } from "@/types/response/account/user"
 
 interface UsersTableProps {
   userPromise: Promise<UserPageResponse>
