@@ -8,6 +8,7 @@ import { FetchClientGetApi, FetchClientPostApi } from "@/actions/client/fetch_cl
 import { usePathname, useRouter } from "next/navigation";
 import API from "@/api/api";
 import { useLoadingContext } from "@/context/loading_context";
+import { FetchServerGetApi, FetchServerPostApi } from "@/actions/server/fetch_server_api";
 
 export default function LessonClientLayout({ children }: { children: React.ReactNode }) {
 
@@ -41,7 +42,7 @@ export default function LessonClientLayout({ children }: { children: React.React
             const parts = pathName.split('/'); // ["", "lesson", "abc123"]
             const lessonId = parts[2]; // "abc123"
 
-            const res = await FetchClientGetApi(`${API.LESSON.GET_COURSE_INFO}/${lessonId}`)
+            const res = await FetchServerGetApi(`${API.LESSON.GET_COURSE_INFO}/${lessonId}`)
             if (res && res.status === 200) {
                 const courseInfoResponse: CourseInfoResponse = res.result;
                 setCourseInfoResponse(courseInfoResponse);
@@ -69,7 +70,7 @@ export default function LessonClientLayout({ children }: { children: React.React
     useEffect(() => {
         const fetch = async () => {
             startLoadingSpiner()
-            await FetchClientPostApi(`${API.LESSON_PROGRESS.VIEWED_LESSON_PROGRESS}/${currentLessonId}`)
+            await FetchServerPostApi(`${API.LESSON_PROGRESS.VIEWED_LESSON_PROGRESS}/${currentLessonId}`)
             stopLoadingSpiner()
         }
         fetch()
