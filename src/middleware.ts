@@ -29,13 +29,13 @@ export async function middleware(request: NextRequest) {
         }
         const res = await FetchServerPostApiNoToken(API.AUTH.INTROSPECT_REFRESH_TOKEN, req)
         if (res && res.status == 200) { return NextResponse.redirect(new URL('/', request.url)) }
-        console.log("Chạy middware login >>>>")
+
         return NextResponse.next();
     }
 
 
     if ((currentPath === "/" && await getToken("refresh_token") === undefined) || (currentPath.startsWith("/course") && await getToken("refresh_token") === undefined)) {
-        console.log("Chạy middware home >>>>")
+  
         return NextResponse.next();
     }
 
@@ -44,7 +44,7 @@ export async function middleware(request: NextRequest) {
     }
     const resIntrospect = await FetchServerPostApiNoToken(API.AUTH.INTROSPECT_REFRESH_TOKEN, reqIntrospect)
     if ((currentPath === "/" && resIntrospect.status != 200) || (currentPath.startsWith("/course") && resIntrospect.status != 200)) {
-        console.log("Chạy middware home >>>>")
+   
         return NextResponse.next();
     }
 

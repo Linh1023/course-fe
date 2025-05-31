@@ -8,8 +8,7 @@ export const FetchClientDeleteApi = async (api: string) => {
     try {
         const refresh_token = await getToken("refresh_token")
         const access_token = await getToken("access_token")
-        console.log("access_token>>> ", access_token)
-        console.log("refresh_token >>> ",refresh_token)
+
 
 
         // if (refresh_token === undefined) {

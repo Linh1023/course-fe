@@ -3,6 +3,7 @@ import { ChevronDown, Video } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { usePathname, useRouter } from "next/navigation"
 import { useLoadingContext } from "@/context/loading_context"
+import { formatTime } from "@/utils/format_time"
 interface Props {
     lessonSidebarResponse: LessonSidebarResponse
 
@@ -40,7 +41,7 @@ const LessonCollapsibleItem = (props: Props) => {
                     {lessonSidebarResponse.name}
                 </div>
                 <span className="font-bold text-gray-500 text-[15px] flex items-center" >
-                    <Video className="mr-[5px]" />   {lessonSidebarResponse.duration}
+                    <Video className="mr-[5px]" />      {formatTime(lessonSidebarResponse.duration)}
                 </span>
             </div>
         </>

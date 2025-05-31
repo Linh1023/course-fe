@@ -22,7 +22,7 @@ const HomeContent = () => {
 
          await new Promise(resolve => setTimeout(resolve, 9000));
 
-        console.log("click ")
+ 
         const data = await FetchServerGetApi(API.AUTH.HELLO_TEST)
         if (data && data.status === 200) {
             console.log("call success >>> ", data)
