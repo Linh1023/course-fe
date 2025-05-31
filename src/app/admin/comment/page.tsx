@@ -1,26 +1,31 @@
-import { FetchServerGetApi} from "@/actions/server/fetch_server_api";
+import { FetchServerGetApi } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
-import { columns } from "@/components/admin/comment/table/columns";
-import { DataTable } from "@/components/admin/comment/table/data_table";
-import { CommentResponse } from "@/types/response/comment_response";
-async function getData(): Promise<CommentResponse[]> {
-  const res = await FetchServerGetApi(API.COMMENT.ADMIN_LIST_COMMENT);
-  console.log("res >>> ", res);
- if (res && res.status === 200) {
-    return  res.result;
-    //  console.log("currentAccount >>> ", currentAccount)
-  }
-  else {
-    return [];
-  }
-}
+import { CommentsTable } from "@/components/admin/comment/comments-table";
+import { DataTableSkeleton } from "@/components/admin/share/data-table/data-table-skeleton";
+import { Suspense } from "react";
 
-export default async function DemoPage() {
-  const data = await getData();
-
+const CommentPage = async () => {
+  const commentPromise = await FetchServerGetApi(
+    API.COMMENT.ADMIN_LIST_COMMENT
+  );
   return (
-    <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} />
+    <div className="flex flex-col gap-4">
+      <div className="h-[100px] flex items-center justify-between gap-2">
+        <h1 className="text-xl font-semibold">Quản Lý Bình Luận</h1>
+      </div>
+      <Suspense
+        fallback={
+          <DataTableSkeleton
+            columnCount={6}
+            cellWidths={["5rem", "40rem", "12rem", "5rem","5rem","5rem"]}
+            shrinkZero
+          />
+        }
+      >
+        <CommentsTable  commentPromise={commentPromise} />
+      </Suspense>
     </div>
   );
-}
+};
+
+export default CommentPage;

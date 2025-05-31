@@ -24,7 +24,7 @@ import {
 export const SidebarNav = () => {
   const items = [
     {
-      title: "Home",
+      title: "Trang chủ",
       url: "/admin",
       icon: Home,
     },
@@ -34,7 +34,7 @@ export const SidebarNav = () => {
       icon: List,
     },
     {
-      title: "Comment",
+      title: "Bình luận",
       url: "/admin/comment",
       icon: MessageCircle,
     },
@@ -44,17 +44,17 @@ export const SidebarNav = () => {
       icon: BookOpen,
     },
     {
-      title: "Enrollment",
+      title: "Đăng ký khóa học",
       url: "/admin/course_enrollment",
       icon: ClipboardList,
     },
     {
-      title: "Lesson",
+      title: "Bài học",
       url: "/admin/lesson",
       icon: FileText,
     },
     {
-      title: "Progress",
+      title: "Tiến độ bài học",
       url: "/admin/lesson_progress",
       icon: CheckCircle,
     },
@@ -64,12 +64,12 @@ export const SidebarNav = () => {
       icon: Inbox,
     },
     {
-      title: "User",
+      title: "Người dùng",
       url: "/admin/user",
       icon: Users,
     },
     {
-      title: "Settings",
+      title: "Cài đặt",
       url: "/admin/settings",
       icon: Settings,
     },
