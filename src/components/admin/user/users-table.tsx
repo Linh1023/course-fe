@@ -10,20 +10,15 @@ import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableFilterField } from "@/types/ui/data-table"
 import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table-advance-toolbar"
 
+
 interface UsersTableProps {
   userPromise: Promise<UserPageResponse>
 }
 
-
 export function UsersTable({ userPromise }: UsersTableProps) {
-  const { result, totalPages } = React.use(userPromise)
+  const { result, totalPages, totalItems, currentPage } = React.use(userPromise)
 
-  // Kiểm tra dữ liệu
-  if (!Array.isArray(result)) {
-    console.error("Dữ liệu người dùng không hợp lệ:", result);
-    return <div>Lỗi: Dữ liệu không hợp lệ</div>;
-  }
-
+  // Di chuyển useMemo và useDataTable lên top-level
   const columns = React.useMemo(() => getColumns(), [])
 
   const filterFields: DataTableFilterField<User>[] = [
@@ -42,9 +37,9 @@ export function UsersTable({ userPromise }: UsersTableProps) {
       value: "sex",
       placeholder: "Lọc theo giới tính...",
       options: [
-        { label: "Nam", value: "male" },
-        { label: "Nữ", value: "female" },
-        { label: "Khác", value: "other" },
+        { label: "Nam", value: "MALE" },
+        { label: "Nữ", value: "FEMALE" },
+        { label: "Khác", value: "OTHER" },
       ],
     },
     {
@@ -52,9 +47,8 @@ export function UsersTable({ userPromise }: UsersTableProps) {
       value: "role",
       placeholder: "Lọc theo vai trò...",
       options: [
-        { label: "Admin", value: "admin" },
-        { label: "Giảng viên", value: "instructor" },
-        { label: "Học viên", value: "student" },
+        { label: "Admin", value: "ADMIN" },
+        { label: "Khách hàng", value: "CLIENT" },
       ],
     },
     {
@@ -69,12 +63,31 @@ export function UsersTable({ userPromise }: UsersTableProps) {
   ]
 
   const { table } = useDataTable({
-    data: result || [],
+    data: Array.isArray(result) ? result : [],
     columns,
-    pageCount: totalPages || 0,
+    pageCount: totalPages,
     filterFields,
-    defaultPerPage: 10,
+    defaultPerPage: 20,
+    // Removed initialState as it is not a valid property of UseDataTableProps
   })
+
+  // Xử lý lỗi hoặc dữ liệu rỗng sau khi gọi Hooks
+  if (!Array.isArray(result)) {
+    console.error("Dữ liệu người dùng không hợp lệ:", result);
+    return (
+      <div className="text-center text-red-500 py-4">
+        Lỗi: Dữ liệu người dùng không hợp lệ
+      </div>
+    );
+  }
+
+  if (result.length === 0) {
+    return (
+      <div className="text-center text-gray-500 py-4">
+        Không có dữ liệu người dùng để hiển thị
+      </div>
+    );
+  }
 
   return (
     <TableInstanceProvider table={table}>

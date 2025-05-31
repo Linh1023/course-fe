@@ -32,10 +32,13 @@ const UserPage = async ({ searchParams }: UserPageProps) => {
         !Array.isArray(res.result.result)
       ) {
         console.error("API trả về dữ liệu không hợp lệ:", res);
-        return { result: [], totalPages: 0 };
+        return { result: [], totalPages: 0, totalItems: 0, currentPage: 1 };
       }
 
       const totalPages = res.result.meta.pages || 0;
+      const totalItems = res.result.meta.total || 0;
+      const currentPage = res.result.meta.page !== undefined ? res.result.meta.page + 1 : page; // backend 0-based
+
       // Kiểm tra page hợp lệ
       if (page > totalPages && totalPages > 0) {
         console.warn(`Page ${page} vượt quá tổng số trang (${totalPages})`);
@@ -45,11 +48,13 @@ const UserPage = async ({ searchParams }: UserPageProps) => {
       return {
         result: res.result.result, // Danh sách người dùng
         totalPages, // Tổng số trang
+        totalItems, // Tổng số bản ghi
+        currentPage, // Trang hiện tại (frontend 1-based)
       };
     })
     .catch((error) => {
       console.error("Lỗi khi gọi API:", error);
-      return { result: [], totalPages: 0 };
+      return { result: [], totalPages: 0, totalItems: 0, currentPage: 1 };
     });
 
   return (
