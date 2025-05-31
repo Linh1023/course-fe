@@ -29,53 +29,66 @@ import API from "@/api/api"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { FetchServerPutApi } from "@/actions/server/fetch_server_api"
-import { User } from "@/types/response/account/user"
 
-interface UpdateUserSheetProps
-  extends React.ComponentPropsWithRef<typeof Sheet> {
+
+interface UpdateUserSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
   user: User
 }
 
 export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
   const router = useRouter()
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
+
   const form = useForm<UpdateUserSchema>({
     resolver: zodResolver(updateUserSchema),
     defaultValues: {
-      name: user.name ?? "",
-      email: user.email ?? "",
-      username: user.username ?? "",
-      password: "",
-      sex: user.sex ?? "other",
-      role: user.role ?? "student",
-      status: user.status ?? "active",
-      birthday: user.birthday ?? "",
+      name: user.name || "",
+      email: user.email || "",
+      username: user.username || "",
+      status: user.status || "active",
+      role: user.role || "CLIENT",
+      sex: user.sex || "OTHER",
+      phone: user.phone || "",
+      avatarUrl: user.avatarUrl || "",
+      birthday: user.birthday || "",
     },
   })
 
+  // Reset form chỉ khi user thay đổi
   React.useEffect(() => {
     form.reset({
-      name: user.name ?? "",
-      email: user.email ?? "",
-      username: user.username ?? "",
-      password: "",
-      sex: user.sex ?? "other",
-      role: user.role ?? "student",
-      status: user.status ?? "active",
-      birthday: user.birthday ?? "",
+      name: user.name || "",
+      email: user.email || "",
+      username: user.username || "",
+      status: user.status || "active",
+      role: user.role || "CLIENT",
+      sex: user.sex || "OTHER",
+      phone: user.phone || "",
+      avatarUrl: user.avatarUrl || "",
+      birthday: user.birthday || "",
     })
-  }, [user, form])
+  }, [user.id, form])
 
   function onSubmit(input: UpdateUserSchema) {
     startUpdateTransition(async () => {
-      const updateUserResponse = await FetchServerPutApi(API.ACCOUNT.UPDATE(user.id), input,
-        "/admin/user"
-      )
-      if (updateUserResponse.status == 200) {
-        toast.success("Cập nhật người dùng thành công!")
-        props.onOpenChange?.(false)
-      } else {
-        toast.error("Cập nhật thất bại, vui lòng thử lại!")
+      try {
+        const updateUserResponse = await FetchServerPutApi(
+          API.ACCOUNT.UPDATE(user.id),
+          input,
+          "/admin/user"
+        )
+        if (updateUserResponse.status === 200) {
+          toast.success("Cập nhật người dùng thành công!")
+          props.onOpenChange?.(false)
+          router.refresh()
+        } else {
+          toast.error(
+            updateUserResponse.message || "Cập nhật thất bại, vui lòng thử lại!"
+          )
+        }
+      } catch (error) {
+        toast.error("Lỗi hệ thống, vui lòng thử lại sau!")
+        console.error("Update user error:", error)
       }
     })
   }
@@ -148,14 +161,32 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
             />
             <FormField
               control={form.control}
-              name="password"
+              name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Mật khẩu (để trống nếu không thay đổi)</FormLabel>
+                  <FormLabel>Số điện thoại</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Mật khẩu"
-                      type="password"
+                      placeholder="Số điện thoại"
+                      type="tel"
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="avatarUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL ảnh đại diện</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://example.com/avatar.jpg"
+                      type="url"
                       className="resize-none"
                       {...field}
                     />
@@ -181,13 +212,13 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="male" className="capitalize">
+                        <SelectItem value="MALE" className="capitalize">
                           Nam
                         </SelectItem>
-                        <SelectItem value="female" className="capitalize">
+                        <SelectItem value="FEMALE" className="capitalize">
                           Nữ
                         </SelectItem>
-                        <SelectItem value="other" className="capitalize">
+                        <SelectItem value="OTHER" className="capitalize">
                           Khác
                         </SelectItem>
                       </SelectGroup>
@@ -214,14 +245,11 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="admin" className="capitalize">
+                        <SelectItem value="ADMIN" className="capitalize">
                           Admin
                         </SelectItem>
-                        <SelectItem value="instructor" className="capitalize">
-                          Giảng viên
-                        </SelectItem>
-                        <SelectItem value="student" className="capitalize">
-                          Học viên
+                        <SelectItem value="CLIENT" className="capitalize">
+                          Khách hàng
                         </SelectItem>
                       </SelectGroup>
                     </SelectContent>

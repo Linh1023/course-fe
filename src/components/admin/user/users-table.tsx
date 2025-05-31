@@ -9,23 +9,11 @@ import { UsersTableToolbarActions } from "./users-table-toolbar-actions"
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableFilterField } from "@/types/ui/data-table"
 import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table-advance-toolbar"
-import { UserPageResponse } from "@/types/response/account/user"
 
 interface UsersTableProps {
   userPromise: Promise<UserPageResponse>
 }
 
-interface User {
-  id: string;
-  username: string;
-  email: string;
-  createdAt: string;
-  status: "active" | "inactive";
-  role: "admin" | "instructor" | "student";
-  name: string;
-  sex: "male" | "female" | "other";
-  birthday: string;
-}
 
 export function UsersTable({ userPromise }: UsersTableProps) {
   const { result, totalPages } = React.use(userPromise)
