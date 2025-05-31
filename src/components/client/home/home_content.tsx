@@ -23,6 +23,7 @@ import { useLoadingContext } from "@/context/loading_context";
 import { time } from "console";
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
+import CourseCard from "../profile/CourseCard";
 
 const HomeContent = () => {
   const router = useRouter();
@@ -92,6 +93,7 @@ const HomeContent = () => {
             <Card />
             <Card />
             <Card />
+            <CourseCard />
 
           </div>
         </div>
