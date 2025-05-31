@@ -30,34 +30,36 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { createCategorySchema, CreateCategorySchema } from "@/validation/categorySchema"
+import { CreateCategorySchema, createCategorySchema } from "@/validation/categorySchema"
 import { PlusIcon } from "lucide-react"
 import { LoaderIcon } from "@/components/share/loading-icon"
 import { Input } from "@/components/ui/input"
-import { FetchClientPostApi } from "@/actions/client/fetch_client_api"
 import API from "@/api/api"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { FetchServerPostApi } from "@/actions/server/fetch_server_api"
 
 
 export function CreateCategoryDialog() {
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [isCreatePending, startCreateTransition] = React.useTransition()
-
   const form = useForm<CreateCategorySchema>({
     resolver: zodResolver(createCategorySchema),
+    defaultValues: {
+      name: "",
+      detail: "",
+    }
   })
 
   function onSubmit(input: CreateCategorySchema) {
     startCreateTransition(async () => {
-      const res = await FetchClientPostApi(API.CATEGORY.ROOT, input)
+      const res = await FetchServerPostApi(API.CATEGORY.ROOT, input, "/admin/category")
       if (res.status === 200) {
-        router.replace('?page=1')
-        router.refresh()
+        router.replace("?page=1")
         form.reset()
-        setOpen(false)
         toast.success("Tạo danh mục thành công")
+        setOpen(false)
       } else {
         toast.error("Tạo danh mục thất bại, vui lòng thử lại sau")
       }
