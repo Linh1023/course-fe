@@ -65,7 +65,7 @@ export function CategoriesTable({ categoryPromise }: CategoriesTableProps) {
     filterFields,
     defaultPerPage: 10,
   })
-
+  
   return (
     <TableInstanceProvider table={table}>
       <DataTable
