@@ -15,9 +15,11 @@ export default function LessonClientLayout({ children }: { children: React.React
     const pathName = usePathname();
     const router = useRouter()
     const [courseInfoResponse, setCourseInfoResponse] = useState<CourseInfoResponse | null>(null);
-    const [chapter, setChapter] = useState<string>(courseInfoResponse?.chapters[0].name || "");
+    const [chapter, setChapter] = useState<string>("");
 
     const [clickedLessons, setClickedLessons] = useState<string[]>([]);
+    
+    
     const parts = pathName.split('/');
     const currentLessonId = parts[2];
     const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext()
@@ -28,9 +30,6 @@ export default function LessonClientLayout({ children }: { children: React.React
             prev.includes(currentLessonId) ? prev : [...prev, currentLessonId]
         );
     }, [pathName])
-
-
-
 
 
 
@@ -64,14 +63,14 @@ export default function LessonClientLayout({ children }: { children: React.React
             }
         }
 
-    }, [pathName])
+    }, [pathName, courseInfoResponse ])
 
 
     useEffect(() => {
         const fetch = async () => {
-            startLoadingSpiner()
+            // startLoadingSpiner()
             await FetchServerPostApi(`${API.LESSON_PROGRESS.VIEWED_LESSON_PROGRESS}/${currentLessonId}`)
-            stopLoadingSpiner()
+            // stopLoadingSpiner()
         }
         fetch()
     }, [pathName])

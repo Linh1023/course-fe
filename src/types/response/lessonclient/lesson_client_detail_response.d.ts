@@ -10,4 +10,5 @@ interface LessonClientDetailResponse {
     createdAt: string;
     updatedAt: string;
     status: string;
+    submissionUrl:string;
 }
