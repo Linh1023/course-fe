@@ -11,7 +11,6 @@ const LessonPage = async (props: any) => {
     let lessonResponse:LessonClientDetailResponse|null = null
     if (res && res.status === 200) {
          lessonResponse = res.result
-         console.log(lessonResponse)
     } else {
         redirect("/")
     }

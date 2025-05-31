@@ -26,7 +26,7 @@ const LessonTabs = (props: Props) => {
     }
 
     useEffect(() => {
-        console.log("submission url >>> ", lessonResponse)
+    
         if (lessonResponse.submissionUrl != null)
         {
             setIsSubmitted(true)

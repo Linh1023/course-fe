@@ -35,7 +35,7 @@ export default async function RootLayout({
   let currentAccount: CurrentAccountResponse | null = null
   if (res && res.status === 200) {
     currentAccount = res.result;
-    //  console.log("currentAccount >>> ", currentAccount)
+
   }
 
   return (
