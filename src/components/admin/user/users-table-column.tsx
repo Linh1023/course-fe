@@ -17,7 +17,6 @@ import { UpdateUserSheet } from "./update-user-sheet"
 import { DeleteUsersDialog } from "./delete-users-dialog"
 import { Ellipsis } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import { User } from "@/types/response/account/user"
 
 export function getColumns(): ColumnDef<User>[] {
   return [
@@ -92,7 +91,7 @@ export function getColumns(): ColumnDef<User>[] {
       cell: ({ row }) => (
         <div className="flex space-x-2">
           <span className="max-w-[10rem] truncate font-medium">
-            {row.getValue("sex") === "male" ? "Nam" : row.getValue("sex") === "female" ? "Nữ" : "Khác"}
+            {row.getValue("sex") === "MALE" ? "Nam" : row.getValue("sex") === "FEMALE" ? "Nữ" : "Khác"}
           </span>
         </div>
       ),
@@ -107,18 +106,18 @@ export function getColumns(): ColumnDef<User>[] {
           <span className="max-w-[10rem] truncate font-medium">
             <Badge
               variant={
-                row.getValue("role") === "admin"
+                row.getValue("role") === "ADMIN"
                   ? "default"
                   : row.getValue("role") === "instructor"
                   ? "secondary"
                   : "outline"
               }
             >
-              {row.getValue("role") === "admin"
-                ? "Admin"
-                : row.getValue("role") === "instructor"
-                ? "Giảng viên"
-                : "Học viên"}
+              {row.getValue("role") === "ADMIN"
+                ? "Quản Trị Viên"
+                : row.getValue("role") === "CLIENT"
+                ? "Học Viên"
+                : "Khác"}
             </Badge>
           </span>
         </div>

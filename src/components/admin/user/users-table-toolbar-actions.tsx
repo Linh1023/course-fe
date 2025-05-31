@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button"
 import { DeleteUsersDialog } from "./delete-users-dialog"
 import { CreateUserDialog } from "./create-user-dialog"
 import { toast } from "sonner"
-import { type User } from "@/types/response/account/user"
-
 
 interface UsersTableToolbarActionsProps {
   table: Table<User>

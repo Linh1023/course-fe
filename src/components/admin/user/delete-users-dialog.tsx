@@ -17,7 +17,6 @@ import { TrashIcon } from "lucide-react"
 import { LoaderIcon } from "@/components/share/loading-icon"
 import API from "@/api/api"
 import { FetchServerDeleteApi } from "@/actions/server/fetch_server_api"
-import { User } from "@/types/response/account/user"
 
 interface DeleteUsersDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {

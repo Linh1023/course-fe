@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/tooltip"
 import { TrashIcon, X } from "lucide-react"
 import { DeleteUsersDialog } from "./delete-users-dialog"
-import { User } from "@/types/response/account/user"
 import { toast } from "sonner"
 
 interface UsersTableFloatingBarProps {

@@ -1,16 +1,19 @@
-interface User {
+ interface User {
   id: string;
-  username: string;
+  name: string;
   email: string;
+  username: string;
   createdAt: string;
   status: "active" | "inactive";
-  role: "admin" | "instructor" | "student";
-  name: string;
-  sex: "male" | "female" | "other";
+  role: "CLIENT" | "ADMIN";
+  sex: "MALE" | "FEMALE" | "OTHER";
   birthday: string;
 }
 
-export interface UserPageResponse {
+
+interface UserPageResponse {
   result: User[];
   totalPages: number;
+  totalItems: number;
+  currentPage: number;
 }
