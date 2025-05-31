@@ -79,7 +79,7 @@ export const SidebarUser = () => {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={currentAccount?.avatarUrl} alt={currentAccount?.name} />
-
+                <AvatarFallback className="bg-gray-200 text-gray-500" >CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{currentAccount?.name}</span>
