@@ -108,7 +108,7 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
           </div>
         </div>
 
-        {/* Cột phải - KHÓA HỌC ĐANG HỌC chỉ hiện desktop */}
+        {/* Cột phải - KHÓA HỌC ĐANG HỌC chỉ hiện desktop asdasd */}
         {currentAccount && enrollCourse.length > 0 && (
           <div className="hidden lg:flex lg:col-span-1 flex-col space-y-4 bg-gray-100 p-4 rounded-xl">
             <CourseList
