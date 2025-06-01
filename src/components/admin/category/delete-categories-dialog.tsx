@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/dialog"
 import { TrashIcon } from "lucide-react"
 import { LoaderIcon } from "@/components/share/loading-icon"
+import API from "@/api/api"
+import { FetchServerDeleteApi } from "@/actions/server/fetch_server_api"
 
 
 interface DeleteCategoriesDialogProps
@@ -33,7 +35,6 @@ export function DeleteCategoriesDialog({
   ...props
 }: DeleteCategoriesDialogProps) {
   const [isDeletePending, startDeleteTransition] = React.useTransition()
-
   return (
     <Dialog {...props}>
       {showTrigger ? (
@@ -64,6 +65,10 @@ export function DeleteCategoriesDialog({
             onClick={() => {
               startDeleteTransition(async () => {
                 // thực hiện xóa danh mục
+                await Promise.all(
+                  categories.map((category) =>
+                    FetchServerDeleteApi(`${API.CATEGORY.ROOT}/${category.id}`, "/admin/category")
+                  ))
                 props.onOpenChange?.(false)
                 onSuccess?.()
               })

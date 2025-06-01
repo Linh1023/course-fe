@@ -5,7 +5,6 @@ interface Course {
   image: string;
   title: string;
   instructor: string;
-  ratings: number;
 }
 
 interface CourseCardProps {
@@ -26,23 +25,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
           {course.title}
         </h3>
-        <p className="text-sm text-gray-600 mb-3">
-          By {course.instructor}
+        <p className="text-md text-red-500 mb-3 font-bold">
+          {course.instructor}
         </p>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star
-                key={star}
-                size={16}
-                className="text-yellow-400 fill-current"
-              />
-            ))}
-          </div>
-          <span className="text-sm text-gray-600">
-            ({course.ratings})
-          </span>
-        </div>
       </div>
     </div>
   );

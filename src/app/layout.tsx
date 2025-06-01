@@ -7,6 +7,7 @@ import NextTopLoader from "nextjs-toploader";
 import API from "@/api/api";
 import { LoadingProvider } from "@/context/loading_context";
 import Loading from "@/components/share/loading";
+import { Toaster } from "sonner";
 
 
 const geistSans = localFont({
@@ -34,11 +35,11 @@ export default async function RootLayout({
   let currentAccount: CurrentAccountResponse | null = null
   if (res && res.status === 200) {
     currentAccount = res.result;
-    //  console.log("currentAccount >>> ", currentAccount)
+
   }
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -66,6 +67,7 @@ export default async function RootLayout({
           showSpinner={false}
         />
 
+        <Toaster richColors />
 
       </body>
     </html>

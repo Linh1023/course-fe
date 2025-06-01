@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/tooltip"
 import { DeleteCategoriesDialog } from "./delete-categories-dialog"
 import { CreateCategoryDialog } from "./create-category-dialog"
+import { toast } from "sonner"
 
 
 interface CategoriesTableToolbarActionsProps {
@@ -28,7 +29,13 @@ export function CategoriesTableToolbarActions({
           categories={table
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
-          onSuccess={() => table.toggleAllRowsSelected(false)}
+          onSuccess={() => {
+            toast.success(
+              `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} danh mục thành công!`
+            )
+            table.toggleAllRowsSelected(false)
+          }
+          }
         />
       ) : null}
       <CreateCategoryDialog />

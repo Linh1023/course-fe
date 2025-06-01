@@ -10,19 +10,15 @@ import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableFilterField } from "@/types/ui/data-table"
 import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table-advance-toolbar"
 
+interface CategoriesTableProps {
+  categoryPromise: Promise<CategoryPageResponse>
+}
 
 
-export function CategoriesTable() {
-  // const { data, pageCount } = React.use(tasksPromise)
-  const data: Category[] = [
-    { id: "1", name: 'Electronics', detail: 'Devices and gadgets' },
-    { id: "2", name: 'Books', detail: 'Literature and educational materials' },
-    { id: "3", name: 'Clothing', detail: 'Apparel and fashion items' },
-    { id: "4", name: 'Home & Kitchen', detail: 'Household items and kitchenware' },
-    { id: "5", name: 'Sports & Outdoors', detail: 'Equipment for sports and outdoor activities' },
-  ] // Replace with actual data fetching logic  
-  const pageCount = 1// Replace with actual page count logic
+export function CategoriesTable({ categoryPromise }: CategoriesTableProps) {
+  // const { result, totalPages } = React.use(categoryPromise)
   // const views = React.use(viewsPromise)
+  const { result, totalPages } = React.use(categoryPromise)
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo(() => getColumns(), [])
@@ -48,21 +44,28 @@ export function CategoriesTable() {
       label: "Mô tả",
       value: "detail",
       placeholder: "Lọc theo mô tả danh mục...",
+    },
+    {
+      label: "Trạng thái",
+      value: "status",
+      placeholder: "Lọc theo trạng thái...",
+      options: [
+        { label: "Hoạt động", value: "active" },
+        { label: "Không hoạt động", value: "inactive" },
+      ],
     }
   ]
 
   // TODO: Replace with actual data fetching logic
-
   const { table } = useDataTable({
-    data,
+    data: result,
     columns,
-    pageCount,
+    pageCount: totalPages,
     // optional props
     filterFields,
     defaultPerPage: 10,
-    defaultSort: "name.desc",
   })
-
+  
   return (
     <TableInstanceProvider table={table}>
       <DataTable

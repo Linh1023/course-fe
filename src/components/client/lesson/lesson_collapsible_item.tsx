@@ -1,39 +1,49 @@
 "use client"
 import { ChevronDown, Video } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
-const LessonCollapsibleItem = () => {
+import { usePathname, useRouter } from "next/navigation"
+import { useLoadingContext } from "@/context/loading_context"
+import { formatTime } from "@/utils/format_time"
+interface Props {
+    lessonSidebarResponse: LessonSidebarResponse
+
+    clickedLessons:string[]
+}
+
+const LessonCollapsibleItem = (props: Props) => {
+    const { lessonSidebarResponse, clickedLessons } = props
+
+    const router = useRouter()
+    const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext()
+    const pathName = usePathname()
+    const parts = pathName.split('/'); 
+    const lessonId = parts[2]; 
+    const handleLesson = () => {
+        startLoadingSpiner()
+        if (lessonId === lessonSidebarResponse.id){
+            stopLoadingSpiner()
+        }
+        router.push(`/lesson/${lessonSidebarResponse.id}`)
+    }
     return (
         <>
-            <div className="flex  items-center justify-between hover:bg-[#f1f5f9] p-1 rounded-[5px] cursor-pointer">
-
+            <div className={`flex  items-center justify-between hover:bg-[#f1f5f9] p-1 rounded-[5px] cursor-pointer
+             ${lessonId === lessonSidebarResponse.id && ` bg-[#fe4444] text-white hover:bg-[#f87171]`}
+            `}
+                onClick={() => { handleLesson() }}
+            >
                 <div className="flex items-center mr-[15px] text-[14px]">
-                    <Checkbox className="mr-[15px]  w-[20px] h-[20px] data-[state=checked]:!bg-[#3B82F6]" />
-                    1. Cú pháp cơ bản C++
+                    <Checkbox className={`mr-[15px]  w-[20px] h-[20px] data-[state=checked]:!bg-[#3B82F6]
+                      ${lessonId === lessonSidebarResponse.id && `  border-white bg-white`}
+                    `}
+                        checked={lessonSidebarResponse.viewed || clickedLessons.includes(lessonSidebarResponse.id)}
+                    />
+                    {lessonSidebarResponse.name}
                 </div>
-
                 <span className="font-bold text-gray-500 text-[15px] flex items-center" >
-                    <Video className="mr-[5px]" />   3:05
+                    <Video className="mr-[5px]" />      {formatTime(lessonSidebarResponse.duration)}
                 </span>
-
             </div>
-
-            <div className="flex  items-center justify-between   p-1 rounded-[5px] cursor-pointer  
-                                        bg-[#fe4444] text-white
-                                        ">
-                <div className="flex items-center mr-[15px] text-[14px] ">
-                    <Checkbox className="mr-[15px]  w-[20px] h-[20px] data-[state=checked]:!bg-[#3B82F6]
-                                                 border-white bg-white
-                                                " />
-                    2. Cú pháp điều kiện cơ bản C++
-                </div>
-
-                <span className="font-bold  text-[15px] flex items-center text-white" >
-                    <Video className="mr-[5px]" />   3:05
-                </span>
-
-            </div>
-
-
         </>
     )
 }

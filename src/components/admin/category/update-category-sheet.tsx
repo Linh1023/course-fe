@@ -26,6 +26,11 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { updateCategorySchema, UpdateCategorySchema } from "@/validation/categorySchema"
 import { LoaderIcon } from "@/components/share/loading-icon"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import API from "@/api/api"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import { FetchServerPutApi } from "@/actions/server/fetch_server_api"
 
 
 interface UpdateCategorySheetProps
@@ -34,23 +39,40 @@ interface UpdateCategorySheetProps
 }
 
 export function UpdateCategorySheet({ category, ...props }: UpdateCategorySheetProps) {
+  const router = useRouter()
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
-
   const form = useForm<UpdateCategorySchema>({
     resolver: zodResolver(updateCategorySchema),
     defaultValues: {
       name: category.name ?? "",
       detail: category.detail ?? "",
+      status: category.status ?? "",
     },
   })
+
+  React.useEffect(() => {
+    form.reset({
+      name: category.name ?? "",
+      detail: category.detail ?? "",
+      status: category.status ?? "",
+    })
+  }, [category, form])
 
   function onSubmit(input: UpdateCategorySchema) {
     startUpdateTransition(async () => {
       // update category in the database
-
-      form.reset()
-      props.onOpenChange?.(false)
-      // toast.success("Task updated")
+      const updateCategoryResponse = await FetchServerPutApi(
+        `${API.CATEGORY.ROOT}/${category.id}`,
+        input,
+        "/admin/category"
+      )
+      if (updateCategoryResponse.status == 200) {
+        toast.success("Cập nhật thành công!")
+        props.onOpenChange?.(false)
+      }
+      else {
+        toast.error("Cập nhật thất bại, vui lòng thử lại!")
+      }
     })
   }
 
@@ -97,6 +119,42 @@ export function UpdateCategorySheet({ category, ...props }: UpdateCategorySheetP
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Trạng thái</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className={field.value && "capitalize"}>
+                        <SelectValue placeholder="Select a label" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                          value="active"
+                          className="capitalize"
+                        >
+                          Hoạt động
+                        </SelectItem>
+                        <SelectItem
+                          value="inactive"
+                          className="capitalize"
+                        >
+                          Ngưng hoạt động
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

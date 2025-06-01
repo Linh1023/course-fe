@@ -30,25 +30,39 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { createCategorySchema, CreateCategorySchema } from "@/validation/categorySchema"
+import { CreateCategorySchema, createCategorySchema } from "@/validation/categorySchema"
 import { PlusIcon } from "lucide-react"
 import { LoaderIcon } from "@/components/share/loading-icon"
 import { Input } from "@/components/ui/input"
+import API from "@/api/api"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import { FetchServerPostApi } from "@/actions/server/fetch_server_api"
 
 
 export function CreateCategoryDialog() {
+  const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [isCreatePending, startCreateTransition] = React.useTransition()
-
   const form = useForm<CreateCategorySchema>({
     resolver: zodResolver(createCategorySchema),
+    defaultValues: {
+      name: "",
+      detail: "",
+    }
   })
 
   function onSubmit(input: CreateCategorySchema) {
     startCreateTransition(async () => {
-      // thực hiện thêm
-      form.reset()
-      setOpen(false)
+      const res = await FetchServerPostApi(API.CATEGORY.ROOT, input, "/admin/category")
+      if (res.status === 200) {
+        router.replace("?page=1")
+        form.reset()
+        toast.success("Tạo danh mục thành công")
+        setOpen(false)
+      } else {
+        toast.error("Tạo danh mục thất bại, vui lòng thử lại sau")
+      }
     })
   }
 
@@ -82,6 +96,7 @@ export function CreateCategoryDialog() {
             <FormField
               control={form.control}
               name="name"
+              defaultValue=""
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tên danh mục</FormLabel>
@@ -99,6 +114,7 @@ export function CreateCategoryDialog() {
             <FormField
               control={form.control}
               name="detail"
+              defaultValue=""
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Mô tả</FormLabel>
