@@ -108,7 +108,7 @@ export function getColumns(): ColumnDef<User>[] {
               variant={
                 row.getValue("role") === "ADMIN"
                   ? "default"
-                  : row.getValue("role") === "instructor"
+                  : row.getValue("role") === "CLIENT"
                   ? "secondary"
                   : "outline"
               }
