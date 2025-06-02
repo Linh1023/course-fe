@@ -92,6 +92,23 @@ export const FetchServerPutApi = async (api: string, bodyData: any, path = "") =
   }
 }
 
+// ham fetch get api k can token
+export const FetchServerGetApiNoToken = async (api: string) => {
+  try {
+    const res = await fetch(api, {
+      method: "GET", // Đúng phương thức
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json", // Đặt Content-Type là JSON
+      },
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+  }
+}
+
 
 // Ham fetch get api khi can access token tu dong
 export const FetchServerGetApi = async (api: string, path = "") => {
