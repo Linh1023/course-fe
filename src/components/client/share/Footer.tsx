@@ -1,8 +1,17 @@
-import { Facebook, Youtube  } from "lucide-react"
+"use client"
+import { Facebook, Youtube } from "lucide-react"
+import { usePathname } from "next/navigation"
 import React from "react"
 
 
 const Footer = () => {
+  const usePathName = usePathname()
+  if (usePathName.includes("lesson"))
+    return (
+      <>
+
+      </>)
+
   return (
     <footer className="bg-[#1f1f1f] text-white px-6 py-10">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row flex-wrap justify-around gap-8">
@@ -12,7 +21,7 @@ const Footer = () => {
           <div className="flex gap-4">
             <Facebook href="" className="w-6 h-6 hover:text-red-500 cursor-pointer" />
             <Youtube href="" className="w-6 h-6 hover:text-red-500 cursor-pointer" />
-         
+
           </div>
         </div>
 

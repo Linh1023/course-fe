@@ -1,7 +1,29 @@
 import { SubmissionTable } from "@/components/admin/submission/submission_table"
 import { DataTableSkeleton } from "@/components/admin/share/data-table/data-table-skeleton"
 import React from "react"
-const SubmissionPage = () => {
+import { ReadonlyURLSearchParams } from "next/navigation"
+import { DateRangePicker } from "@/components/admin/share/data-table/advance/date-range-picker"
+import { FetchServerGetApi } from "@/actions/server/fetch_server_api"
+import API from "@/api/api"
+// import { DateRangePicker } from "@/components/date-range-picker"
+export interface SubmissionPageProps {
+    searchParams: ReadonlyURLSearchParams
+}
+
+const SubmissionPage = async (props: SubmissionPageProps) => {
+    const { searchParams } = props
+    const query = new URLSearchParams(searchParams).toString();
+    const res = await FetchServerGetApi(API.SUBMISSON.SUBMISSION + `?${query}`, "/admin/submission");
+    let submissions:SubmissionAdminResponse[] = [];
+    let totalPages:number = 0
+    if (res && res.status === 200) {
+        submissions = res.result
+        totalPages  =res.totalPages
+        
+    }
+    console.log("submissions >>> ", res)
+ 
+
     return (
         <>
             <div className="flex flex-col gap-4">
@@ -12,15 +34,19 @@ const SubmissionPage = () => {
                     columnCount={3}
                     cellWidths={["5rem", "40rem", "12rem"]}
                     shrinkZero
-                />} >
+                />} > 
                     {/* Khoang tg */}
-                    {/* <DateRangePicker
+                    <DateRangePicker
                  triggerSize="sm"
                  triggerClassName="ml-auto w-56 sm:w-60 mr-1"
                  className="dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
                  align="end"
-               /> */}
-                    <SubmissionTable />
+               />
+                    <SubmissionTable 
+                    submissions = {submissions}
+                    totalPages = {totalPages}
+
+                    />
                 </React.Suspense>
             </div>
         </>
