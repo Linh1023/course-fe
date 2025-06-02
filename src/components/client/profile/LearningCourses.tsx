@@ -10,49 +10,33 @@ interface Course {
   ratings: number;
 }
 // Mock courses data
-const mockCourses: Course[] = [
+const mockCourses: CourseCardResponse[] = [
     {
-        id: "1",
-        title: "Beginner's Guide to Design",
-        instructor: "Ronald Richards",
-        ratings: 1200,
-        image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
+        name: "Đã học 3",
+        price: 100000,
+        id: "11",
+        imageUrl: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
     },
-    {
+     {
+        name: "Đã học 3",
+        price: 100000,
         id: "2",
-        title: "Beginner's Guide to Design",
-        instructor: "Ronald Richards",
-        ratings: 1200,
-        image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
+        imageUrl: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
     },
-    {
+     {
+        name: "Đã học 3",
+        price: 100000,
         id: "3",
-        title: "Beginner's Guide to Design",
-        instructor: "Ronald Richards",
-        ratings: 1200,
-        image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
+        imageUrl: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
     },
-    {
+     {
+        name: "Đã học 3",
+        price: 100000,
         id: "4",
-        title: "Beginner's Guide to Design",
-        instructor: "Ronald Richards",
-        ratings: 1200,
-        image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
+        imageUrl: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
     },
-    {
-        id: "5",
-        title: "Beginner's Guide to Design",
-        instructor: "Ronald Richards",
-        ratings: 1200,
-        image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
-    },
-    {
-        id: "6",
-        title: "Beginner's Guide to Design",
-        instructor: "Ronald Richards",
-        ratings: 1200,
-        image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=400&h=225&fit=crop"
-    }
+   
+   
 ];
 
 const LearningCourses = () => {
