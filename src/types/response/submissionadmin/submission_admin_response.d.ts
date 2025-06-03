@@ -15,3 +15,8 @@ interface SubmissionAdminResponse {
     submittedAt
     status:string; // trang thai
 }
+
+interface SubmissionPageResponse {
+  result: SubmissionAdminResponse[];
+  totalPages: number;
+}

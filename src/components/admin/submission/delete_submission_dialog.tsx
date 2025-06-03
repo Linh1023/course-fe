@@ -21,6 +21,7 @@ import API from "@/api/api"
 import { FetchServerDeleteApi } from "@/actions/server/fetch_server_api"
 import { useState } from "react"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 
 interface DeleteSubmissionsDialogProps
@@ -38,15 +39,19 @@ export function DeleteSubmissionsDialog(props: DeleteSubmissionsDialogProps) {
 
   const [isLoading, setIsLoading] = useState(false)
 
+  const router = useRouter()
+
   const handleDeteledSubmissions = async () => {
     setIsLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // await new Promise(resolve => setTimeout(resolve, 1000));
 
     console.log("submissions >>> ", submissions)
 
     for (const submission of submissions) {
       console.log(submission.id);
+      await FetchServerDeleteApi(`${API.SUBMISSON.SUBMISSION}/${submission.id}`)
     }
+    router.refresh();
 
     //  thanh cong
       setIsOpen(false)
