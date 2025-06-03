@@ -1,12 +1,14 @@
 'use client'
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bot, Home, Settings, Share2, User, ListVideo } from "lucide-react";
 import CoursesGrid from "./CourseGrid";
 import MyCourse from './MyCourse';
 import { Button } from "@/components/ui/button";
 import MyInformation from "./MyInformation";
-
+import { useCurrentAccountContext } from "@/context/current_account_context";
+import { FetchServerGetApi } from "@/actions/server/fetch_server_api";
+import API from "@/api/api";
 
 const tabs = [
     {
@@ -22,7 +24,41 @@ const tabs = [
     },
 ];
 
+
 export default function VerticalLeftBorderedTabsDemo() {
+     const [profile, setProfile] = useState<CurrentProfile | null>(null);
+    const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setLoading(true);
+        const response = await FetchServerGetApi(API.PROFILE.CURRENT_PROFILE);
+        if (response && response.status === 200) {
+          setProfile(response.result);
+        } else {
+          setError('Failed to fetch profile');
+        }
+      } catch (err) {
+        setError('Error fetching profile');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
     return (
 
         <Tabs
@@ -34,12 +70,14 @@ export default function VerticalLeftBorderedTabsDemo() {
                 <div className="p-6 text-center border-b border-gray-200">
                     <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden">
                         <img
-                            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
-                            alt="John Doe"
+                            src={profile?.avatarUrl || "https://via.placeholder.com/150"}
+                            alt={profile?.name || "User Avatar"}
                             className="w-full h-full object-cover"
                         />
                     </div>
-                    <h2 className="text-xl font-semibold text-gray-900 mb-3">Loc Shadow</h2>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-3">
+                        {profile?.name || "User Name"}
+                    </h2>
                     <Button variant="outline" size="sm" className="gap-2">
                         <Share2 size={16} />
                         Share Profile
@@ -63,7 +101,7 @@ export default function VerticalLeftBorderedTabsDemo() {
                 {tabs.map((tab) => (
                     <TabsContent key={tab.value} value={tab.value} className="w-full">
                         {tab.value === 'profile' ? (
-                            <MyInformation />
+                            <MyInformation  currentProfile = {profile}/>
                         ) : (
                             <div>
                                 <MyCourse />

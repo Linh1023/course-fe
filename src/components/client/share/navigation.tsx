@@ -48,10 +48,13 @@ import { Input } from "@/components/ui/input";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import { useCurrentAccountContext } from "@/context/current_account_context";
 import { getToken, removeToken } from "@/actions/server/token_store";
-import { FetchServerPostApi } from "@/actions/server/fetch_server_api";
+import { FetchServerGetApiNoToken, FetchServerPostApi } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
 import { useRouter } from "next/navigation";
 import { useLoadingContext } from "@/context/loading_context";
+import { useEffect, useState } from "react";
+
+
 
 
 const Navigation = () => {
@@ -59,39 +62,25 @@ const Navigation = () => {
     const { currentAccount, fetchGetCurrentAccount } = useCurrentAccountContext()
     const router = useRouter()
     const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext()
+    const [categories, setCategories] = useState<Category[]>([]);
 
-    const features = [
-        {
-            title: "Dashboard",
-            description: "Overview of your activity",
-            href: "#",
-        },
-        {
-            title: "Analytics",
-            description: "Track your performance",
-            href: "#",
-        },
-        {
-            title: "Settings",
-            description: "Configure your preferences",
-            href: "#",
-        },
-        {
-            title: "Integrations",
-            description: "Connect with other tools",
-            href: "#",
-        },
-        {
-            title: "Storage",
-            description: "Manage your files",
-            href: "#",
-        },
-        {
-            title: "Support",
-            description: "Get help when needed",
-            href: "#",
-        },
-    ];
+    useEffect(() => {
+        const fetchCategory = async () => {
+            const res = await FetchServerGetApiNoToken(API.CATEGORY.ROOT );
+            if (res && res.status === 200) {
+                // Handle successful response
+                // console.log("Categories fetched successfully:", res.result);
+                setCategories(res.result);
+            } else {
+                // Handle error response
+                console.error("Failed to fetch categories:", res);
+            }
+        }
+
+        fetchCategory();
+    },[])
+ 
+    
 
     const handleLogout = async () => {
         startLoadingSpiner()
@@ -145,21 +134,21 @@ const Navigation = () => {
                                     <NavigationMenuTrigger>Danh mục khóa học</NavigationMenuTrigger>
                                     <NavigationMenuContent>
                                         <div className="grid w-[600px] grid-cols-2 p-3">
-                                            {features.map((feature, index) => (
-                                                <NavigationMenuLink
-                                                    href={feature.href}
+                                            {categories.map((category, index) => (
+                                                <Link
+                                                    href={`/search/category/${category.id}?page=1&size=10`}
                                                     key={index}
                                                     className="rounded-md p-3 transition-colors hover:bg-muted/70"
                                                 >
-                                                    <div key={feature.title}>
+                                                    <div key={category.id}>
                                                         <p className="mb-1 font-semibold text-foreground">
-                                                            {feature.title}
+                                                            {category.name}
                                                         </p>
                                                         <p className="text-sm text-muted-foreground">
-                                                            {feature.description}
+                                                            {category.detail}
                                                         </p>
                                                     </div>
-                                                </NavigationMenuLink>
+                                                </Link>
                                             ))}
                                         </div>
                                     </NavigationMenuContent>
@@ -380,21 +369,21 @@ const Navigation = () => {
                                             </AccordionTrigger>
                                             <AccordionContent>
                                                 <div className="grid md:grid-cols-2">
-                                                    {features.map((feature, index) => (
-                                                        <a
-                                                            href={feature.href}
+                                                    {categories.map((category, index) => (
+                                                        <Link
+                                                            href={`/search/category/${category.id}?page=1&size=10`}
                                                             key={index}
                                                             className="rounded-md p-3 transition-colors hover:bg-muted/70"
                                                         >
-                                                            <div key={feature.title}>
+                                                            <div key={category.id}>
                                                                 <p className="mb-1 font-semibold text-foreground">
-                                                                    {feature.title}
+                                                                    {category.name}
                                                                 </p>
                                                                 <p className="text-sm text-muted-foreground">
-                                                                    {feature.description}
+                                                                    {category.detail}
                                                                 </p>
                                                             </div>
-                                                        </a>
+                                                        </Link>
                                                     ))}
                                                 </div>
                                             </AccordionContent>

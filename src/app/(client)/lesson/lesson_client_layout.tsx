@@ -10,14 +10,17 @@ import API from "@/api/api";
 import { useLoadingContext } from "@/context/loading_context";
 import { FetchServerGetApi, FetchServerPostApi } from "@/actions/server/fetch_server_api";
 
+
 export default function LessonClientLayout({ children }: { children: React.ReactNode }) {
 
     const pathName = usePathname();
     const router = useRouter()
     const [courseInfoResponse, setCourseInfoResponse] = useState<CourseInfoResponse | null>(null);
-    const [chapter, setChapter] = useState<string>(courseInfoResponse?.chapters[0].name || "");
+    const [chapter, setChapter] = useState<string>("");
 
     const [clickedLessons, setClickedLessons] = useState<string[]>([]);
+    
+    
     const parts = pathName.split('/');
     const currentLessonId = parts[2];
     const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext()
@@ -28,9 +31,6 @@ export default function LessonClientLayout({ children }: { children: React.React
             prev.includes(currentLessonId) ? prev : [...prev, currentLessonId]
         );
     }, [pathName])
-
-
-
 
 
 
@@ -64,14 +64,14 @@ export default function LessonClientLayout({ children }: { children: React.React
             }
         }
 
-    }, [pathName])
+    }, [pathName, courseInfoResponse ])
 
 
     useEffect(() => {
         const fetch = async () => {
-            startLoadingSpiner()
+            // startLoadingSpiner()
             await FetchServerPostApi(`${API.LESSON_PROGRESS.VIEWED_LESSON_PROGRESS}/${currentLessonId}`)
-            stopLoadingSpiner()
+            // stopLoadingSpiner()
         }
         fetch()
     }, [pathName])
@@ -145,12 +145,12 @@ export default function LessonClientLayout({ children }: { children: React.React
     };
 
 
-
+    // const viewportHeight = useViewportHeight();
 
     return (
         <>
 
-            <div className="fixed top-68 left-0 h-full w-full z-30">
+     <div className="fixed top-68 100vh left-0 w-full z-30">
 
                 <SidebarProvider
                     style={{
@@ -159,7 +159,7 @@ export default function LessonClientLayout({ children }: { children: React.React
 
                 >
 
-                    <main className="flex-1 overflow-y-auto h-[calc(100vh-132px)] ">
+                    <main className="flex-1 overflow-y-auto h-[calc(100dvh-132px)] ">
                         <div className="p-2">
                             <span className="font-bold flex items-center gap-2 text-[20px]" > <BookCheck /> {courseInfoResponse?.name}</span>
                             {children}

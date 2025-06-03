@@ -9,6 +9,7 @@ export async function setRefreshToken(refreshToken: string) {
 
   cookieStore.set('refresh_token', refreshToken, {
     httpOnly: true,
+    // secure: true,
     path: '/',
     maxAge,
   });
@@ -29,6 +30,7 @@ export async function setAccessToken(accessToken: string) {
 
   cookieStore.set('access_token', accessToken, {
     httpOnly: true,
+    // secure: true,
     path: '/',
     maxAge,
   });
