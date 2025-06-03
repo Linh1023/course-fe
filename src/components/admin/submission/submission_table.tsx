@@ -11,20 +11,18 @@ import { SubmissionTableFloatingBar } from "./submission_table_floating_bar"
 import { SubmissionTableToolbarActions } from "./submission_table_toolbar_actions"
 
 interface Props {
-  submissions:SubmissionAdminResponse[]
-  totalPages:number
+  submissionsPromise:  Promise<SubmissionPageResponse>
 }
+
 
 export function SubmissionTable(props:Props) {
 
-  const {submissions, totalPages} = props
+  const {submissionsPromise} = props
 
-   
+    const {result, totalPages} = React.use(submissionsPromise)
 
   // cái này là từng dòng dữ liệu của bảng kể cả header
   const columns = React.useMemo(() => getSubmissionColumns(), [])
-
-
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -74,7 +72,7 @@ export function SubmissionTable(props:Props) {
 
 
   const { table } = useDataTable({
-    data : submissions, // dữ liệu đổ vào table
+    data : result, // dữ liệu đổ vào table
     columns, // cái này là từng dòng dữ liệu của bảng kể cả header
     pageCount: totalPages, // tổng số trang
     filterFields, // bộ lọc

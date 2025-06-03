@@ -13,15 +13,8 @@ export interface SubmissionPageProps {
 const SubmissionPage = async (props: SubmissionPageProps) => {
     const { searchParams } = props
     const query = new URLSearchParams(searchParams).toString();
-    const res = await FetchServerGetApi(API.SUBMISSON.SUBMISSION + `?${query}`, "/admin/submission");
-    let submissions:SubmissionAdminResponse[] = [];
-    let totalPages:number = 0
-    if (res && res.status === 200) {
-        submissions = res.result
-        totalPages  =res.totalPages
-        
-    }
-    console.log("submissions >>> ", res)
+    const submissionsPromise =  FetchServerGetApi(API.SUBMISSON.SUBMISSION + `?${query}`, "/admin/submission");
+  
  
 
     return (
@@ -43,9 +36,7 @@ const SubmissionPage = async (props: SubmissionPageProps) => {
                  align="end"
                />
                     <SubmissionTable 
-                    submissions = {submissions}
-                    totalPages = {totalPages}
-
+                    submissionsPromise = {submissionsPromise}
                     />
                 </React.Suspense>
             </div>

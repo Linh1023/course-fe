@@ -197,9 +197,9 @@ const Navigation = () => {
                                                 className=" rounded-[100px] h-[45px] w-[45px]"
                                                 alt="Shadcn UI Navbar"
                                             />
-                                            <div className="ml-[10px] flex flex-col justify-center ">
-                                                <span>{currentAccount.name}</span>
-                                                <span>{currentAccount.email}</span>
+                                            <div className="ml-[10px] flex flex-col justify-center max-w-[200px]">
+                                                <span className="truncate">{currentAccount.name}</span>
+                                                <span   className="truncate" >{currentAccount.email}</span>
                                             </div>
 
                                         </div>
