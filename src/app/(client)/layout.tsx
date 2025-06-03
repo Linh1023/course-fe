@@ -1,3 +1,4 @@
+import Footer from "@/components/client/share/Footer";
 import Navbar from "@/components/client/share/navbar";
 import { Navigation } from "@/components/client/share/navigation";
 
@@ -12,7 +13,7 @@ export default function ClientLayout({
       <Navigation></Navigation>
       {/* <Navbar></Navbar> */}
         {children}
-     
+      <Footer/>
     </>
 
 

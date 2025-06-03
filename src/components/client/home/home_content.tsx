@@ -1,44 +1,136 @@
-"use client"
-import { FetchClientGetApi } from "@/actions/client/fetch_client_api"
-import { Button } from "../../ui/button"
-import API from "@/api/api"
-import cookie from "js-cookie";
+"use client";
+
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getToken, removeToken } from "@/actions/server/token_store";
-import { FetchServerGetApi, FetchServerPostApi, FetchServerPostApiNoToken } from "@/actions/server/fetch_server_api";
+import Autoplay from "embla-carousel-autoplay";
+
+import API from "@/api/api";
 import { useLoadingContext } from "@/context/loading_context";
-import { time } from "console";
-import Link from "next/link";
+import { FetchServerGetApi } from "@/actions/server/fetch_server_api";
+import { useCurrentAccountContext } from "@/context/current_account_context";
 
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 
-const HomeContent = () => {
+import CourseList from "./CourseList";
+import { Facebook, PhoneCall } from "lucide-react";
 
-    const router = useRouter()
-   const {startLoadingSpiner, stopLoadingSpiner} = useLoadingContext()
-   
-
-    const handleFetchData = async () => {
-        startLoadingSpiner()
-
-         await new Promise(resolve => setTimeout(resolve, 9000));
-
- 
-        const data = await FetchServerGetApi(API.AUTH.HELLO_TEST)
-        if (data && data.status === 200) {
-            console.log("call success >>> ", data)
-        }
-        
-        stopLoadingSpiner()
-    }
-
-    return (
-        <>
-          <Button
-                onClick={() => { handleFetchData() }}
-            >Fetch dữ liệu</Button>
-            <Link href="/admin">admin</Link>
-        </>
-    )
+interface HomeProps {
+  data_hot: CourseCardResponse[];
+  data_newest: CourseCardResponse[];
 }
 
-export default HomeContent
+const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
+  const router = useRouter();
+  const { currentAccount } = useCurrentAccountContext();
+  const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext();
+  const [enrollCourse, setEnrollCourse] = useState<CourseCardResponse[]>([]);
+
+  useEffect(() => {
+    const fetchEnrollCourse = async () => {
+      if (!currentAccount) return;
+
+      const res = await FetchServerGetApi(
+        API.COURSE_ENROLLMENT.GET_COURSE_ENROLL
+      );
+      if (res && res.status === 200) {
+        setEnrollCourse(res.result);
+      }
+    };
+
+    fetchEnrollCourse();
+  }, [currentAccount]);
+
+  return (
+    <div className="p-4 h-full mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        {/* Cột trái */}
+        <div
+          className={`${
+            currentAccount ? "lg:col-span-3" : "lg:col-span-4"
+          } space-y-6`}
+        >
+          {/* Carousel */}
+          <div className="rounded-lg overflow-hidden mb-4">
+            <Carousel
+              className="w-full h-72"
+              loop
+              plugins={[Autoplay({ delay: 2000 })]}
+            >
+              <CarouselContent>
+                <CarouselItem>
+                  <div className="bg-gray-300 rounded-lg h-72" />
+                </CarouselItem>
+                <CarouselItem>
+                  <div className="bg-red-900 rounded-lg h-72" />
+                </CarouselItem>
+                <CarouselItem>
+                  <div className="bg-blue-300 rounded-lg h-72" />
+                </CarouselItem>
+              </CarouselContent>
+            </Carousel>
+          </div>
+
+          {/* Khóa học đang học - HIỂN THỊ trên mobile/tablet, ẨN desktop */}
+          {currentAccount && enrollCourse.length > 0 && (
+            <div className="block lg:hidden mb-8">
+              <CourseList
+                title="Khóa học đang học"
+                courses={enrollCourse}
+                layout="list"
+              />
+            </div>
+          )}
+
+          {/* Các danh sách khóa học khác */}
+          <div className="space-y-8">
+            <CourseList
+              title="Khóa học nổi bật"
+              courses={data_hot}
+              layout="grid"
+              seeMoreLink="/search?category=hot"
+            />
+            <CourseList
+              title="Khóa học mới ra mắt"
+              courses={data_newest}
+              layout="grid"
+              seeMoreLink="/search?category=newest"
+            />
+            <CourseList
+              title="Khóa học mới ra mắt"
+              courses={data_newest}
+              layout="grid"
+              seeMoreLink="/search?category=newest"
+            />
+          </div>
+        </div>
+
+        {/* Cột phải - KHÓA HỌC ĐANG HỌC chỉ hiện desktop asdasd */}
+        {currentAccount && enrollCourse.length > 0 && (
+          <div className="hidden lg:flex lg:col-span-1 flex-col space-y-4 bg-gray-100 p-4 rounded-xl">
+            <CourseList
+              title="Khóa học đang học"
+              courses={enrollCourse}
+              layout="list"
+            />
+            <div className="flex gap-4 items-center justify-center pt-4">
+              <Facebook
+                href=""
+                className="w-8 h-8 hover:text-red-500 cursor-pointer rounded"
+              />
+              <PhoneCall
+                href=""
+                className="w-8 h-8 hover:text-red-500 cursor-pointer rounded"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default HomeContent;

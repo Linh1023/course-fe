@@ -11,7 +11,7 @@ interface Course {
 }
 
 interface CoursesGridProps {
-  courses: Course[];
+  courses: CourseCardResponse[];
 }
 
 const CoursesGrid: React.FC<CoursesGridProps> = ({ courses }) => {
