@@ -18,6 +18,7 @@ import { UpdateCategorySheet } from "./update-category-sheet"
 import { DeleteCategoriesDialog } from "./delete-categories-dialog"
 import { Ellipsis } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { toast } from "sonner"
 
 export function getColumns(): ColumnDef<Category>[] {
   return [
@@ -116,7 +117,12 @@ export function getColumns(): ColumnDef<Category>[] {
               onOpenChange={setShowDeleteCategoryDialog}
               categories={[row.original]}
               showTrigger={false}
-              onSuccess={() => row.toggleSelected(false)}
+              onSuccess={() => {
+                toast.success(
+                  `Đã xóa danh mục "${row.original.name}" thành công!`
+                )
+                row.toggleSelected(false)
+              }}
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
