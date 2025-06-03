@@ -1,4 +1,5 @@
-import * as React from "react"
+"use client"
+// import * as React from "react"
 import { type Table } from "@tanstack/react-table"
 // import { toast } from "sonner"
 
@@ -12,42 +13,70 @@ import {
 
 import { TrashIcon, X } from "lucide-react"
 import { LoaderIcon } from "@/components/share/loading-icon"
+import { useState } from "react"
+import { DeleteSubmissionsDialog } from "./delete_submission_dialog"
+import { toast } from "sonner"
+import { set } from "zod"
 
 interface SubmissionTableFloatingBarProps {
-  table: Table<SubmissionResponse>
+  table: Table<SubmissionAdminResponse>
+    isOpen: boolean, // giá trị để biết để Dialog bật tắt
+  setIsOpen: (v: boolean) => void, // cái này để Dialog nó set bật tắt
 }
 
-export function SubmissionTableFloatingBar({ table }: SubmissionTableFloatingBarProps) {
-  const rows = table.getFilteredSelectedRowModel().rows
+// cái này là cái popup lên ở phía dưới màn hình khi mình chọn 1 dòng dữ liệu để xóa
+export function SubmissionTableFloatingBar(props: SubmissionTableFloatingBarProps) {
 
-  const [isPending, startTransition] = React.useTransition()
-  const [method, setMethod] = React.useState<
-    "update-status" | "update-priority" | "export" | "delete"
-  >()
+  const { table, setIsOpen, isOpen } = props
+  const rows = table.getFilteredSelectedRowModel().rows // số lượng hàng đã được chọn
 
-  // Clear selection on Escape key press
-  React.useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        table.toggleAllRowsSelected(false)
-      }
-    }
+ 
 
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [table])
+  const hanldeDeletedSuccess = () => {
+    table.toggleAllRowsSelected(false)
+    toast.success(
+      `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} danh mục thành công!`
+    )
+
+  }
+
+  const handleOpenDeleteDialog = () => {
+    setIsOpen(true)
+    console.log("click xoa")
+  }
+
+
+
 
   return (
     <div className="fixed inset-x-0 bottom-4 z-50 mx-auto w-fit px-4">
+
+
+      <DeleteSubmissionsDialog
+        submissions={table
+          .getFilteredSelectedRowModel()
+          .rows.map((row) => row.original)}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        hanldeDeletedSuccess={hanldeDeletedSuccess}
+      />
+
+
       <div className="w-full overflow-x-auto">
         <div className="mx-auto flex w-fit items-center gap-2 rounded-md border bg-card p-2 shadow-2xl">
           <div className="flex h-7 items-center rounded-md border border-dashed pl-2.5 pr-1">
+
+            {/* tổng số hàng đã chọn */}
             <span className="whitespace-nowrap text-xs">
-              {rows.length} selected
+              {rows.length} Đã chọn
             </span>
+
             <Separator orientation="vertical" className="ml-2 mr-1" />
+
+            {/* bỏ chọn hết các hàng đã được họn */}
             <Tooltip>
               <TooltipTrigger asChild>
+
                 <Button
                   variant="ghost"
                   size="icon"
@@ -64,8 +93,12 @@ export function SubmissionTableFloatingBar({ table }: SubmissionTableFloatingBar
                 <p className="mr-2">Clear selection</p>
               </TooltipContent>
             </Tooltip>
+
           </div>
+
           <Separator orientation="vertical" className="hidden h-5 sm:block" />
+
+          {/* sự kiện xóa hết các hàng đã chọn */}
           <div className="flex items-center gap-1.5">
             <Tooltip delayDuration={250}>
               <TooltipTrigger asChild>
@@ -74,23 +107,10 @@ export function SubmissionTableFloatingBar({ table }: SubmissionTableFloatingBar
                   size="icon"
                   className="size-7 border"
                   onClick={() => {
-                    setMethod("delete")
-
-                    startTransition(async () => {
-                      // xóa hết các hàng đã chọn
-                      table.toggleAllRowsSelected(false)
-                    })
+                    handleOpenDeleteDialog()
                   }}
-                  disabled={isPending}
                 >
-                  {isPending && method === "delete" ? (
-                    <LoaderIcon
-                      className="size-3.5 animate-spin"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    <TrashIcon className="size-3.5" aria-hidden="true" />
-                  )}
+                  <TrashIcon className="size-3.5" aria-hidden="true" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent className="border bg-accent font-semibold text-foreground dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/40">
@@ -98,6 +118,7 @@ export function SubmissionTableFloatingBar({ table }: SubmissionTableFloatingBar
               </TooltipContent>
             </Tooltip>
           </div>
+
         </div>
       </div>
     </div>
