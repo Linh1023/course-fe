@@ -2,13 +2,6 @@
 
 import { type Table } from "@tanstack/react-table"
 
-import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { DeleteCategoriesDialog } from "./delete-categories-dialog"
 import { CreateCategoryDialog } from "./create-category-dialog"
 import { toast } from "sonner"

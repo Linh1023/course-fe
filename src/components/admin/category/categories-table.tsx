@@ -9,15 +9,12 @@ import { CategoriesTableToolbarActions } from "./categories-table-toolbar-action
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableFilterField } from "@/types/ui/data-table"
 import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table-advance-toolbar"
-
 interface CategoriesTableProps {
   categoryPromise: Promise<CategoryPageResponse>
 }
 
 
 export function CategoriesTable({ categoryPromise }: CategoriesTableProps) {
-  // const { result, totalPages } = React.use(categoryPromise)
-  // const views = React.use(viewsPromise)
   const { result, totalPages } = React.use(categoryPromise)
 
   // Memoize the columns so they don't re-render on every render
