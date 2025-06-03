@@ -23,7 +23,7 @@ export default function AdminLayout({
             <div className="flex items-center gap-2 p-4">
               <SidebarTrigger />
               <div className="shrink-0 bg-border w-[1px] mr-2 h-4"></div>
-              <ModeToggle/>
+              <ModeToggle />
             </div>
           </header>
           <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>

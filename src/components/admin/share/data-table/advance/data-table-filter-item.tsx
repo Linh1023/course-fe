@@ -1,6 +1,5 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-
 import { cn, createQueryString } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
@@ -10,15 +9,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
 import { useTableInstanceContext } from "../table-instance-provider"
 import { DataTableFilterOption } from "@/types/ui/data-table"
 import { TrashIcon } from "lucide-react"
@@ -163,7 +153,7 @@ export function DataTableFilterItem<TData>({
             placeholder="Nhập giá trị để lọc..."
             className="h-8"
             value={value}
-            onChange={(event) =>
+            onChange={(event) => {
               setSelectedOptions((prev) =>
                 prev.map((item) => {
                   if (item.value === column?.id) {
@@ -175,6 +165,7 @@ export function DataTableFilterItem<TData>({
                   return item
                 })
               )
+            }
             }
             autoFocus
           />
