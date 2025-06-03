@@ -90,7 +90,6 @@ export function DataTableAdvancedToolbar<TData>({
           ) : (
             <DataTableFilterCombobox
               selectableOptions={selectableOptions}
-              selectedOptions={selectedOptions}
               setSelectedOptions={setSelectedOptions}
               onSelect={onFilterComboboxItemSelect}
             />
@@ -125,7 +124,6 @@ export function DataTableAdvancedToolbar<TData>({
           {selectableOptions.length > 0 && (
             <DataTableFilterCombobox
               selectableOptions={selectableOptions}
-              selectedOptions={selectedOptions}
               setSelectedOptions={setSelectedOptions}
               onSelect={onFilterComboboxItemSelect}
             >
