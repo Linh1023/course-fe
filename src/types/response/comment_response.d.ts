@@ -8,7 +8,7 @@ type TypeComment = {
   content: string;
   replyCount: number;
 };
-type CommentResponse ={
+type CommentPageResponse ={
   result: TypeComment[];
   totalPages: number;
   totalItems: number;
