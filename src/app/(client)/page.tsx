@@ -6,11 +6,10 @@ import HomeWrapper from "@/components/client/home/home_wrapper";
 import { console } from "node:inspector";
 
 const HomePage = async () => {
-  const res_hot = await FetchServerGetApiNoToken(API.COURSE.COURSE_HOT+ "?page=0&size=4" );
-  const res_newest = await FetchServerGetApiNoToken(API.COURSE.COURSE_NEWEST+ "?page=0&size=4");
+  const res_hot = await FetchServerGetApiNoToken(API.COURSE.COURSE_FILTER+ "?sort=hot&page=0&size=4" );
+  const res_newest = await FetchServerGetApiNoToken(API.COURSE.COURSE_FILTER + "?sort=newest&page=0&size=4");
  
   
-  console.log("NEWEST COURSES:", res_newest);
   let data_hot: CourseCardResponse[] = [];
   let data_newset: CourseCardResponse[] = [];
 
