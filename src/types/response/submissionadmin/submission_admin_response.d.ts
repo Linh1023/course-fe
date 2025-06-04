@@ -12,7 +12,7 @@ interface SubmissionAdminResponse {
     score:number;
     comment:string;
     reviewedAt:string;
-    submittedAt
+    submittedAt:string
     status:string; // trang thai
 }
 
