@@ -15,7 +15,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { Separator } from "@/components/ui/separator"
 import {
   Tooltip,
   TooltipContent,
@@ -27,7 +26,6 @@ import { ChevronDownIcon, ChevronsUpDown, PlusIcon, TextIcon } from "lucide-reac
 
 interface DataTableFilterComboboxProps<TData> {
   selectableOptions: DataTableFilterOption<TData>[]
-  selectedOptions: DataTableFilterOption<TData>[]
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
@@ -37,16 +35,12 @@ interface DataTableFilterComboboxProps<TData> {
 
 export function DataTableFilterCombobox<TData>({
   selectableOptions,
-  selectedOptions,
   setSelectedOptions,
   onSelect,
   children,
 }: DataTableFilterComboboxProps<TData>) {
   const [value, setValue] = React.useState("")
   const [open, setOpen] = React.useState(false)
-  const [selectedOption, setSelectedOption] = React.useState<
-    DataTableFilterOption<TData>
-  >(selectableOptions[0] ?? ({} as DataTableFilterOption<TData>))
 
   const buttonRef = React.useRef<HTMLButtonElement>(null)
 
@@ -95,7 +89,6 @@ export function DataTableFilterCombobox<TData>({
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? "" : currentValue)
                     setOpen(false)
-                    setSelectedOption(option)
                     setSelectedOptions((prev) => {
                       return [...prev, { ...option }]
                     })

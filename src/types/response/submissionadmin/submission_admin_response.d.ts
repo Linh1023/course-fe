@@ -1,4 +1,4 @@
-interface SubmissionResponse {
+interface SubmissionAdminResponse {
     id: string; // id bai nop
     courseName:string; // ten khoa hoc
     lessonName:string; // ten bai hoc
@@ -12,5 +12,11 @@ interface SubmissionResponse {
     score:number;
     comment:string;
     reviewedAt:string;
+    submittedAt
     status:string; // trang thai
+}
+
+interface SubmissionPageResponse {
+  result: SubmissionAdminResponse[];
+  totalPages: number;
 }

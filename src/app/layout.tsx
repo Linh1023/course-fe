@@ -7,7 +7,7 @@ import NextTopLoader from "nextjs-toploader";
 import API from "@/api/api";
 import { LoadingProvider } from "@/context/loading_context";
 import Loading from "@/components/share/loading";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/toaster";
 
 
 const geistSans = localFont({

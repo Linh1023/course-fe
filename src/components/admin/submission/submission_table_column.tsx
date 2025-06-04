@@ -18,7 +18,9 @@ import { DataTableColumnHeader } from "../share/data-table/data-table-column-hea
 // import { DeleteCategoriesDialog } from "./delete-categories-dialog"
 import { Ellipsis } from "lucide-react"
 
-export function getColumns(): ColumnDef<SubmissionResponse>[] {
+import { Badge } from "@/components/ui/badge"
+import { UpdateSubmissionSheet } from "./update_submission_sheet"
+export function getSubmissionColumns(): ColumnDef<SubmissionAdminResponse>[] {
   return [
     {
       id: "select",
@@ -75,6 +77,21 @@ export function getColumns(): ColumnDef<SubmissionResponse>[] {
       },
     },
     {
+      accessorKey: "courseName",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Khóa học" />
+      ),
+      cell: ({ row }) => {
+        return (
+          <div className="flex space-x-2">
+            <span className="max-w-[31.25rem] truncate font-medium">
+              {row.getValue("courseName")}
+            </span>
+          </div>
+        )
+      },
+    },
+    {
       accessorKey: "lessonName",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Bài học" />
@@ -96,9 +113,34 @@ export function getColumns(): ColumnDef<SubmissionResponse>[] {
       ),
       cell: ({ row }) => {
         return (
+          <>
+
+            <div className="flex space-x-2">
+              <span className="max-w-[10rem] truncate font-medium">
+                <Badge
+                  variant={
+                    row.getValue("status") === "graded"
+                      ? "secondary"
+                      : "destructive"
+                  }>{row.getValue("status") === "submitted" ? "Chưa chấm" : "Đã chấm"}</Badge>
+              </span>
+            </div>
+
+
+          </>
+        )
+      },
+    },
+    {
+      accessorKey: "submittedAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Ngày nộp" />
+      ),
+      cell: ({ row }) => {
+        return (
           <div className="flex space-x-2">
             <span className="max-w-[31.25rem] truncate font-medium">
-              {row.getValue("status")}
+              {row.getValue("submittedAt")}
             </span>
           </div>
         )
@@ -108,18 +150,16 @@ export function getColumns(): ColumnDef<SubmissionResponse>[] {
       id: "actions",
       cell: function Cell({ row }) {
         const [isUpdatePending, startUpdateTransition] = React.useTransition()
-        const [showUpdateCategorySheet, setShowUpdateCategorySheet] =
-          React.useState(false)
-        const [showDeleteCategoryDialog, setShowDeleteCategoryDialog] =
+        const [showUpdateSubmissionSheet, setShowUpdateSubmissionSheet] =
           React.useState(false)
 
         return (
           <>
-            {/* <UpdateCategorySheet
-              open={showUpdateCategorySheet}
-              onOpenChange={setShowUpdateCategorySheet}
-              category={row.original}
-            /> */}
+            <UpdateSubmissionSheet
+              showUpdateSubmissionSheet = {showUpdateSubmissionSheet}
+              setShowUpdateSubmissionSheet = {setShowUpdateSubmissionSheet}
+              submission={row.original}
+            />
             {/* <DeleteCategoriesDialog
               open={showDeleteCategoryDialog}
               onOpenChange={setShowDeleteCategoryDialog}
@@ -143,21 +183,11 @@ export function getColumns(): ColumnDef<SubmissionResponse>[] {
               >
                 <DropdownMenuItem onSelect={() => {
                   setTimeout(() => {
-                    setShowUpdateCategorySheet(true)
+                    setShowUpdateSubmissionSheet(true)
                   }, 0)
                 }}>
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onSelect={() => {
-                    setTimeout(() => {
-                      setShowDeleteCategoryDialog(true)
-                    }, 0)
-                  }}
-                >
-                  Delete
-                  <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+                  {row.original.status === "graded" ? "Chỉnh sửa" : "Chấm bài"}
+                 
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
