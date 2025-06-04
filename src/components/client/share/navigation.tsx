@@ -251,10 +251,13 @@ const Navigation = () => {
                                                     </Link>
                                                 )}
 
-                                                <div className="dropdown-item-custom">
-                                                    <CircleUserRound className="mr-[15px]" /> Trang cá
-                                                    nhân
-                                                </div>
+                                                <Link href={"/profile"}>
+                                                    <div className="dropdown-item-custom">
+                                                        <CircleUserRound className="mr-[15px]" /> Trang cá
+                                                        nhân
+                                                    </div>
+                                                </Link>
+
                                                 <div className="dropdown-item-custom">
                                                     <Settings className="mr-[15px]" /> Cài đặt
                                                 </div>

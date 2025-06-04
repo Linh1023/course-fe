@@ -6,13 +6,44 @@ import { Button } from "@/components/ui/button";
 import { FetchClientPutApi } from '@/actions/client/fetch_client_api';
 import API from '@/api/api';
 import { toast } from "@/hooks/use-toast"
+import { FetchServerGetApi } from '@/actions/server/fetch_server_api';
+import { useCurrentAccountContext } from '@/context/current_account_context';
 
-interface MyInformationProps {
-  currentProfile: CurrentProfile | null;
-}
 
-const MyInformation: React.FC<MyInformationProps> = ({ currentProfile }) => {
-  console.log('Current Account:', currentProfile);
+
+const MyInformation = () => {
+  // console.log('Current Account:', currentProfile);
+
+  const [currentProfile, setCurrentProfile] = useState<CurrentProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const {fetchGetCurrentAccount} = useCurrentAccountContext();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setLoading(true);
+        const response = await FetchServerGetApi(API.PROFILE.CURRENT_PROFILE);
+        if (response && response.status === 200) {
+          setCurrentProfile(response.result);
+        } else {
+          setError('Failed to fetch profile');
+        }
+      } catch (err) {
+        setError('Error fetching profile');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+
+
+
+
   const [formData, setFormData] = useState({
     email: '',
     name: '',
@@ -30,7 +61,7 @@ const MyInformation: React.FC<MyInformationProps> = ({ currentProfile }) => {
         email: currentProfile.email || '',
         name: currentProfile.name || '',
         phone: currentProfile.phoneNumber || '',
-        birthdate: currentProfile.birthday ? 
+        birthdate: currentProfile.birthday ?
           new Date(currentProfile.birthday).toISOString().slice(0, 16) : '',
         bio: currentProfile.detail || '',
         sex: currentProfile.sex || ''
@@ -70,11 +101,12 @@ const MyInformation: React.FC<MyInformationProps> = ({ currentProfile }) => {
           email: response.result.email || '',
           name: response.result.name || '',
           phone: response.result.phoneNumber || '',
-          birthdate: response.result.birthday ? 
+          birthdate: response.result.birthday ?
             new Date(response.result.birthday).toISOString().slice(0, 16) : '',
           bio: response.result.detail || '',
           sex: response.result.sex || ''
         });
+        fetchGetCurrentAccount()
         toast({
           title: "Thành công",
           description: "Cập nhật thông tin cá nhân thành công!",
@@ -115,13 +147,13 @@ const MyInformation: React.FC<MyInformationProps> = ({ currentProfile }) => {
     <div className="max-w-4xl mx-auto bg-white">
       <div className="max-w-4xl mx-auto flex items-center justify-between border-b border-gray-200 my-2">
         <h1 className="text-2xl font-bold text-gray-900">Thông tin cá nhân</h1>
-        <Button 
-          variant="outline" 
-          className='text-gray-700 mb-2'
+        <Button
+          variant="outline"
+          className='text-white mb-2 bg-black hover:bg-black hover:text-white'
           onClick={toggleEditing}
           disabled={isSaving}
         >
-          <SquarePen size={30}/>
+          <SquarePen size={30} /> Chỉnh sửa
         </Button>
       </div>
       <div className="space-y-6">
@@ -143,7 +175,7 @@ const MyInformation: React.FC<MyInformationProps> = ({ currentProfile }) => {
               />
             </div>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Họ và tên
@@ -179,7 +211,7 @@ const MyInformation: React.FC<MyInformationProps> = ({ currentProfile }) => {
               />
             </div>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Ngày sinh

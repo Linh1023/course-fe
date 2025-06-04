@@ -93,8 +93,6 @@ const LessonTabs = (props: Props) => {
                         </>)
                     }
 
-
-
                 </TabsList>
                 <TabsContent value="content" className=" bg-[#f1f5f9] p-4 rounded-md">
                     <div >
