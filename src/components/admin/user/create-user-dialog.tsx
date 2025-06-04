@@ -1,19 +1,18 @@
-"use client"
-
-import * as React from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+  DialogClose,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -21,30 +20,37 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { CreateUserSchema, createUserSchema } from "@/validation/userSchema"
-import { PlusIcon } from "lucide-react"
-import { LoaderIcon } from "@/components/share/loading-icon"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import API from "@/api/api"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { FetchServerPostApi } from "@/actions/server/fetch_server_api"
+} from "@/components/ui/tooltip";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { LoaderIcon, PlusIcon } from "lucide-react";
+// Update the import path below to the correct relative path if needed, for example:
+import { FetchServerPostApi } from "@/actions/server/fetch_server_api";
+import API from "@/api/api";
+import { CreateUserSchema, createUserSchema } from "@/validation/userSchema";
 
 export function CreateUserDialog() {
-  const router = useRouter()
-  const [open, setOpen] = React.useState(false)
-  const [isCreatePending, startCreateTransition] = React.useTransition()
+  const router = useRouter();
+  const [open, setOpen] = React.useState(false);
+  const [isCreatePending, startCreateTransition] = React.useTransition();
+
   const form = useForm<CreateUserSchema>({
     resolver: zodResolver(createUserSchema),
-   defaultValues: {
+    defaultValues: {
       name: "",
       email: "",
       username: "",
@@ -54,21 +60,22 @@ export function CreateUserDialog() {
       phone: "",
       avatarUrl: "",
       birthday: "",
+      password: "",
     },
-  })
+  });
 
   function onSubmit(input: CreateUserSchema) {
     startCreateTransition(async () => {
-      const res = await FetchServerPostApi(API.ACCOUNT.CREATE, input, "/admin/user")
+      const res = await FetchServerPostApi(API.ACCOUNT.CREATE, input, "/admin/user");
       if (res.status === 200) {
-        router.replace("?page=1")
-        form.reset()
-        toast.success("Tạo người dùng thành công")
-        setOpen(false)
+        router.replace("?page=1");
+        form.reset();
+        toast.success("Tạo người dùng thành công");
+        setOpen(false);
       } else {
-        toast.error("Tạo người dùng thất bại, vui lòng thử lại sau")
+        toast.error("Tạo người dùng thất bại, vui lòng thử lại sau");
       }
-    })
+    });
   }
 
   return (
@@ -145,6 +152,24 @@ export function CreateUserDialog() {
                   <FormControl>
                     <Input
                       placeholder="Tên tài khoản"
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mật khẩu</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Mật khẩu"
+                      type="password"
                       className="resize-none"
                       {...field}
                     />
@@ -322,5 +347,5 @@ export function CreateUserDialog() {
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

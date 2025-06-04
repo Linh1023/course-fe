@@ -11,6 +11,7 @@ export interface CategoryPageProps {
 
 const CategoryPage = async ({ searchParams }: CategoryPageProps) => {
     const query = new URLSearchParams(searchParams).toString();
+    console.log("Query params:", query); // Debugging log
         
     const categoryPromise = FetchServerGetApi(API.CATEGORY.ROOT + `?${query}`, "/admin/category");
     return (

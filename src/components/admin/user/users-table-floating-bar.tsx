@@ -20,6 +20,7 @@ interface UsersTableFloatingBarProps {
 export function UsersTableFloatingBar({ table }: UsersTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
   const [isOpen, setIsOpen] = React.useState(false)
+  
   return (
     <div className="fixed inset-x-0 bottom-4 z-50 mx-auto w-fit px-4">
       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
@@ -40,7 +41,7 @@ export function UsersTableFloatingBar({ table }: UsersTableFloatingBarProps) {
         <div className="mx-auto flex w-fit items-center gap-2 rounded-md border bg-card p-2 shadow-2xl">
           <div className="flex h-7 items-center rounded-md border border-dashed pl-2.5 pr-1">
             <span className="whitespace-nowrap text-xs">
-              {rows.length} selected
+              {rows.length} đã chọn
             </span>
             <Separator orientation="vertical" className="ml-2 mr-1" />
             <Tooltip>
@@ -55,7 +56,7 @@ export function UsersTableFloatingBar({ table }: UsersTableFloatingBarProps) {
                 </Button>
               </TooltipTrigger>
               <TooltipContent className="flex items-center border bg-accent px-2 py-1 font-semibold text-foreground dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/40">
-                <p className="mr-2">Clear selection</p>
+                <p className="mr-2">Bỏ chọn tất cả</p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -75,7 +76,7 @@ export function UsersTableFloatingBar({ table }: UsersTableFloatingBarProps) {
                 </Button>
               </TooltipTrigger>
               <TooltipContent className="border bg-accent font-semibold text-foreground dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/40">
-                <p>Xóa người dùng</p>
+                <p>Xóa người dùng đã chọn</p>
               </TooltipContent>
             </Tooltip>
           </div>
