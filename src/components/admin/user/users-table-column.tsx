@@ -49,13 +49,25 @@ export function getColumns(): ColumnDef<User>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Họ tên" />
       ),
-      cell: ({ row }) => (
-        <div className="flex space-x-2">
-          <span className="max-w-[15rem] truncate font-medium">
-            {row.getValue("name")}
-          </span>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const user = row.original;
+        return (
+          <div className="flex items-center space-x-3">
+            
+            <div className="flex flex-col">
+              <span className="max-w-[15rem] truncate font-medium">
+                {user.name}
+              </span>
+              {user.username && (
+                <span className="max-w-[15rem] truncate text-xs text-muted-foreground">
+                  @{user.username}
+                </span>
+              )}
+            </div>
+          </div>
+        );
+      },
+      enableSorting: true,
     },
     {
       accessorKey: "email",
@@ -69,6 +81,21 @@ export function getColumns(): ColumnDef<User>[] {
           </span>
         </div>
       ),
+      enableSorting: true,
+    },
+    {
+      accessorKey: "phone", 
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Số điện thoại" />
+      ),
+      cell: ({ row }) => (
+        <div className="flex space-x-2">
+          <span className="max-w-[10rem] truncate font-medium">
+            {row.getValue("phone") || "—"}
+          </span>
+        </div>
+      ),
+      enableSorting: false,
     },
     {
       accessorKey: "createdAt",
@@ -82,65 +109,88 @@ export function getColumns(): ColumnDef<User>[] {
           </span>
         </div>
       ),
+      enableSorting: true,
     },
     {
       accessorKey: "sex",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Giới tính" />
       ),
-      cell: ({ row }) => (
-        <div className="flex space-x-2">
-          <span className="max-w-[10rem] truncate font-medium">
-            {row.getValue("sex") === "MALE" ? "Nam" : row.getValue("sex") === "FEMALE" ? "Nữ" : "Khác"}
-          </span>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const sex = row.getValue("sex") as string;
+        const sexMap = {
+          "MALE": { label: "Nam", icon: "👨" },
+          "FEMALE": { label: "Nữ", icon: "👩" }, 
+          "OTHER": { label: "Khác", icon: "👤" }
+        };
+        const sexInfo = sexMap[sex as keyof typeof sexMap] || { label: "Khác", icon: "👤" };
+        
+        return (
+          <div className="flex items-center space-x-2">
+            <span>{sexInfo.icon}</span>
+            <span className="max-w-[10rem] truncate font-medium">
+              {sexInfo.label}
+            </span>
+          </div>
+        );
+      },
+      enableSorting: true,
     },
     {
       accessorKey: "role",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Vai trò" />
       ),
-      cell: ({ row }) => (
-        <div className="flex space-x-2">
-          <span className="max-w-[10rem] truncate font-medium">
-            <Badge
-              variant={
-                row.getValue("role") === "ADMIN"
-                  ? "default"
-                  : row.getValue("role") === "instructor"
-                  ? "secondary"
-                  : "outline"
-              }
-            >
-              {row.getValue("role") === "ADMIN"
-                ? "Quản Trị Viên"
-                : row.getValue("role") === "CLIENT"
-                ? "Học Viên"
-                : "Khác"}
-            </Badge>
-          </span>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const role = row.getValue("role") as string;
+        return (
+          <div className="flex space-x-2">
+            <span className="max-w-[10rem] truncate font-medium">
+              <Badge
+                variant={
+                  role === "ADMIN"
+                    ? "default"
+                    : role === "CLIENT"
+                    ? "secondary"
+                    : "outline"
+                }
+              >
+                {role === "ADMIN"
+                  ? "Quản Trị Viên"
+                  : role === "CLIENT"
+                  ? "Học Viên"
+                  : "Khác"}
+              </Badge>
+            </span>
+          </div>
+        );
+      },
+      enableSorting: true,
     },
     {
       accessorKey: "status",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Trạng thái" />
       ),
-      cell: ({ row }) => (
-        <div className="flex space-x-2">
-          <span className="max-w-[10rem] truncate font-medium">
-            <Badge
-              variant={
-                row.getValue("status") === "active" ? "secondary" : "destructive"
-              }
-            >
-              {row.getValue("status") === "active" ? "Hoạt động" : "Ngưng hoạt động"}
-            </Badge>
-          </span>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const status = row.getValue("status") as string;
+        return (
+          <div className="flex space-x-2">
+            <span className="max-w-[10rem] truncate font-medium">
+              <Badge
+                variant={status === "active" ? "secondary" : "destructive"}
+                className="flex items-center gap-1"
+              >
+                <div className={`w-2 h-2 rounded-full ${
+                  status === "active" ? "bg-green-500" : "bg-red-500"
+                }`} />
+                {status === "active" ? "Hoạt động" : "Ngưng hoạt động"}
+              </Badge>
+            </span>
+          </div>
+        );
+      },
+      enableSorting: true,
     },
     {
       id: "actions",
@@ -184,7 +234,8 @@ export function getColumns(): ColumnDef<User>[] {
                     }, 0)
                   }}
                 >
-                  Edit
+                 
+                  Chỉnh sửa
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
@@ -193,8 +244,10 @@ export function getColumns(): ColumnDef<User>[] {
                       setShowDeleteUserDialog(true)
                     }, 0)
                   }}
+                  className="text-red-600"
                 >
-                  Delete
+                 
+                  Xóa
                   <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
                 </DropdownMenuItem>
               </DropdownMenuContent>

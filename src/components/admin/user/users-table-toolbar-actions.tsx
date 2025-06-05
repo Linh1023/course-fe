@@ -28,7 +28,7 @@ export function UsersTableToolbarActions({
           }}
         />
       ) : null}
-      <CreateUserDialog />
+      <CreateUserDialog/>
     </div>
   )
 }
