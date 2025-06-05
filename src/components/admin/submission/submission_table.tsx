@@ -55,9 +55,9 @@ export function SubmissionTable(props:Props) {
       placeholder: "Lọc tên học viên...",
     },
     {
-      label: "Email",
-      value: "submitterEmail",
-      placeholder: "Lọc email học viên...",
+      label: "Tài khoản",
+      value: "submitterUsername",
+      placeholder: "Lọc tài khoản học viên...",
     },
     {
       label: "Trạng thái",
