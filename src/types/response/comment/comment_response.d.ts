@@ -1,4 +1,4 @@
-type TypeComment = {
+interface TypeComment  {
   id: string;
   lessonName: string;
   lessonId: string;
@@ -8,7 +8,7 @@ type TypeComment = {
   content: string;
   replyCount: number;
 };
-type CommentPageResponse ={
+interface CommentPageResponse {
   result: TypeComment[];
   totalPages: number;
   totalItems: number;
