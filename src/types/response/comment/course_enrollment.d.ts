@@ -1,10 +1,10 @@
-interface CourseEnrollment  {
-  id: string;   
-    courseId: string;
-    accountId: string;
-    courseName: string;
-    accountName: string;
-    enrollmentAt: string;
+interface CourseEnrollment {
+  id: string;
+  courseId: string;
+  accountId: string;
+  courseName: string;
+  accountName: string;
+  enrolledAt: string;
 }
 interface CourseEnrollmentResponse {
   result: CourseEnrollment[];
