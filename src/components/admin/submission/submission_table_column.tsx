@@ -46,16 +46,18 @@ export function getSubmissionColumns(): ColumnDef<SubmissionAdminResponse>[] {
       enableSorting: false,
       enableHiding: false,
     },
+
+
     {
-      accessorKey: "submitterEmail",
+      accessorKey: "submitterUsername",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Email" />
+        <DataTableColumnHeader column={column} title="Tài khoản" />
       ),
       cell: ({ row }) => {
         return (
           <div className="flex space-x-2">
             <span className="max-w-[10rem] truncate font-medium">
-              {row.getValue("submitterEmail")}
+              {row.getValue("submitterUsername")}
             </span>
           </div>
         )
@@ -156,8 +158,8 @@ export function getSubmissionColumns(): ColumnDef<SubmissionAdminResponse>[] {
         return (
           <>
             <UpdateSubmissionSheet
-              showUpdateSubmissionSheet = {showUpdateSubmissionSheet}
-              setShowUpdateSubmissionSheet = {setShowUpdateSubmissionSheet}
+              showUpdateSubmissionSheet={showUpdateSubmissionSheet}
+              setShowUpdateSubmissionSheet={setShowUpdateSubmissionSheet}
               submission={row.original}
             />
             {/* <DeleteCategoriesDialog
@@ -187,7 +189,7 @@ export function getSubmissionColumns(): ColumnDef<SubmissionAdminResponse>[] {
                   }, 0)
                 }}>
                   {row.original.status === "graded" ? "Chỉnh sửa" : "Chấm bài"}
-                 
+
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

@@ -21,7 +21,7 @@ const SubmissionPage = async (props: SubmissionPageProps) => {
         <>
             <div className="flex flex-col gap-4">
                 <div className="h-[100px] flex items-center justify-between gap-2">
-                    <h1 className="text-xl font-semibold">Quản Lý Danh Mục</h1>
+                    <h1 className="text-xl font-semibold">Quản Lý bài nộp</h1>
                 </div>
                 <React.Suspense fallback={<DataTableSkeleton
                     columnCount={3}

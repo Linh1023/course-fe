@@ -55,7 +55,7 @@ export function UpdateSubmissionSheet(props: Props) {
   const form = useForm<UpdateSubmissionSchema>({
     resolver: zodResolver(updateSubmissionSchema),
     defaultValues: {
-      submitterNameEmail: `${submission.submitterName} ${submission.submitterEmail ? `(${submission.submitterEmail})` : ""}`,
+      submitterNameEmail: `${submission.submitterName} ${submission.submitterUsername ? `(${submission.submitterUsername})` : ""}`,
       courseLessonName: `${submission.courseName} (${submission.lessonName})`,
       score: submission.score == null ? "0" : submission.score.toString(),
       comment: submission.comment ?? "",
@@ -65,7 +65,7 @@ export function UpdateSubmissionSheet(props: Props) {
 
   React.useEffect(() => {
     form.reset({
-      submitterNameEmail: `${submission.submitterName} ${submission.submitterEmail ? `(${submission.submitterEmail})` : ""}`,
+      submitterNameEmail: `${submission.submitterName} ${submission.submitterUsername ? `(${submission.submitterUsername})` : ""}`,
       courseLessonName: `${submission.courseName} (${submission.lessonName})`,
       score: submission.score == null ? "0" : submission.score.toString(),
       comment: submission.comment ?? "",
