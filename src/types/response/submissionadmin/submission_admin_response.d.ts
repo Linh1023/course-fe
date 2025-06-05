@@ -3,7 +3,7 @@ interface SubmissionAdminResponse {
     courseName:string; // ten khoa hoc
     lessonName:string; // ten bai hoc
     
-    submitterEmail:string; // email nguoi nop
+    submitterUsername:string; //  nguoi nop
     submitterName:string; // ten nguoi nop
     submissionUrl:string;
     
