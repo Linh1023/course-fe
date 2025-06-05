@@ -1,28 +1,29 @@
+
 "use client"
 
 import * as React from "react"
-import { TableInstanceProvider } from "../share/data-table/table-instance-provider"
-import { DataTable } from "../share/data-table/data-table"
+
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableFilterField } from "@/types/ui/data-table"
-import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table-advance-toolbar"
-import { getSubmissionColumns } from "./submission_table_column"
-import { SubmissionTableFloatingBar } from "./submission_table_floating_bar"
-import { SubmissionTableToolbarActions } from "./submission_table_toolbar_actions"
+import { TableInstanceProvider } from "@/components/admin/share/data-table/table-instance-provider"
+import { DataTable } from "@/components/admin/share/data-table/data-table"
+import { DataTableAdvancedToolbar } from "@/components/admin/share/data-table/advance/data-table-advance-toolbar"
+import { getSubmissionClientColumns } from "./submission_client_table_column"
+
 
 interface Props {
-  submissionsPromise:  Promise<SubmissionPageResponse>
+  submissionsPromise:  Promise<SubmissionClientPageResponse>
 }
 
 
-export function SubmissionTable(props:Props) {
+export function SubmissionClientTable(props:Props) {
 
   const {submissionsPromise} = props
 
     const {result, totalPages} = React.use(submissionsPromise)
 
   // cái này là từng dòng dữ liệu của bảng kể cả header
-  const columns = React.useMemo(() => getSubmissionColumns(), [])
+  const columns = React.useMemo(() => getSubmissionClientColumns(), [])
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -38,7 +39,7 @@ export function SubmissionTable(props:Props) {
 
 
   // khai bao nhung muc de filter
-  const filterFields: DataTableFilterField<SubmissionAdminResponse>[] = [
+  const filterFields: DataTableFilterField<SubmissionClientResponse>[] = [
     {
       label: "Khóa học",
       value: "courseName",
@@ -48,16 +49,6 @@ export function SubmissionTable(props:Props) {
       label: "Bài học",
       value: "lessonName",
       placeholder: "Lọc tên bài học...",
-    },
-    {
-      label: "Tên",
-      value: "submitterName",
-      placeholder: "Lọc tên học viên...",
-    },
-    {
-      label: "Tài khoản",
-      value: "submitterUsername",
-      placeholder: "Lọc tài khoản học viên...",
     },
     {
       label: "Trạng thái",
@@ -86,21 +77,10 @@ export function SubmissionTable(props:Props) {
      
       <DataTable
         table={table}
-       
-        // SubmissionTableFloatingBar cái này là cái button popup lên ở phía dưới màn hình khi mình chọn 1 dòng dữ liệu để xóa
-        floatingBar={<SubmissionTableFloatingBar table={table} 
-               isOpen = {isOpen}
-          setIsOpen = {setIsOpen}
-        />} 
       >
         
-        <DataTableAdvancedToolbar filterFields={filterFields}>
-        
-        {/* SubmissionTableToolbarActions cái này là button nằm ở phía bên trái của filter dùng để xóa và tạo mới */}
-          <SubmissionTableToolbarActions 
-          isOpen = {isOpen}
-          setIsOpen = {setIsOpen}
-          table={table} />
+        <DataTableAdvancedToolbar
+         filterFields={filterFields}>
         
         </DataTableAdvancedToolbar>
       

@@ -1,25 +1,25 @@
 "use client"
 
-import * as React from "react"
-import { TableInstanceProvider } from "../share/data-table/table-instance-provider"
-import { DataTable } from "../share/data-table/data-table"
-import { getColumns } from "./users-table-column"
-import { UsersTableFloatingBar } from "./users-table-floating-bar"
-import { UsersTableToolbarActions } from "./users-table-toolbar-actions"
-import { useDataTable } from "@/hooks/use-data-table"
-import { DataTableFilterField } from "@/types/ui/data-table"
-import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table-advance-toolbar"
+import * as React from "react";
+import { TableInstanceProvider } from "@/components/admin/share/data-table/table-instance-provider";
+import { DataTable } from "@/components/admin/share/data-table/data-table";
+import { DataTableFilterField } from "@/types/ui/data-table";
+import { DataTableAdvancedToolbar } from "@/components/admin/share/data-table/advance/data-table-advance-toolbar";
+import { useDataTable } from "@/hooks/use-data-table";
+import { UsersTableFloatingBar } from "./users-table-floating-bar";
+import { UsersTableToolbarActions } from "./users-table-toolbar-actions";
+import { getColumns } from "./users-table-column";
 
 
 interface UsersTableProps {
-  userPromise: Promise<UserPageResponse>
+  userPromise: Promise<UserPageResponse>;
 }
 
 export function UsersTable({ userPromise }: UsersTableProps) {
-  const { result, totalPages, totalItems, currentPage } = React.use(userPromise)
+  const { result, totalPages } = React.use(userPromise);
 
-  // Di chuyển useMemo và useDataTable lên top-level
-  const columns = React.useMemo(() => getColumns(), [])
+  // Memoize the columns so they don't re-render on every render
+  const columns = React.useMemo(() => getColumns(), []);
 
   const filterFields: DataTableFilterField<User>[] = [
     {
@@ -47,8 +47,8 @@ export function UsersTable({ userPromise }: UsersTableProps) {
       value: "role",
       placeholder: "Lọc theo vai trò...",
       options: [
-        { label: "Admin", value: "ADMIN" },
-        { label: "Khách hàng", value: "CLIENT" },
+        { label: "Quản Trị Viên", value: "ADMIN" },
+        { label: "Học Viên", value: "CLIENT" },
       ],
     },
     {
@@ -60,34 +60,15 @@ export function UsersTable({ userPromise }: UsersTableProps) {
         { label: "Ngưng hoạt động", value: "inactive" },
       ],
     },
-  ]
+  ];
 
   const { table } = useDataTable({
     data: Array.isArray(result) ? result : [],
     columns,
     pageCount: totalPages,
     filterFields,
-    defaultPerPage: 20,
-    // Removed initialState as it is not a valid property of UseDataTableProps
-  })
-
-  // Xử lý lỗi hoặc dữ liệu rỗng sau khi gọi Hooks
-  if (!Array.isArray(result)) {
-    console.error("Dữ liệu người dùng không hợp lệ:", result);
-    return (
-      <div className="text-center text-red-500 py-4">
-        Lỗi: Dữ liệu người dùng không hợp lệ
-      </div>
-    );
-  }
-
-  if (result.length === 0) {
-    return (
-      <div className="text-center text-gray-500 py-4">
-        Không có dữ liệu người dùng để hiển thị
-      </div>
-    );
-  }
+    defaultPerPage: 10,
+  });
 
   return (
     <TableInstanceProvider table={table}>
@@ -100,5 +81,5 @@ export function UsersTable({ userPromise }: UsersTableProps) {
         </DataTableAdvancedToolbar>
       </DataTable>
     </TableInstanceProvider>
-  )
+  );
 }

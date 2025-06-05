@@ -13,22 +13,15 @@ export interface SubmissionPageProps {
 const SubmissionPage = async (props: SubmissionPageProps) => {
     const { searchParams } = props
     const query = new URLSearchParams(searchParams).toString();
-    const res = await FetchServerGetApi(API.SUBMISSON.SUBMISSION + `?${query}`, "/admin/submission");
-    let submissions:SubmissionAdminResponse[] = [];
-    let totalPages:number = 0
-    if (res && res.status === 200) {
-        submissions = res.result
-        totalPages  =res.totalPages
-        
-    }
-    console.log("submissions >>> ", res)
+    const submissionsPromise =  FetchServerGetApi(API.SUBMISSON.SUBMISSION + `?${query}`, "/admin/submission");
+  
  
 
     return (
         <>
             <div className="flex flex-col gap-4">
                 <div className="h-[100px] flex items-center justify-between gap-2">
-                    <h1 className="text-xl font-semibold">Quản Lý Danh Mục</h1>
+                    <h1 className="text-xl font-semibold">Quản Lý bài nộp</h1>
                 </div>
                 <React.Suspense fallback={<DataTableSkeleton
                     columnCount={3}
@@ -43,9 +36,7 @@ const SubmissionPage = async (props: SubmissionPageProps) => {
                  align="end"
                />
                     <SubmissionTable 
-                    submissions = {submissions}
-                    totalPages = {totalPages}
-
+                    submissionsPromise = {submissionsPromise}
                     />
                 </React.Suspense>
             </div>

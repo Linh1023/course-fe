@@ -19,6 +19,7 @@ import { DataTableColumnHeader } from "../share/data-table/data-table-column-hea
 import { Ellipsis } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
+import { UpdateSubmissionSheet } from "./update_submission_sheet"
 export function getSubmissionColumns(): ColumnDef<SubmissionAdminResponse>[] {
   return [
     {
@@ -45,16 +46,18 @@ export function getSubmissionColumns(): ColumnDef<SubmissionAdminResponse>[] {
       enableSorting: false,
       enableHiding: false,
     },
+
+
     {
-      accessorKey: "submitterEmail",
+      accessorKey: "submitterUsername",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Email" />
+        <DataTableColumnHeader column={column} title="Tài khoản" />
       ),
       cell: ({ row }) => {
         return (
           <div className="flex space-x-2">
             <span className="max-w-[10rem] truncate font-medium">
-              {row.getValue("submitterEmail")}
+              {row.getValue("submitterUsername")}
             </span>
           </div>
         )
@@ -149,18 +152,16 @@ export function getSubmissionColumns(): ColumnDef<SubmissionAdminResponse>[] {
       id: "actions",
       cell: function Cell({ row }) {
         const [isUpdatePending, startUpdateTransition] = React.useTransition()
-        const [showUpdateCategorySheet, setShowUpdateCategorySheet] =
-          React.useState(false)
-        const [showDeleteCategoryDialog, setShowDeleteCategoryDialog] =
+        const [showUpdateSubmissionSheet, setShowUpdateSubmissionSheet] =
           React.useState(false)
 
         return (
           <>
-            {/* <UpdateCategorySheet
-              open={showUpdateCategorySheet}
-              onOpenChange={setShowUpdateCategorySheet}
-              category={row.original}
-            /> */}
+            <UpdateSubmissionSheet
+              showUpdateSubmissionSheet={showUpdateSubmissionSheet}
+              setShowUpdateSubmissionSheet={setShowUpdateSubmissionSheet}
+              submission={row.original}
+            />
             {/* <DeleteCategoriesDialog
               open={showDeleteCategoryDialog}
               onOpenChange={setShowDeleteCategoryDialog}
@@ -184,21 +185,11 @@ export function getSubmissionColumns(): ColumnDef<SubmissionAdminResponse>[] {
               >
                 <DropdownMenuItem onSelect={() => {
                   setTimeout(() => {
-                    setShowUpdateCategorySheet(true)
+                    setShowUpdateSubmissionSheet(true)
                   }, 0)
                 }}>
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onSelect={() => {
-                    setTimeout(() => {
-                      setShowDeleteCategoryDialog(true)
-                    }, 0)
-                  }}
-                >
-                  Delete
-                  <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+                  {row.original.status === "graded" ? "Chỉnh sửa" : "Chấm bài"}
+
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
