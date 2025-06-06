@@ -1,4 +1,4 @@
-type CommentStatusRequest = {
+interface CommentStatusRequest  {
   commentId: string;
-  status: "approved" | "rejected";
+  status: "active" | "inactive";
 };

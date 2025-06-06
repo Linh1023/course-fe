@@ -1,23 +1,35 @@
 // comments-table-toolbar-actions.tsx
 "use client";
 
-import { type ColumnDef } from "@tanstack/react-table";
-import * as React from "react";
-// import { toast } from "sonner"
+import { FetchClientPutApi } from "@/actions/client/fetch_client_api";
+import API from "@/api/api";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { type ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
+import Link from "next/link";
+import { useState, useTransition } from "react";
 import { DataTableColumnHeader } from "../share/data-table/data-table-column-header";
+import { DeleteCommentsDialog } from "./delete-comments-dialog";
+import { set } from "zod";
 
-export function getColumns(): ColumnDef<TypeComment>[] {
+export function getCommentColumns(): ColumnDef<CommentAdmin>[] {
   return [
     {
       id: "select",
@@ -113,14 +125,28 @@ export function getColumns(): ColumnDef<TypeComment>[] {
     {
       id: "actions",
       cell: function Cell({ row }) {
-        const [isUpdatePending, startUpdateTransition] = React.useTransition();
-        const [showUpdateCommentSheet, setShowUpdateCommentSheet] =
-          React.useState(false);
         const [showDeleteCommentDialog, setShowDeleteCommentDialog] =
-          React.useState(false);
+          useState(false);
+        // const fetchDeleteComment = async (commentId: string) => {
+        //   const request: CommentStatusRequest = {
+        //     commentId: commentId,
+        //     status: "inactive",
+        //   };
+        //   const res = await FetchClientPutApi(
+        //     API.COMMENT.ADMIN_DELETE_COMMENT,
+        //     request
+        //   );
+        // };
 
         return (
           <>
+            <DeleteCommentsDialog
+              open={showDeleteCommentDialog}
+              onOpenChange={setShowDeleteCommentDialog}
+              comments={[row.original]}
+              showTrigger={false}
+              onSuccess={() => row.toggleSelected(false)}
+            />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -131,29 +157,22 @@ export function getColumns(): ColumnDef<TypeComment>[] {
                   <Ellipsis className="size-4" aria-hidden="true" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="w-40 overflow-visible dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/40"
-              >
-                <DropdownMenuItem
-                  onSelect={() => {
-                    setTimeout(() => {
-                      setShowUpdateCommentSheet(true);
-                    }, 0);
-                  }}
-                >
-                  Xem chi tiết
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem>
+                  <Link
+                    href={`/lesson/${row.original.lessonId}?comment=${row.original.id}`}
+                  >
+                    Xem chi tiết
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onSelect={() => {
+                <DropdownMenuItem 
+                onSelect={() => {
                     setTimeout(() => {
-                      setShowDeleteCommentDialog(true);
-                    }, 0);
-                  }}
-                >
+                      setShowDeleteCommentDialog(true)
+                    }, 0)
+                  }}>
                   Xóa
-                  <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
