@@ -29,7 +29,7 @@ import { DataTableColumnHeader } from "../share/data-table/data-table-column-hea
 import { DeleteCommentsDialog } from "./delete-comments-dialog";
 import { set } from "zod";
 
-export function getCommentColumns(): ColumnDef<TypeComment>[] {
+export function getCommentColumns(): ColumnDef<CommentAdmin>[] {
   return [
     {
       id: "select",

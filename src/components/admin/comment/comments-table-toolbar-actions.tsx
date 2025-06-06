@@ -14,7 +14,7 @@ import { DeleteCommentsDialog } from "./delete-comments-dialog"
 
 
 interface CommentsTableToolbarActionsProps {
-  table: Table<TypeComment>
+  table: Table<CommentAdmin>
 }
 
 export function CommentsTableToolbarActions({

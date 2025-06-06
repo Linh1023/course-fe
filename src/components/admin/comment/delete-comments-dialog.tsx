@@ -22,7 +22,7 @@ import { TrashIcon } from "lucide-react";
 
 interface DeleteCommentsDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  comments: Row<TypeComment>["original"][];
+  comments: Row<CommentAdmin>["original"][];
   showTrigger?: boolean;
   onSuccess?: () => void;
 }

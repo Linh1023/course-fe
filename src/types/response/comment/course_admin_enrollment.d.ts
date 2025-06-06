@@ -1,4 +1,4 @@
-interface CourseEnrollment {
+interface CourseEnrollmentAdminResponse {
   id: string;
   courseId: string;
   accountId: string;

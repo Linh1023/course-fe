@@ -11,7 +11,7 @@ import { CommentsTableFloatingBar } from "./comments-table-floating-bar";
 import { CommentsTableToolbarActions } from "./comments-table-toolbar-actions";
 
 interface CommentsTableProps {
-  commentPromise: Promise<CommentPageResponse>;
+  commentPromise: Promise<CommentAdminResponse>;
 }
 
 export function CommentsTable({ commentPromise }: CommentsTableProps) {
@@ -33,7 +33,7 @@ export function CommentsTable({ commentPromise }: CommentsTableProps) {
    * @prop {React.ReactNode} [icon] - An optional icon to display next to the label.
    * @prop {boolean} [withCount] - An optional boolean to display the count of the filter option.
    */
-  const filterFields: DataTableFilterField<TypeComment>[] = [
+  const filterFields: DataTableFilterField<CommentAdmin>[] = [
     {
       value: "authorName",
       label: "Người dùng",

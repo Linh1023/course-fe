@@ -13,7 +13,7 @@ import { toast } from "sonner"
 import { DeleteCommentsDialog } from "./delete-comments-dialog"
 
 interface CommentsTableFloatingBarProps {
-  table: Table<TypeComment>
+  table: Table<CommentAdmin>
 }
 
 export function CommentsTableFloatingBar({ table }: CommentsTableFloatingBarProps) {

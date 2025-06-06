@@ -1,18 +1,16 @@
-interface CommentClient {
+interface CommentAdmin{
   id: string;
+  lessonName: string;
+  lessonId: string;
   authorName: string;
   authorId: string;
-  authorAvatar: string;
   createdAt: string;
   content: string;
   replyCount: number;
-}
-
- interface CommentClientResponse {
-  result: CommentClient[];
+};
+interface CommentAdminResponse {
+  result: CommentAdmin[];
   totalPages: number;
   totalItems: number;
   currentPage: number;
-  status: number;
-  message: string;
 }

@@ -7,7 +7,7 @@ const COMMENT_API = {
     CREATE_COMMENT: `${API_HOST}/api/comment/create`,
     PUBLIC_LESSON_COMMENT: `${API_HOST}/api/comment/lesson`,
     PUBLIC_COURSE_COMMENT: `${API_HOST}/api/comment/course`,
-    PUBLIC_REPLY_COMMENT: `${API_HOST}/api/comment/reply`,
+    PUBLIC_COMMENT_REPLY: `${API_HOST}/api/comment/reply`,
 
 };
 export default COMMENT_API;
