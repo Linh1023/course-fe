@@ -35,10 +35,10 @@
 
 // interface UpdateCESheetProps
 //   extends React.ComponentPropsWithRef<typeof Sheet> {
-//   courseEnrollment: CourseEnrollment
+//   courseEnrollment: CourseEnrollmentAdmin
 // }
 
-// export function UpdateCESheet({  courseEnrollment: CourseEnrollment
+// export function UpdateCESheet({  courseEnrollment: CourseEnrollmentAdmin
 // , ...props }: UpdateCESheetProps) {
 //   const router = useRouter()
 //   const [isUpdatePending, startUpdateTransition] = React.useTransition()

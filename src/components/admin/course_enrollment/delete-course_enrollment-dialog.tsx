@@ -23,7 +23,7 @@
 
 // interface DeleteCESDialogProps
 //   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-//   ces: Row<CourseEnrollment>["original"][]
+//   ces: Row<CourseEnrollmentAdmin>["original"][]
 //   showTrigger?: boolean
 //   onSuccess?: () => void
 // }

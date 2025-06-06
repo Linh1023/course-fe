@@ -8,7 +8,7 @@ import { toast } from "sonner"
 
 
 interface CESTableToolbarActionsProps {
-  table: Table<CourseEnrollment>
+  table: Table<CourseEnrollmentAdmin>
 }
 
 export function CESTableToolbarActions({

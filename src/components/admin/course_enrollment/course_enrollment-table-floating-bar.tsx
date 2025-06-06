@@ -13,7 +13,7 @@ import { TrashIcon, X } from "lucide-react"
 import { toast } from "sonner"
 
 interface CESTableFloatingBarProps {
-  table: Table<CourseEnrollment>
+  table: Table<CourseEnrollmentAdmin>
 }
 
 export function CESTableFloatingBar({ table }: CESTableFloatingBarProps) {

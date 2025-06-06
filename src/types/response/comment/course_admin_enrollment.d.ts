@@ -1,4 +1,4 @@
-interface CourseEnrollmentAdminResponse {
+interface CourseEnrollmentAdmin {
   id: string;
   courseId: string;
   accountId: string;
@@ -7,7 +7,7 @@ interface CourseEnrollmentAdminResponse {
   enrolledAt: string;
 }
 interface CourseEnrollmentResponse {
-  result: CourseEnrollment[];
+  result: CourseEnrollmentAdmin[];
   totalPages: number;
   totalItems: number;
   currentPage: number;

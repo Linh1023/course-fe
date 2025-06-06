@@ -31,7 +31,7 @@ export function CourseEnrollmentTable({ courseEnrollmentPromise }: CESTableProps
    * @prop {React.ReactNode} [icon] - An optional icon to display next to the label.
    * @prop {boolean} [withCount] - An optional boolean to display the count of the filter option.
    */
-  const filterFields: DataTableFilterField<CourseEnrollment>[] = [
+  const filterFields: DataTableFilterField<CourseEnrollmentAdmin>[] = [
     {
       label: "Tên người dùng",
       value: "accountName",

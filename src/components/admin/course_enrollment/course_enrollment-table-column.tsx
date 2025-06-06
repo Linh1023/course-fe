@@ -19,7 +19,7 @@ import { DataTableColumnHeader } from "../share/data-table/data-table-column-hea
 import { Ellipsis } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-export function getColumns(): ColumnDef<CourseEnrollment>[] {
+export function getColumns(): ColumnDef<CourseEnrollmentAdmin>[] {
   return [
     {
       id: "select",
