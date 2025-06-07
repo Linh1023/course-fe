@@ -58,11 +58,11 @@ export function DataTableFilterItem<TData>({
         searchParams
       )
 
-      if (debounceValue != "") {
+      // if (debounceValue != "") {
         if (setIsLoading) {
           setIsLoading(true)
         }
-      }
+      // }
 
       router.push(`${pathname}?${newSearchParams}`, {
         scroll: false,
@@ -77,11 +77,11 @@ export function DataTableFilterItem<TData>({
         searchParams
       )
 
-      if (debounceValue != "") {
+      // if (debounceValue != "") {
         if (setIsLoading) {
           setIsLoading(true)
         }
-      }
+      // }
 
 
       router.push(`${pathname}?${newSearchParams}`, {
