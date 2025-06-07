@@ -1,19 +1,32 @@
 "use client";
 
-import { FetchServerGetApiNoToken } from "@/actions/server/fetch_server_api";
+import {
+  FetchServerGetApiNoToken
+} from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { formatTimeShort } from "@/utils/format_time";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CommentItem } from "./comment-item";
+
+interface CommentClient {
+  id: string;
+  authorName: string;
+  authorAvatar: string;
+  content: string;
+  createdAt: string;
+  replyCount: number;
+}
+
+
 
 interface Props {
   comments: { result: CommentClient[]; totalPages: number };
   lessonId: string;
 }
-
 const CommentSection = ({ comments: initialComments, lessonId }: Props) => {
   const [comments, setComments] = useState<CommentClient[]>(
     initialComments.result || []
@@ -25,11 +38,15 @@ const CommentSection = ({ comments: initialComments, lessonId }: Props) => {
   const fetchComments = async (page: number, append = false) => {
     setLoadingMore(true);
     const data = await FetchServerGetApiNoToken(
-      `${API.COMMENT.PUBLIC_LESSON_COMMENT}/${lessonId}?pageIndex=${page}`
+      `${API.COMMENT.PUBLIC_LESSON_COMMENT}?lessonId=${lessonId}&pageIndex=${page}`
     );
     setComments((prev) => (append ? [...prev, ...data.result] : data.result));
     setTotalPages(data.totalPages);
     setLoadingMore(false);
+  };
+
+  const handleCommentAdded = () => {
+    fetchComments(0, false);
   };
 
   useEffect(() => {
@@ -37,19 +54,26 @@ const CommentSection = ({ comments: initialComments, lessonId }: Props) => {
   }, [pageIndex]);
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <h2 className="text-xl font-semibold">Bình luận</h2>
-
-      <div className="space-y-4">
+    <div className="max-w-3xl mx-auto space-y-6 p-4">
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        Bình luận
+      </h2>
+      <div className="space-y-4 mw-[500px]">
         {comments.map((comment) => (
-          <Card key={comment.id} className="border-0 shadow-none">
+          <Card
+            key={comment.id}
+            className="border-0 shadow-none bg-transparent"
+          >
             <CardContent className="p-0">
-              <CommentItem comment={comment} />
+              <CommentItem
+                comment={comment}
+                lessonId={lessonId}
+                onCommentAdded={handleCommentAdded}
+              />
             </CardContent>
           </Card>
         ))}
       </div>
-
       {pageIndex + 1 < totalPages && (
         <div className="flex justify-center mt-4">
           <Button
@@ -61,13 +85,15 @@ const CommentSection = ({ comments: initialComments, lessonId }: Props) => {
             {loadingMore ? (
               <Loader2 className="w-4 h-4 animate-spin mr-2" />
             ) : (
-              "Xem thêm"
+              "Xem thêm bình luận"
             )}
           </Button>
         </div>
       )}
-
       <Separator className="mt-6" />
+      <div className="text-sm text-gray-500 dark:text-gray-400 text-center">
+        Cập nhật lần cuối: {formatTimeShort(new Date().toISOString())}
+      </div>
     </div>
   );
 };

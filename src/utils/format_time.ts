@@ -14,9 +14,9 @@ export const formatTimeShort = (dateString: string): string => {
   const diffDays = now.diff(date, "day");
 
   if (diffMinutes < 1) return "Vừa xong";
-  if (diffMinutes < 60) return `${diffMinutes}p`;
-  if (diffHours < 24) return `${diffHours}g`;
-  if (diffDays < 7) return `${diffDays}ng`;
+  if (diffMinutes < 60) return `${diffMinutes} phút`;
+  if (diffHours < 24) return `${diffHours} giờ`;
+  if (diffDays < 7) return `${diffDays} ngày`;
   return date.format("DD/MM"); // hoặc return `${diffDays}ng` nếu vẫn muốn theo ngày
 };
   export  const formatTime = (seconds: number) => {
