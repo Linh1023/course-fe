@@ -50,7 +50,7 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
         {/* Cột trái */}
         <div
           className={`${
-            currentAccount ? "lg:col-span-3" : "lg:col-span-4"
+            currentAccount &&  enrollCourse.length > 0 ? "lg:col-span-3" : "lg:col-span-4"
           } space-y-6`}
         >
           {/* Carousel */}
@@ -91,13 +91,13 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
               title="Khóa học nổi bật"
               courses={data_hot}
               layout="grid"
-              seeMoreLink="/search?category=hot"
+              seeMoreLink="/search?sort=hot&page=0&size=12"
             />
             <CourseList
               title="Khóa học mới ra mắt"
               courses={data_newest}
               layout="grid"
-              seeMoreLink="/search?category=newest"
+              seeMoreLink="/search?sort=new&page=0&size=12"
             />
             <CourseList
               title="Khóa học mới ra mắt"

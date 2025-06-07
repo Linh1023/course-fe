@@ -21,6 +21,7 @@ import API from "@/api/api"
 import { FetchServerDeleteApi } from "@/actions/server/fetch_server_api"
 import { useState } from "react"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 
 interface DeleteSubmissionsDialogProps
@@ -30,28 +31,33 @@ interface DeleteSubmissionsDialogProps
   isOpen: boolean, // giá trị để biết để Dialog bật tắt
   setIsOpen: (v: boolean) => void, // cái này để Dialog nó set bật tắt
   showTrigger?: boolean
+      setIsLoading: (v: boolean) => void,
 }
 
 export function DeleteSubmissionsDialog(props: DeleteSubmissionsDialogProps) {
 
-  const { submissions, isOpen, setIsOpen, hanldeDeletedSuccess, showTrigger } = props
+  const { submissions, isOpen, setIsOpen, hanldeDeletedSuccess, showTrigger ,setIsLoading} = props
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoadingButton] = useState(false)
+
+  const router = useRouter()
 
   const handleDeteledSubmissions = async () => {
-    setIsLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    setIsLoadingButton(true)
+    // await new Promise(resolve => setTimeout(resolve, 1000));
 
     console.log("submissions >>> ", submissions)
 
     for (const submission of submissions) {
       console.log(submission.id);
+      await FetchServerDeleteApi(`${API.SUBMISSON.SUBMISSION}/${submission.id}`)
     }
+    router.refresh();
 
     //  thanh cong
-      setIsOpen(false)
-    
-    setIsLoading(false)
+    setIsOpen(false)
+    setIsLoading(true)
+    setIsLoadingButton(false)
     hanldeDeletedSuccess()
   }
 

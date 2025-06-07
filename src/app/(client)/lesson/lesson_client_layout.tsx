@@ -19,8 +19,8 @@ export default function LessonClientLayout({ children }: { children: React.React
     const [chapter, setChapter] = useState<string>("");
 
     const [clickedLessons, setClickedLessons] = useState<string[]>([]);
-    
-    
+
+
     const parts = pathName.split('/');
     const currentLessonId = parts[2];
     const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext()
@@ -36,7 +36,7 @@ export default function LessonClientLayout({ children }: { children: React.React
 
 
     useEffect(() => {
-        
+
         const fetchGetCourseInfo = async () => {
             startLoadingSpiner()
             const parts = pathName.split('/'); // ["", "lesson", "abc123"]
@@ -64,7 +64,7 @@ export default function LessonClientLayout({ children }: { children: React.React
             }
         }
 
-    }, [pathName, courseInfoResponse ])
+    }, [pathName, courseInfoResponse])
 
 
     useEffect(() => {
@@ -79,7 +79,7 @@ export default function LessonClientLayout({ children }: { children: React.React
     const handlePreviousLesson = () => {
         if (!courseInfoResponse) return;
 
-       
+
         let found = false;
 
         for (let i = 0; i < courseInfoResponse.chapters.length; i++) {
@@ -87,7 +87,7 @@ export default function LessonClientLayout({ children }: { children: React.React
             const lessonIndex = chapter.lessons.findIndex(lesson => lesson.id === currentLessonId);
 
             if (lessonIndex !== -1) {
-                 startLoadingSpiner()
+                startLoadingSpiner()
                 if (lessonIndex > 0) {
                     // Lùi về bài trước trong cùng chương
                     const prevLessonId = chapter.lessons[lessonIndex - 1].id;
@@ -113,7 +113,7 @@ export default function LessonClientLayout({ children }: { children: React.React
         if (!courseInfoResponse) return;
 
 
-       
+
         let found = false;
 
         for (let i = 0; i < courseInfoResponse.chapters.length; i++) {
@@ -121,7 +121,7 @@ export default function LessonClientLayout({ children }: { children: React.React
             const lessonIndex = chapter.lessons.findIndex(lesson => lesson.id === currentLessonId);
 
             if (lessonIndex !== -1) {
-                 startLoadingSpiner()
+                startLoadingSpiner()
                 if (lessonIndex < chapter.lessons.length - 1) {
                     // Tới bài tiếp theo trong cùng chương
                     const nextLessonId = chapter.lessons[lessonIndex + 1].id;
@@ -150,18 +150,27 @@ export default function LessonClientLayout({ children }: { children: React.React
     return (
         <>
 
-     <div className="fixed top-68 100vh left-0 w-full z-30">
+            <div className="fixed top-68 100vh left-0 w-full z-30">
 
                 <SidebarProvider
                     style={{
-                        "--sidebar-width": "370px"
+                        "--sidebar-width": "400px"
                     } as React.CSSProperties}
 
                 >
 
                     <main className="flex-1 overflow-y-auto h-[calc(100dvh-132px)] ">
                         <div className="p-2">
-                            <span className="font-bold flex items-center gap-2 text-[20px]" > <BookCheck /> {courseInfoResponse?.name}</span>
+                            <div className="mb-2">
+                                <div className="bg-white rounded-lg p-4 shadow-sm">
+                                    <span className="font-semibold flex items-center gap-3 text-lg text-gray-800">
+                                        <div className="bg-indigo-100 p-2 rounded-lg">
+                                            <BookCheck className="text-indigo-600 w-5 h-5" />
+                                        </div>
+                                        {courseInfoResponse?.name}
+                                    </span>
+                                </div>
+                            </div>
                             {children}
                         </div>
                     </main>
@@ -171,39 +180,63 @@ export default function LessonClientLayout({ children }: { children: React.React
                         clickedLessons={clickedLessons}
                     />
 
-                    <div className=" fixed bottom-0  z-50 flex items-center p-2 bg-[#f1f5f9]  control-lesson-custom justify-between
-                w-full
-                ">
-                        <span className="flex items-center font-bold gap-2 lesson-chapter-custom mr-[10px]" > <CirclePlay /> {chapter}</span>
+                    <div className="fixed bottom-0 z-50 w-full bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-2xl control-lesson-custom">
+                        {/* Background gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/50 via-white/80 to-purple-50/50"></div>
 
-                        <div className="flex items-center justify-between gap-4">
-                            <div className="flex items-center">
-                                <Button className="h-[40px] mr-[5px]"
-                                    onClick={() => { handlePreviousLesson() }}
-                                >
-                                    <ChevronLeft />
-                                    <span className="button-next-lesson-custom"
+                        <div className="relative flex items-center justify-between p-4  mx-auto">
 
-                                    > Bài trước</span>
-                                </Button>
-                                <Button className="h-[40px] bg-[#3B82F6] hover:bg-[#6a95db]"
-                                    onClick={() => { handleNextLesson() }}
-                                >
-                                    <span className="button-next-lesson-custom "
-
-                                    >  Bài tiếp</span>
-                                    <ChevronRight />
-                                </Button>
+                            {/* Left side - Chapter info */}
+                            <div className="flex items-center min-w-0 flex-1 mr-6">
+                                <div className="flex items-center font-semibold text-gray-800 lesson-chapter-custom">
+                                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-xl shadow-lg mr-3">
+                                        <CirclePlay className="w-5 h-5 text-white" />
+                                    </div>
+                                    <span className="text-sm md:text-base truncate">
+                                        {chapter}
+                                    </span>
+                                </div>
                             </div>
 
-                            <SidebarTrigger
-                                className={`bg-[#FE4444] text-white hover:text-white px-4 py-3 rounded-lg shadow-lg
-                        hover:bg-[#F87171] transition-colors flex items-center gap-2 w-[120px] h-[40px]
-                        before:content-['📖_Danh_sách'] 
-                        [&>*]:hidden sidebar-trigger-custom`}
-                            />
+                            {/* Right side - Controls */}
+                            <div className="flex items-center gap-3">
+
+                                {/* Navigation buttons */}
+                                <div className="flex items-center gap-2">
+                                    {/* Previous button */}
+                                    <Button
+                                        className="group relative h-11 px-4 bg-white hover:bg-gray-50 border border-gray-300 hover:border-gray-400 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 ease-in-out flex items-center gap-2"
+                                        onClick={handlePreviousLesson}
+                                    >
+                                        <div className="w-5 h-5 rounded-full bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                            <ChevronLeft className="w-4 h-4 text-gray-600" />
+                                        </div>
+                                        <span className="button-next-lesson-custom text-sm font-medium text-gray-700 hidden sm:inline">
+                                            Bài trước
+                                        </span>
+                                    </Button>
+
+                                    {/* Next button */}
+                                    <Button
+                                        className="group relative h-11 px-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 ease-in-out flex items-center gap-2"
+                                        onClick={handleNextLesson}
+                                    >
+                                        <span className="button-next-lesson-custom text-sm font-medium text-white hidden sm:inline">
+                                            Bài tiếp
+                                        </span>
+                                        <div className="w-5 h-5 rounded-full bg-white/20 group-hover:bg-white/30 flex items-center justify-center transition-colors">
+                                            <ChevronRight className="w-4 h-4 text-white" />
+                                        </div>
+                                    </Button>
+                                </div>
+
+                                {/* Sidebar trigger */}
+                                <SidebarTrigger className="group bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 h-11 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 ease-in-out flex items-center gap-2 min-w-[120px] justify-center sidebar-trigger-custom" />
+                            </div>
                         </div>
 
+                        {/* Bottom accent line */}
+                        {/* <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div> */}
                     </div>
                 </SidebarProvider>
 

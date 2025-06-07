@@ -13,12 +13,14 @@ import { DataTableFilterItem } from "./data-table-filter-item"
 interface DataTableAdvancedToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
   filterFields?: DataTableFilterField<TData>[]
+  setIsLoading?:(v:boolean) => void
 }
 
 export function DataTableAdvancedToolbar<TData>({
   filterFields = [],
   children,
   className,
+  setIsLoading,
   ...props
 }: DataTableAdvancedToolbarProps<TData>) {
   const searchParams = useSearchParams()
@@ -104,6 +106,7 @@ export function DataTableAdvancedToolbar<TData>({
             .filter((option) => !option.isMulti)
             .map((selectedOption) => (
               <DataTableFilterItem
+              setIsLoading = {setIsLoading}
                 key={String(selectedOption.value)}
                 selectedOption={selectedOption}
                 setSelectedOptions={setSelectedOptions}

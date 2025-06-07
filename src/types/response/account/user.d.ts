@@ -8,6 +8,7 @@ interface User {
   role: "ADMIN" | "CLIENT";
   sex: "MALE" | "FEMALE" | "OTHER";
   phone: string;
+  password: string;
   avatarUrl: string;
   birthday: string;
 }

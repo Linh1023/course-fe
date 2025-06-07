@@ -1,19 +1,18 @@
-"use client"
-
-import * as React from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+  DialogClose,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -21,53 +20,62 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { CreateUserSchema, createUserSchema } from "@/validation/userSchema"
-import { PlusIcon } from "lucide-react"
-import { LoaderIcon } from "@/components/share/loading-icon"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import API from "@/api/api"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { FetchServerPostApi } from "@/actions/server/fetch_server_api"
+} from "@/components/ui/tooltip";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { LoaderIcon, PlusIcon } from "lucide-react";
+// Update the import path below to the correct relative path if needed, for example:
+import { FetchServerPostApi } from "@/actions/server/fetch_server_api";
+import API from "@/api/api";
+import { CreateUserSchema, createUserSchema } from "@/validation/userSchema";
 
 export function CreateUserDialog() {
-  const router = useRouter()
-  const [open, setOpen] = React.useState(false)
-  const [isCreatePending, startCreateTransition] = React.useTransition()
+  const router = useRouter();
+  const [open, setOpen] = React.useState(false);
+  const [isCreatePending, startCreateTransition] = React.useTransition();
+
   const form = useForm<CreateUserSchema>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
       name: "",
       email: "",
       username: "",
-      password: "",
-      sex: "other",
-      role: "student",
       status: "active",
+      role: "CLIENT",
+      sex: "OTHER",
+      phone: "",
+      avatarUrl: "",
       birthday: "",
+      password: "",
     },
-  })
+  });
 
   function onSubmit(input: CreateUserSchema) {
     startCreateTransition(async () => {
-      const res = await FetchServerPostApi(API.ACCOUNT.CREATE, input, "/admin/user")
+      const res = await FetchServerPostApi(API.ACCOUNT.CREATE, input, "/admin/user");
       if (res.status === 200) {
-        router.replace("?page=1")
-        form.reset()
-        toast.success("Tạo người dùng thành công")
-        setOpen(false)
+        router.replace("?page=1");
+        form.reset();
+        toast.success("Tạo người dùng thành công");
+        setOpen(false);
       } else {
-        toast.error("Tạo người dùng thất bại, vui lòng thử lại sau")
+        toast.error("Tạo người dùng thất bại, vui lòng thử lại sau");
       }
-    })
+    });
   }
 
   return (
@@ -88,7 +96,7 @@ export function CreateUserDialog() {
         </Tooltip>
       </TooltipProvider>
 
-      <DialogContent>
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Tạo người dùng</DialogTitle>
           <DialogDescription>
@@ -98,7 +106,7 @@ export function CreateUserDialog() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
           >
             <FormField
               control={form.control}
@@ -172,6 +180,60 @@ export function CreateUserDialog() {
             />
             <FormField
               control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Số điện thoại</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Số điện thoại"
+                      type="tel"
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="avatarUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL ảnh đại diện</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://example.com/avatar.jpg"
+                      type="url"
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="birthday"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ngày sinh</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="YYYY-MM-DD"
+                      type="date"
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="sex"
               render={({ field }) => (
                 <FormItem>
@@ -187,13 +249,13 @@ export function CreateUserDialog() {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="male" className="capitalize">
+                        <SelectItem value="MALE" className="capitalize">
                           Nam
                         </SelectItem>
-                        <SelectItem value="female" className="capitalize">
+                        <SelectItem value="FEMALE" className="capitalize">
                           Nữ
                         </SelectItem>
-                        <SelectItem value="other" className="capitalize">
+                        <SelectItem value="OTHER" className="capitalize">
                           Khác
                         </SelectItem>
                       </SelectGroup>
@@ -220,14 +282,11 @@ export function CreateUserDialog() {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="admin" className="capitalize">
+                        <SelectItem value="ADMIN" className="capitalize">
                           Admin
                         </SelectItem>
-                        <SelectItem value="instructor" className="capitalize">
-                          Giảng viên
-                        </SelectItem>
-                        <SelectItem value="student" className="capitalize">
-                          Học viên
+                        <SelectItem value="CLIENT" className="capitalize">
+                          Khách hàng
                         </SelectItem>
                       </SelectGroup>
                     </SelectContent>
@@ -266,43 +325,27 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="birthday"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ngày sinh</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="YYYY-MM-DD"
-                      type="date"
-                      className="resize-none"
-                      {...field}
+            <div className="col-span-1 md:col-span-2">
+              <DialogFooter className="gap-2 pt-2 sm:space-x-0">
+                <DialogClose asChild>
+                  <Button type="button" variant="outline">
+                    Hủy
+                  </Button>
+                </DialogClose>
+                <Button disabled={isCreatePending}>
+                  {isCreatePending && (
+                    <LoaderIcon
+                      className="mr-1.5 size-4 animate-spin"
+                      aria-hidden="true"
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <DialogFooter className="gap-2 pt-2 sm:space-x-0">
-              <DialogClose asChild>
-                <Button type="button" variant="outline">
-                  Hủy
+                  )}
+                  Tạo mới
                 </Button>
-              </DialogClose>
-              <Button disabled={isCreatePending}>
-                {isCreatePending && (
-                  <LoaderIcon
-                    className="mr-1.5 size-4 animate-spin"
-                    aria-hidden="true"
-                  />
-                )}
-                Tạo mới
-              </Button>
-            </DialogFooter>
+              </DialogFooter>
+            </div>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

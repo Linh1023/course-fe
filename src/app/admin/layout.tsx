@@ -10,7 +10,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <NuqsAdapter>
+    
       <ThemeProvider
         attribute="class"
         defaultTheme="system"
@@ -31,7 +31,7 @@ export default function AdminLayout({
           </main>
         </SidebarProvider>
       </ThemeProvider>
-    </NuqsAdapter>
+ 
 
   );
 }

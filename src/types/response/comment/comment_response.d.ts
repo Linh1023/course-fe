@@ -1,16 +1,18 @@
-type TypeComment = {
+interface CommentClient {
   id: string;
-  lessonName: string;
-  lessonId: string;
   authorName: string;
   authorId: string;
+  authorAvatar: string;
   createdAt: string;
   content: string;
   replyCount: number;
-};
-type CommentResponse ={
-  result: TypeComment[];
+}
+
+ interface CommentClientResponse {
+  result: CommentClient[];
   totalPages: number;
   totalItems: number;
   currentPage: number;
+  status: number;
+  message: string;
 }

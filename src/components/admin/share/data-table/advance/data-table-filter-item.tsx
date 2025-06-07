@@ -13,6 +13,7 @@ import { useTableInstanceContext } from "../table-instance-provider"
 import { DataTableFilterOption } from "@/types/ui/data-table"
 import { TrashIcon } from "lucide-react"
 import { DataTableAdvancedFacetedFilter } from "./data-table-advanced-faceted-filter"
+import { split } from "postcss/lib/list"
 
 interface DataTableFilterItemProps<TData> {
   selectedOption: DataTableFilterOption<TData>
@@ -20,12 +21,14 @@ interface DataTableFilterItemProps<TData> {
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
   defaultOpen: boolean
+  setIsLoading?: (v: boolean) => void
 }
 
 export function DataTableFilterItem<TData>({
   selectedOption,
   setSelectedOptions,
   defaultOpen,
+  setIsLoading
 }: DataTableFilterItemProps<TData>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -43,17 +46,30 @@ export function DataTableFilterItem<TData>({
   const debounceValue = useDebounce(value, 500)
   const [open, setOpen] = React.useState(defaultOpen)
 
+
   React.useEffect(() => {
+
+    console.log("debounceValue >>> ", debounceValue)
+    if (debounceValue != "") {
+      if (setIsLoading) {
+        setIsLoading(true)
+      }
+    }
+
+
+
     if (selectedOption.options.length > 0) {
       // key=value1.value2.value3
       const filterValues = selectedOption.filterValues ?? []
       const newSearchParams = createQueryString(
         {
           [selectedOption.value]: filterValues.join("."),
-          page: "1", // Reset to page 1 when filter changes
+          page: "1",
         },
         searchParams
       )
+
+
       router.push(`${pathname}?${newSearchParams}`, {
         scroll: false,
       })
@@ -62,10 +78,13 @@ export function DataTableFilterItem<TData>({
       const newSearchParams = createQueryString(
         {
           [selectedOption.value]: debounceValue,
-          page: "1", // Reset to page 1 when filter changes
+          page: "1",
         },
         searchParams
       )
+
+
+
       router.push(`${pathname}?${newSearchParams}`, {
         scroll: false,
       })
@@ -128,13 +147,19 @@ export function DataTableFilterItem<TData>({
               const newSearchParams = createQueryString(
                 {
                   [selectedOption.value]: undefined,
-                  page: "1", // Reset to page 1 when filter is removed
+                  page: "1",
                 },
                 searchParams
               )
+
+              if (setIsLoading) {
+                setIsLoading(true)
+              }
+
               router.push(`${pathname}?${newSearchParams}`, {
                 scroll: false,
               })
+
             }}
           >
             <TrashIcon className="size-4" aria-hidden="true" />
