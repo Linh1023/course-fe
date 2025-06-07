@@ -2,37 +2,27 @@
 
 import {
   FetchServerGetApiNoToken,
-  FetchServerPostApi
+  FetchServerPostApi,
 } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { formatTimeShort } from "@/utils/format_time";
 import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-interface CommentClient {
-  id: string;
-  authorName: string;
-  authorAvatar: string;
-  content: string;
-  createdAt: string;
-  replyCount: number;
-}
 
 interface CommentItemProps {
   comment: CommentClient;
   level?: number;
   lessonId: string;
-  onCommentAdded: () => void;
 }
 
 export const CommentItem = ({
   comment,
   level = 0,
   lessonId,
-  onCommentAdded,
 }: CommentItemProps) => {
   const [replies, setReplies] = useState<CommentClient[]>([]);
   const [showReplies, setShowReplies] = useState(false);
@@ -42,13 +32,12 @@ export const CommentItem = ({
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const replyInputRef = useRef<HTMLInputElement>(null);
-
+  const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
   // Khi showReplyInput bật lên, focus vào input
   useEffect(() => {
-    if (showReplyInput && replyInputRef.current) {
-      replyInputRef.current.focus();
+    if (showReplyInput && replyTextAreaRef.current) {
+      replyTextAreaRef.current.focus();
     }
   }, [showReplyInput]);
 
@@ -75,8 +64,6 @@ export const CommentItem = ({
     }
   };
 
-  
-
   const loadMoreReplies = () => {
     fetchReplies(replyPageIndex + 1, true);
     setReplyPageIndex((prev) => prev + 1);
@@ -85,33 +72,26 @@ export const CommentItem = ({
   const handleSubmitReply = async () => {
     if (!replyContent.trim()) return;
     setSubmitting(true);
-    const res: CommentClientResponse = await FetchServerPostApi(
-      API.COMMENT.COMMENT,
-      {
-        lessonId,
-        commentParentId: comment.id,
-        content: replyContent,
-      }
-    );
-    console.log({
-        lessonId,
-        commentParentId: comment.id,
-        content: replyContent,
-      })
-    console.log(res)
+    const res = await FetchServerPostApi(API.COMMENT.COMMENT, {
+      lessonId,
+      commentParentId: comment.id,
+      content: replyContent,
+    });
     if (res.status == 200) {
       setReplyContent("");
       setShowReplyInput(false);
-      onCommentAdded();
+      setReplies((prev) => [...prev, res.result]);
+      comment.replyCount++;
       if (!showReplies && comment.replyCount > 0) {
         fetchReplies(0, false);
       }
+    } else {
+      console.error("Failed to submit reply:");
     }
-    console.error("Failed to submit reply:");
     setSubmitting(false);
   };
-  
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
       e.preventDefault(); // optional: chặn xuống dòng (nếu dùng textarea thì mới cần)
       handleSubmitReply();
@@ -119,7 +99,7 @@ export const CommentItem = ({
   };
 
   return (
-    <div className="ml-2 pt-2">
+    <div className={level > 0 ? `ml-2 pt-2` : ""}>
       <div className="p-2  bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow">
         <div className="flex items-start gap-4  ">
           <Avatar className={`w-${level > 0 ? 8 : 10} h-${level > 0 ? 8 : 10}`}>
@@ -139,7 +119,7 @@ export const CommentItem = ({
             >
               {comment.content}
             </p>
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-2">
               <div className="text-xs text-gray-500 dark:text-gray-400">
                 {formatTimeShort(comment.createdAt)}
               </div>
@@ -158,18 +138,19 @@ export const CommentItem = ({
       </div>
 
       {showReplyInput && (
-        <div className="mt-2 flex items-center gap-2 bg-white">
-          <Input
+        <div className="mt-2 relative bg-white dark:bg-black">
+          <Textarea
             value={replyContent}
             onChange={(e) => setReplyContent(e.target.value)}
             placeholder="Viết phản hồi..."
-            className="flex-1"
-            ref={replyInputRef}
+            className="pr-[45px] min-h-10 h-auto max-h-40 text-sm "
+            ref={replyTextAreaRef}
             onKeyDown={handleKeyDown}
           />
           <Button
             size="sm"
             onClick={handleSubmitReply}
+            className="absolute top-1 right-1 h-8 px-3 text-sm"
             disabled={submitting || !replyContent.trim()}
           >
             {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Gửi"}
@@ -186,7 +167,7 @@ export const CommentItem = ({
         >
           {loadingReplies ? (
             <Loader2 className="w-4 h-4 animate-spin mr-2" />
-          ) :(
+          ) : (
             `Xem ${comment.replyCount} phản hồi`
           )}
         </Button>
@@ -199,7 +180,6 @@ export const CommentItem = ({
               comment={reply}
               level={level + 1}
               lessonId={lessonId}
-              onCommentAdded={onCommentAdded}
             />
           ))}
           {replyPageIndex + 1 < replyTotalPages && (
@@ -222,5 +202,3 @@ export const CommentItem = ({
     </div>
   );
 };
-
-
