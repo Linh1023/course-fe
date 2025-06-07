@@ -7,33 +7,22 @@ import {
 import API from "@/api/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { formatTimeShort } from "@/utils/format_time";
 import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-interface CommentClient {
-  id: string;
-  authorName: string;
-  authorAvatar: string;
-  content: string;
-  createdAt: string;
-  replyCount: number;
-}
 
 interface CommentItemProps {
   comment: CommentClient;
   level?: number;
   lessonId: string;
-  onCommentAdded: () => void;
 }
 
 export const CommentItem = ({
   comment,
   level = 0,
   lessonId,
-  onCommentAdded,
 }: CommentItemProps) => {
   const [replies, setReplies] = useState<CommentClient[]>([]);
   const [showReplies, setShowReplies] = useState(false);
@@ -83,23 +72,22 @@ export const CommentItem = ({
   const handleSubmitReply = async () => {
     if (!replyContent.trim()) return;
     setSubmitting(true);
-    const res: CommentClientResponse = await FetchServerPostApi(
-      API.COMMENT.COMMENT,
-      {
-        lessonId,
-        commentParentId: comment.id,
-        content: replyContent,
-      }
-    );
+    const res = await FetchServerPostApi(API.COMMENT.COMMENT, {
+      lessonId,
+      commentParentId: comment.id,
+      content: replyContent,
+    });
     if (res.status == 200) {
       setReplyContent("");
       setShowReplyInput(false);
-      onCommentAdded();
+      setReplies((prev) => [...prev, res.result]);
+      comment.replyCount++;
       if (!showReplies && comment.replyCount > 0) {
         fetchReplies(0, false);
       }
+    } else {
+      console.error("Failed to submit reply:");
     }
-    console.error("Failed to submit reply:");
     setSubmitting(false);
   };
 
@@ -192,7 +180,6 @@ export const CommentItem = ({
               comment={reply}
               level={level + 1}
               lessonId={lessonId}
-              onCommentAdded={onCommentAdded}
             />
           ))}
           {replyPageIndex + 1 < replyTotalPages && (

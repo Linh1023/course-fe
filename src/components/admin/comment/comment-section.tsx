@@ -12,17 +12,6 @@ import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CommentItem } from "./comment-item";
 
-interface CommentClient {
-  id: string;
-  authorName: string;
-  authorAvatar: string;
-  content: string;
-  createdAt: string;
-  replyCount: number;
-}
-
-
-
 interface Props {
   comments: { result: CommentClient[]; totalPages: number };
   lessonId: string;
@@ -45,9 +34,6 @@ const CommentSection = ({ comments: initialComments, lessonId }: Props) => {
     setLoadingMore(false);
   };
 
-  const handleCommentAdded = () => {
-    fetchComments(0, false);
-  };
 
   useEffect(() => {
     fetchComments(pageIndex, false);
@@ -67,9 +53,7 @@ const CommentSection = ({ comments: initialComments, lessonId }: Props) => {
             <CardContent className="p-0">
               <CommentItem
                 comment={comment}
-                lessonId={lessonId}
-                onCommentAdded={handleCommentAdded}
-              />
+                lessonId={lessonId}   />
             </CardContent>
           </Card>
         ))}
