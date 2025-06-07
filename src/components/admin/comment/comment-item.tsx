@@ -93,12 +93,6 @@ export const CommentItem = ({
         content: replyContent,
       }
     );
-    console.log({
-        lessonId,
-        commentParentId: comment.id,
-        content: replyContent,
-      })
-    console.log(res)
     if (res.status == 200) {
       setReplyContent("");
       setShowReplyInput(false);
@@ -158,7 +152,7 @@ export const CommentItem = ({
       </div>
 
       {showReplyInput && (
-        <div className="mt-2 flex items-center gap-2 bg-white">
+        <div className="mt-2 flex items-center gap-2 bg-white dark:bg-black">
           <Input
             value={replyContent}
             onChange={(e) => setReplyContent(e.target.value)}
