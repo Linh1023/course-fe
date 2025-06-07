@@ -68,7 +68,6 @@ export function DataTableFilterItem<TData>({
         scroll: false,
       })
     } else {
-      const currentParamKeys = Array.from(searchParams.keys())
       // key=value
       const newSearchParams = createQueryString(
         {
@@ -78,23 +77,10 @@ export function DataTableFilterItem<TData>({
         searchParams
       )
 
-
-      const newURLSearchParams = new URLSearchParams(newSearchParams)
-      const newParamKeys = Array.from(newURLSearchParams.keys())
-
-      // Tìm các keys mới
-      const newAddedKeys = newParamKeys.filter(
-        (key) => !currentParamKeys.includes(key)
-      )
-
-      if (newAddedKeys.length > 0) {
-
-      } else {
         if (setIsLoading) {
           setIsLoading(true)
         }
-      }
-
+      
       router.push(`${pathname}?${newSearchParams}`, {
         scroll: false,
       })
