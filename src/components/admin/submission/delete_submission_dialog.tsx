@@ -31,18 +31,19 @@ interface DeleteSubmissionsDialogProps
   isOpen: boolean, // giá trị để biết để Dialog bật tắt
   setIsOpen: (v: boolean) => void, // cái này để Dialog nó set bật tắt
   showTrigger?: boolean
+      setIsLoading: (v: boolean) => void,
 }
 
 export function DeleteSubmissionsDialog(props: DeleteSubmissionsDialogProps) {
 
-  const { submissions, isOpen, setIsOpen, hanldeDeletedSuccess, showTrigger } = props
+  const { submissions, isOpen, setIsOpen, hanldeDeletedSuccess, showTrigger ,setIsLoading} = props
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoadingButton] = useState(false)
 
   const router = useRouter()
 
   const handleDeteledSubmissions = async () => {
-    setIsLoading(true)
+    setIsLoadingButton(true)
     // await new Promise(resolve => setTimeout(resolve, 1000));
 
     console.log("submissions >>> ", submissions)
@@ -54,9 +55,9 @@ export function DeleteSubmissionsDialog(props: DeleteSubmissionsDialogProps) {
     router.refresh();
 
     //  thanh cong
-      setIsOpen(false)
-    
-    setIsLoading(false)
+    setIsOpen(false)
+    setIsLoading(true)
+    setIsLoadingButton(false)
     hanldeDeletedSuccess()
   }
 

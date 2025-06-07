@@ -20,7 +20,11 @@ import { Ellipsis } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { UpdateSubmissionSheet } from "./update_submission_sheet"
-export function getSubmissionColumns(): ColumnDef<SubmissionAdminResponse>[] {
+export function getSubmissionColumns(
+
+ setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+
+): ColumnDef<SubmissionAdminResponse>[] {
   return [
     {
       id: "select",
@@ -161,14 +165,8 @@ export function getSubmissionColumns(): ColumnDef<SubmissionAdminResponse>[] {
               showUpdateSubmissionSheet={showUpdateSubmissionSheet}
               setShowUpdateSubmissionSheet={setShowUpdateSubmissionSheet}
               submission={row.original}
+              setIsLoading = {setIsLoading}
             />
-            {/* <DeleteCategoriesDialog
-              open={showDeleteCategoryDialog}
-              onOpenChange={setShowDeleteCategoryDialog}
-              categories={[row.original]}
-              showTrigger={false}
-              onSuccess={() => row.toggleSelected(false)}
-            /> */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button

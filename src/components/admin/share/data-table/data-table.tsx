@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { DataTablePagination } from "./data-table-pagination"
+import { LoaderIcon } from "@/components/share/loading-icon"
 
 
 interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
@@ -27,6 +28,7 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
    * @example floatingBar={<TasksTableFloatingBar />}
    */
   floatingBar?: React.ReactNode | null
+  isLoading?: boolean
 }
 
 export function DataTable<TData>({
@@ -34,6 +36,7 @@ export function DataTable<TData>({
   floatingBar = null,
   children,
   className,
+  isLoading,
   ...props
 }: DataTableProps<TData>) {
   return (
@@ -63,32 +66,57 @@ export function DataTable<TData>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
+
+            {isLoading ? (<>
+              {<TableRow>
                 <TableCell
                   colSpan={table.getAllColumns().length}
-                  className="h-24 text-center"
+                  className="h-32"
                 >
-                  No results.
+                  <div className="flex justify-center items-center w-full h-full">
+                    <LoaderIcon
+                      className="mr-1.5 size-10 animate-spin"
+                    />
+                  </div>
                 </TableCell>
-              </TableRow>
-            )}
+              </TableRow>}
+            </>) : (<>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={table.getAllColumns().length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </>)}
+
+
+
+
+
+
+
           </TableBody>
         </Table>
       </div>
