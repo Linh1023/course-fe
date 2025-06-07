@@ -49,10 +49,7 @@ export function DataTableFilterItem<TData>({
 
   React.useEffect(() => {
 
-
-
     if (selectedOption.options.length > 0) {
-      const currentParamKeys = Array.from(searchParams.keys())
       // key=value1.value2.value3
       const filterValues = selectedOption.filterValues ?? []
       const newSearchParams = createQueryString(
@@ -63,21 +60,9 @@ export function DataTableFilterItem<TData>({
         searchParams
       )
 
-      const newURLSearchParams = new URLSearchParams(newSearchParams)
-      const newParamKeys = Array.from(newURLSearchParams.keys())
-
-      // Tìm các keys mới
-      const newAddedKeys = newParamKeys.filter(
-        (key) => !currentParamKeys.includes(key)
-      )
-
-      if (newAddedKeys.length > 0) {
-
-      } else {
-        if (setIsLoading) {
+       if (setIsLoading) {
           setIsLoading(true)
         }
-      }
 
       router.push(`${pathname}?${newSearchParams}`, {
         scroll: false,
