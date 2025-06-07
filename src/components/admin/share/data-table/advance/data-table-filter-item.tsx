@@ -173,6 +173,7 @@ export function DataTableFilterItem<TData>({
               options={selectedOption.options}
               selectedValues={selectedValues}
               setSelectedOptions={setSelectedOptions}
+              setLoading={setIsLoading}
             />
           )
         ) : (

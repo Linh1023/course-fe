@@ -18,6 +18,7 @@ interface DataTableAdvancedFacetedFilterProps<TData, TValue> {
   title?: string
   options: Option[]
   selectedValues: Set<string>
+  setLoading?: (value: boolean) => void
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
@@ -28,6 +29,7 @@ export function DataTableAdvancedFacetedFilter<TData, TValue>({
   title,
   options,
   selectedValues,
+  setLoading,
   setSelectedOptions,
 }: DataTableAdvancedFacetedFilterProps<TData, TValue>) {
   return (
@@ -52,6 +54,10 @@ export function DataTableAdvancedFacetedFilter<TData, TValue>({
                   if (isSelected) {
                     selectedValues.delete(option.value)
                   } else {
+                    if (setLoading) {
+                      setLoading(false)
+                    }
+                    
                     selectedValues.add(option.value)
                   }
                   const filterValues = Array.from(selectedValues)
