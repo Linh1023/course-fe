@@ -49,6 +49,15 @@ export function DataTableFilterItem<TData>({
 
   React.useEffect(() => {
 
+    console.log("debounceValue >>> ", debounceValue)
+    if (debounceValue != "") {
+      if (setIsLoading) {
+        setIsLoading(true)
+      }
+    }
+
+
+
     if (selectedOption.options.length > 0) {
       // key=value1.value2.value3
       const filterValues = selectedOption.filterValues ?? []
@@ -60,9 +69,6 @@ export function DataTableFilterItem<TData>({
         searchParams
       )
 
-       if (setIsLoading) {
-          setIsLoading(true)
-        }
 
       router.push(`${pathname}?${newSearchParams}`, {
         scroll: false,
@@ -77,10 +83,8 @@ export function DataTableFilterItem<TData>({
         searchParams
       )
 
-        if (setIsLoading) {
-          setIsLoading(true)
-        }
-      
+
+
       router.push(`${pathname}?${newSearchParams}`, {
         scroll: false,
       })
