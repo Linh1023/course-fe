@@ -3,7 +3,7 @@
 import { SquarePen } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { FetchClientPutApi } from '@/actions/client/fetch_client_api';
+import { FetchServerPutApi } from '@/actions/server/fetch_server_api';
 import API from '@/api/api';
 import { toast } from "@/hooks/use-toast"
 import { FetchServerGetApi } from '@/actions/server/fetch_server_api';
@@ -93,7 +93,7 @@ const MyInformation = () => {
       };
 
       // Gọi API PUT
-      const response = await FetchClientPutApi(API.PROFILE.CHANGE_PROFILE, bodyData);
+      const response = await FetchServerPutApi(API.PROFILE.CHANGE_PROFILE, bodyData);
 
       if (response && response.status === 200) {
         // Cập nhật formData với dữ liệu mới từ response

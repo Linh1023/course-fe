@@ -1,25 +1,23 @@
-'use client';
-import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import LearningCourse from './LearningCourses';
-import LearnedCourse from './LearnedCourses';
+"use client";
 
+import * as React from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import LearningCourses from "./LearningCourses";
+import { MyCourseResponse } from "@/types/response/account/my_course";
+
+interface MyCourseProps {
+  coursePromise: Promise<MyCourseResponse>;
+}
 
 const tabs = [
   {
-    name: 'Đang học',
-    value: 'pnpm',
-    count: 9,
-  },
-  {
-    name: 'Đã học',
-    value: 'npm',
-    content: 'npx shadcn@latest add tabs',
+    name: "Đang học",
+    value: "inProgress",
+    count: 0, // Có thể cập nhật động
   },
 ];
 
-
-export default function MyCourse() {
+export default function MyCourse({ coursePromise }: MyCourseProps) {
   return (
     <Tabs defaultValue={tabs[0].value} className="max-w-5xl w-full">
       <TabsList className="w-full p-0 bg-background justify-start border-b rounded-none gap-1">
@@ -29,7 +27,7 @@ export default function MyCourse() {
             value={tab.value}
             className="rounded-none bg-background h-full data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
           >
-            <code className="text-[15px]">{tab.name}</code>{' '}
+            <code className="text-[15px]">{tab.name}</code>{" "}
             {tab.count ? (
               <span className="ml-1 inline-flex items-center justify-center h-4 px-2 text-xs font-medium bg-primary text-primary-foreground rounded-full">
                 {tab.count}
@@ -40,11 +38,7 @@ export default function MyCourse() {
       </TabsList>
       {tabs.map((tab) => (
         <TabsContent key={tab.value} value={tab.value} className="mt-4">
-          {tab.value === 'pnpm' ? (
-            <LearningCourse/>
-          ) : (
-            <LearnedCourse />
-          )}
+          <LearningCourses coursePromise={coursePromise} />
         </TabsContent>
       ))}
     </Tabs>

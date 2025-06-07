@@ -1,14 +1,6 @@
 import React from 'react';
 import CourseCard from './CourseCard';
 
-interface Course {
-  id: string;
-  title: string;
-  image: string;
-  instructor: string;
-  ratings: number;
-  // Add other properties as needed
-}
 
 interface CoursesGridProps {
   courses: CourseCardResponse[];
