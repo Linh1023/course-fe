@@ -43,6 +43,8 @@ interface Props
   showUpdateSubmissionSheet: boolean;
   setShowUpdateSubmissionSheet: (v: boolean) => void;
 
+  setIsLoading:(v: boolean) => void;  
+
 }
 
 export function UpdateSubmissionSheet(props: Props) {
@@ -50,7 +52,7 @@ export function UpdateSubmissionSheet(props: Props) {
 
 
   const [isUpdatePending, startUpdateTransition] = React.useState(false)
-  const { submission, showUpdateSubmissionSheet, setShowUpdateSubmissionSheet } = props;
+  const { submission, showUpdateSubmissionSheet, setShowUpdateSubmissionSheet,setIsLoading } = props;
 
   const form = useForm<UpdateSubmissionSchema>({
     resolver: zodResolver(updateSubmissionSchema),
@@ -85,6 +87,8 @@ export function UpdateSubmissionSheet(props: Props) {
       if (res && res.status === 200) {
         toast.success("Thao tác thành công")
         setShowUpdateSubmissionSheet(false)
+       setIsLoading(true
+        )
       } else {
         toast.error("Lỗi")
       }
