@@ -57,7 +57,10 @@ export function DataTableFilterItem<TData>({
         },
         searchParams
       )
-      setIsLoading && setIsLoading(true)
+
+      if (setIsLoading) {
+        setIsLoading(true)
+      }
 
       router.push(`${pathname}?${newSearchParams}`, {
         scroll: false,
@@ -71,8 +74,10 @@ export function DataTableFilterItem<TData>({
         },
         searchParams
       )
-      
-      setIsLoading && setIsLoading(true)
+
+      if (setIsLoading) {
+        setIsLoading(true)
+      }
 
       router.push(`${pathname}?${newSearchParams}`, {
         scroll: false,
@@ -139,7 +144,7 @@ export function DataTableFilterItem<TData>({
                   page: "1",
                 },
                 searchParams
-              )              
+              )
 
               router.push(`${pathname}?${newSearchParams}`, {
                 scroll: false,
