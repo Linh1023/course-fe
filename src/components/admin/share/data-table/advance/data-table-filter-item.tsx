@@ -50,6 +50,7 @@ export function DataTableFilterItem<TData>({
       const newSearchParams = createQueryString(
         {
           [selectedOption.value]: filterValues.join("."),
+          page: "1", // Reset to page 1 when filter changes
         },
         searchParams
       )
@@ -61,6 +62,7 @@ export function DataTableFilterItem<TData>({
       const newSearchParams = createQueryString(
         {
           [selectedOption.value]: debounceValue,
+          page: "1", // Reset to page 1 when filter changes
         },
         searchParams
       )
@@ -126,6 +128,7 @@ export function DataTableFilterItem<TData>({
               const newSearchParams = createQueryString(
                 {
                   [selectedOption.value]: undefined,
+                  page: "1", // Reset to page 1 when filter is removed
                 },
                 searchParams
               )
