@@ -54,7 +54,7 @@ const CommentSection = ({ comments: initialComments, lessonId }: Props) => {
   }, [pageIndex]);
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 p-4">
+    <div className="max-w-3xl mx-auto space-y-6">
       <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
         Bình luận
       </h2>
