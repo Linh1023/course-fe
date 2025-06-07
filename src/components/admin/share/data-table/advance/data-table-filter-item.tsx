@@ -46,8 +46,13 @@ export function DataTableFilterItem<TData>({
   const debounceValue = useDebounce(value, 500)
   const [open, setOpen] = React.useState(defaultOpen)
 
+
   React.useEffect(() => {
+
+
+
     if (selectedOption.options.length > 0) {
+      const currentParamKeys = Array.from(searchParams.keys())
       // key=value1.value2.value3
       const filterValues = selectedOption.filterValues ?? []
       const newSearchParams = createQueryString(
@@ -58,16 +63,27 @@ export function DataTableFilterItem<TData>({
         searchParams
       )
 
-      // if (debounceValue != "") {
+      const newURLSearchParams = new URLSearchParams(newSearchParams)
+      const newParamKeys = Array.from(newURLSearchParams.keys())
+
+      // Tìm các keys mới
+      const newAddedKeys = newParamKeys.filter(
+        (key) => !currentParamKeys.includes(key)
+      )
+
+      if (newAddedKeys.length > 0) {
+
+      } else {
         if (setIsLoading) {
           setIsLoading(true)
         }
-      // }
+      }
 
       router.push(`${pathname}?${newSearchParams}`, {
         scroll: false,
       })
     } else {
+      const currentParamKeys = Array.from(searchParams.keys())
       // key=value
       const newSearchParams = createQueryString(
         {
@@ -77,12 +93,22 @@ export function DataTableFilterItem<TData>({
         searchParams
       )
 
-      // if (debounceValue != "") {
+
+      const newURLSearchParams = new URLSearchParams(newSearchParams)
+      const newParamKeys = Array.from(newURLSearchParams.keys())
+
+      // Tìm các keys mới
+      const newAddedKeys = newParamKeys.filter(
+        (key) => !currentParamKeys.includes(key)
+      )
+
+      if (newAddedKeys.length > 0) {
+
+      } else {
         if (setIsLoading) {
           setIsLoading(true)
         }
-      // }
-
+      }
 
       router.push(`${pathname}?${newSearchParams}`, {
         scroll: false,
@@ -173,7 +199,6 @@ export function DataTableFilterItem<TData>({
               options={selectedOption.options}
               selectedValues={selectedValues}
               setSelectedOptions={setSelectedOptions}
-              setLoading={setIsLoading}
             />
           )
         ) : (
