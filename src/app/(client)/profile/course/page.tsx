@@ -20,18 +20,10 @@ export default async function ProfileCoursePage({ searchParams }: ProfileCourseP
 
   return (
     <>
-      <h1 className="text-2xl font-bold text-gray-900 mt-[10px] border-b border-gray-200 pb-[20px]">
-        Khóa học của tôi
-      </h1>
-      <div className="flex flex-col gap-4">
-        <React.Suspense
-          fallback={
-            <DataTableSkeleton columnCount={3} cellWidths={["5rem", "40rem", "12rem"]} shrinkZero />
-          }
-        >
+
+      
           <MyCourse coursePromise={coursePromise} />
-        </React.Suspense>
-      </div>
+       
     </>
   );
 }

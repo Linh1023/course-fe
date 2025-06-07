@@ -66,7 +66,7 @@ export default function ProfileClientLayout({ children }: { children: React.Reac
                             <TabsTrigger
                                 
                                 value={tab.value}
-                                className="border-l-2 border-transparent justify-start rounded-none data-[state=active]:shadow-none data-[state=active]:border-primary data-[state=active]:bg-primary/5 py-1.5"
+                                className="w-full border-l-2 border-transparent justify-start rounded-none data-[state=active]:shadow-none data-[state=active]:border-primary data-[state=active]:bg-primary/5 py-1.5"
                             >
                                 <tab.icon className="h-5 w-5 me-2" /> {tab.name}
                             </TabsTrigger>

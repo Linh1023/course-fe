@@ -144,7 +144,7 @@ const MyInformation = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto bg-white">
+    <div className="max-w-4xl bg-white">
       <div className="max-w-4xl mx-auto flex items-center justify-between border-b border-gray-200 my-2">
         <h1 className="text-2xl font-bold text-gray-900">Thông tin cá nhân</h1>
         <Button
