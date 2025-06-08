@@ -9,18 +9,33 @@ import { TableInstanceProvider } from "@/components/admin/share/data-table/table
 import { DataTable } from "@/components/admin/share/data-table/data-table"
 import { DataTableAdvancedToolbar } from "@/components/admin/share/data-table/advance/data-table-advance-toolbar"
 import { getSubmissionClientColumns } from "./submission_client_table_column"
+import { useSearchParams } from "next/navigation"
 
 
 interface Props {
-  submissionsPromise:  Promise<SubmissionClientPageResponse>
+  submissionsPromise: Promise<SubmissionClientPageResponse>
 }
 
 
-export function SubmissionClientTable(props:Props) {
+export function SubmissionClientTable(props: Props) {
 
-  const {submissionsPromise} = props
+  const { submissionsPromise } = props
 
-    const {result, totalPages} = React.use(submissionsPromise)
+  const { result, totalPages } = React.use(submissionsPromise)
+
+
+
+  const [isLoading, setIsLoading] = React.useState(false)
+  const pa = useSearchParams()
+
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      console.log("URL params changed, stop loading >>> ", pa.toString())
+      setIsLoading(false)
+    }, 1000)
+
+    return () => clearTimeout(timeout)
+  }, [pa])
 
   // cái này là từng dòng dữ liệu của bảng kể cả header
   const columns = React.useMemo(() => getSubmissionClientColumns(), [])
@@ -63,27 +78,31 @@ export function SubmissionClientTable(props:Props) {
 
 
   const { table } = useDataTable({
-    data : result, // dữ liệu đổ vào table
+    data: result, // dữ liệu đổ vào table
     columns, // cái này là từng dòng dữ liệu của bảng kể cả header
     pageCount: totalPages, // tổng số trang
     filterFields, // bộ lọc
     defaultPerPage: 10, // tổng số phần tử trên 1 trang
   })
 
-   const [isOpen, setIsOpen] = React.useState(false)
+  const [isOpen, setIsOpen] = React.useState(false)
 
   return (
     <TableInstanceProvider table={table}>
-     
+
       <DataTable
         table={table}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
       >
-        
+
         <DataTableAdvancedToolbar
-         filterFields={filterFields}>
-        
+          filterFields={filterFields}
+            isLoading={isLoading}
+          setIsLoading={setIsLoading}>
+
         </DataTableAdvancedToolbar>
-      
+
       </DataTable>
 
 

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table"
 import { DataTablePagination } from "./data-table-pagination"
 import { LoaderIcon } from "@/components/share/loading-icon"
+import { useSearchParams } from "next/navigation"
 
 
 interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
@@ -41,6 +42,9 @@ export function DataTable<TData>({
   setIsLoading,
   ...props
 }: DataTableProps<TData>) {
+
+
+
   return (
     <div
       className={cn("w-full space-y-2.5 overflow-auto", className)}

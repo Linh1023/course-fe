@@ -9,7 +9,8 @@ import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table
 import { getSubmissionColumns } from "./submission_table_column"
 import { SubmissionTableFloatingBar } from "./submission_table_floating_bar"
 import { SubmissionTableToolbarActions } from "./submission_table_toolbar_actions"
-import { useParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
+import { DateRangePicker } from "../share/data-table/advance/date-range-picker"
 
 interface Props {
   submissionsPromise: Promise<SubmissionPageResponse>
@@ -22,14 +23,16 @@ export function SubmissionTable(props: Props) {
 
   const { result, totalPages } = React.use(submissionsPromise)
   const [isLoading, setIsLoading] = React.useState(false)
-
+  const pa = useSearchParams()
 
   React.useEffect(() => {
-    console.log("run useEffect >>> set loading false")
+  const timeout = setTimeout(() => {
+    console.log("URL params changed, stop loading >>> ", pa.toString())
     setIsLoading(false)
-  }, [result, totalPages])
+  }, 1000)
 
-
+  return () => clearTimeout(timeout)
+}, [pa])
 
 
 
@@ -94,39 +97,55 @@ export function SubmissionTable(props: Props) {
   const [isOpen, setIsOpen] = React.useState(false)
 
 
+
   return (
-    <TableInstanceProvider table={table}>
+    <>
 
-      <DataTable
-        table={table}
-        isLoading={isLoading}
-        setIsLoading = {setIsLoading}
-        // SubmissionTableFloatingBar cái này là cái button popup lên ở phía dưới màn hình khi mình chọn 1 dòng dữ liệu để xóa
-        floatingBar={<SubmissionTableFloatingBar table={table}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          setIsLoading={setIsLoading}
-        />}
-      >
 
-        <DataTableAdvancedToolbar filterFields={filterFields}
-          setIsLoading={setIsLoading}
+      <DateRangePicker
+        setIsLoading={setIsLoading}
+        triggerSize="sm"
+        triggerClassName="ml-auto w-56 sm:w-60 mr-1"
+        className="dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
+        align="end"
+      />
+
+      <TableInstanceProvider table={table}>
+
+        <DataTable
+          table={table}
           isLoading={isLoading}
-        >
-
-          {/* SubmissionTableToolbarActions cái này là button nằm ở phía bên trái của filter dùng để xóa và tạo mới */}
-          <SubmissionTableToolbarActions
+          setIsLoading={setIsLoading}
+          // SubmissionTableFloatingBar cái này là cái button popup lên ở phía dưới màn hình khi mình chọn 1 dòng dữ liệu để xóa
+          floatingBar={<SubmissionTableFloatingBar table={table}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
-            table={table}
             setIsLoading={setIsLoading}
-          />
+          />}
+        >
 
-        </DataTableAdvancedToolbar>
+          <DataTableAdvancedToolbar filterFields={filterFields}
+            setIsLoading={setIsLoading}
+            isLoading={isLoading}
+          >
 
-      </DataTable>
+            {/* SubmissionTableToolbarActions cái này là button nằm ở phía bên trái của filter dùng để xóa và tạo mới */}
+            <SubmissionTableToolbarActions
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              table={table}
+              setIsLoading={setIsLoading}
+            />
+
+          </DataTableAdvancedToolbar>
+
+        </DataTable>
 
 
-    </TableInstanceProvider>
+      </TableInstanceProvider>
+    </>
+
+
+
   )
 }
