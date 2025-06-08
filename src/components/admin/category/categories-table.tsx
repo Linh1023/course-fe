@@ -53,16 +53,15 @@ export function CategoriesTable({ categoryPromise }: CategoriesTableProps) {
     }
   ]
 
-  // TODO: Replace with actual data fetching logic
   const { table } = useDataTable({
-    data: result,
+    data: result || [],
     columns,
-    pageCount: totalPages,
+    pageCount: totalPages || 1,
     // optional props
     filterFields,
     defaultPerPage: 10,
   })
-  
+
   return (
     <TableInstanceProvider table={table}>
       <DataTable

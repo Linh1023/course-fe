@@ -98,7 +98,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: white;
+  background: transparent;
   /* Nền thanh cuộn */
 }
 

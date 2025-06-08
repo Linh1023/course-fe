@@ -19,6 +19,7 @@ import { TrashIcon } from "lucide-react"
 import { LoaderIcon } from "@/components/share/loading-icon"
 import API from "@/api/api"
 import { FetchServerDeleteApi } from "@/actions/server/fetch_server_api"
+import { toast } from "sonner"
 
 
 interface DeleteCategoriesDialogProps
@@ -65,12 +66,16 @@ export function DeleteCategoriesDialog({
             onClick={() => {
               startDeleteTransition(async () => {
                 // thực hiện xóa danh mục
-                await Promise.all(
+                const res = await Promise.all(
                   categories.map((category) =>
                     FetchServerDeleteApi(`${API.CATEGORY.ROOT}/${category.id}`, "/admin/category")
                   ))
+                if (res.some((r) => r.status !== 200)) {
+                  toast.error("Xóa danh mục thất bại, vui lòng thử lại sau")
+                } else {
+                  onSuccess?.()
+                }
                 props.onOpenChange?.(false)
-                onSuccess?.()
               })
             }}
             disabled={isDeletePending}
