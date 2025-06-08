@@ -9,25 +9,27 @@ import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table
 import { getSubmissionColumns } from "./submission_table_column"
 import { SubmissionTableFloatingBar } from "./submission_table_floating_bar"
 import { SubmissionTableToolbarActions } from "./submission_table_toolbar_actions"
+import { useParams } from "next/navigation"
 
 interface Props {
-  submissionsPromise:  Promise<SubmissionPageResponse>
+  submissionsPromise: Promise<SubmissionPageResponse>
 }
 
 
-export function SubmissionTable(props:Props) {
+export function SubmissionTable(props: Props) {
 
-  const {submissionsPromise} = props
+  const { submissionsPromise } = props
 
-    const {result, totalPages} = React.use(submissionsPromise)
-   const [isLoading,  setIsLoading] = React.useState(false)
+  const { result, totalPages } = React.use(submissionsPromise)
+  const [isLoading, setIsLoading] = React.useState(false)
 
 
-    React.useEffect(() => {
-      setIsLoading(false
-      )
+  React.useEffect(() => {
+    console.log("run useEffect >>> set loading false")
+    setIsLoading(false)
+  }, [result, totalPages])
 
-   },[result,totalPages ])
+
 
 
 
@@ -82,44 +84,46 @@ export function SubmissionTable(props:Props) {
 
 
   const { table } = useDataTable({
-    data : result, // dữ liệu đổ vào table
+    data: result, // dữ liệu đổ vào table
     columns, // cái này là từng dòng dữ liệu của bảng kể cả header
     pageCount: totalPages, // tổng số trang
     filterFields, // bộ lọc
     defaultPerPage: 10, // tổng số phần tử trên 1 trang
   })
 
-   const [isOpen, setIsOpen] = React.useState(false)
+  const [isOpen, setIsOpen] = React.useState(false)
 
 
   return (
     <TableInstanceProvider table={table}>
-     
+
       <DataTable
         table={table}
-       isLoading ={isLoading}
+        isLoading={isLoading}
+        setIsLoading = {setIsLoading}
         // SubmissionTableFloatingBar cái này là cái button popup lên ở phía dưới màn hình khi mình chọn 1 dòng dữ liệu để xóa
-        floatingBar={<SubmissionTableFloatingBar table={table} 
-               isOpen = {isOpen}
-          setIsOpen = {setIsOpen}
-            setIsLoading ={setIsLoading}
-        />} 
+        floatingBar={<SubmissionTableFloatingBar table={table}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          setIsLoading={setIsLoading}
+        />}
       >
-        
+
         <DataTableAdvancedToolbar filterFields={filterFields}
-        setIsLoading ={setIsLoading}
+          setIsLoading={setIsLoading}
+          isLoading={isLoading}
         >
-        
-        {/* SubmissionTableToolbarActions cái này là button nằm ở phía bên trái của filter dùng để xóa và tạo mới */}
-          <SubmissionTableToolbarActions 
-          isOpen = {isOpen}
-          setIsOpen = {setIsOpen}
-          table={table} 
-          setIsLoading ={setIsLoading}
+
+          {/* SubmissionTableToolbarActions cái này là button nằm ở phía bên trái của filter dùng để xóa và tạo mới */}
+          <SubmissionTableToolbarActions
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            table={table}
+            setIsLoading={setIsLoading}
           />
-        
+
         </DataTableAdvancedToolbar>
-      
+
       </DataTable>
 
 
