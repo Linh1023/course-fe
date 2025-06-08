@@ -22,12 +22,14 @@ interface DataTableFilterItemProps<TData> {
   >
   defaultOpen: boolean
   setIsLoading?: (v: boolean) => void
+  isLoading?: boolean
 }
 
 export function DataTableFilterItem<TData>({
   selectedOption,
   setSelectedOptions,
   defaultOpen,
+  isLoading,
   setIsLoading
 }: DataTableFilterItemProps<TData>) {
   const router = useRouter()
@@ -139,6 +141,7 @@ export function DataTableFilterItem<TData>({
             variant="ghost"
             size="icon"
             className="size-7 text-muted-foreground"
+            disabled={isLoading}
             onClick={() => {
               setSelectedOptions((prev) =>
                 prev.filter((item) => item.value !== selectedOption.value)

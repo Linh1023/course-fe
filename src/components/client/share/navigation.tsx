@@ -191,6 +191,16 @@ const Navigation = () => {
                                         Liên hệ
                                     </Link>
                                 </NavigationMenuItem>
+
+                                <NavigationMenuItem>
+                                    <Link
+                                        href="/testcsr"
+                                        className={navigationMenuTriggerStyle()}
+                                    >
+                                        Test CSR
+                                    </Link>
+                                </NavigationMenuItem>
+
                             </NavigationMenuList>
                         </NavigationMenu>
 
