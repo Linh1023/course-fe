@@ -13,11 +13,48 @@ const tabs = [
   {
     name: "Đang học",
     value: "inProgress",
-    count: 0, // Có thể cập nhật động
+    count: 0,
   },
 ];
 
 export default function MyCourse({ coursePromise }: MyCourseProps) {
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  if (isMobile) {
+    return (
+      <div className="bg-white">
+        {/* Mobile Header */}
+        <div className="p-4 border-b">
+          <h1 className="text-lg font-semibold text-gray-900">Khóa học của tôi</h1>
+        </div>
+        
+        {/* Mobile Tab */}
+        <div className="border-b">
+          <div className="px-4">
+            <button className="py-3 text-sm font-medium text-blue-600 border-b-2 border-blue-600">
+              Đang học
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Content */}
+        <div className="p-4">
+          <LearningCourses coursePromise={coursePromise} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Tabs defaultValue={tabs[0].value} className="max-w-5xl w-full">
       <TabsList className="w-full p-0 bg-background justify-start border-b rounded-none gap-1">
@@ -27,7 +64,7 @@ export default function MyCourse({ coursePromise }: MyCourseProps) {
             value={tab.value}
             className="rounded-none bg-background h-full data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
           >
-            <code className="text-[15px]">{tab.name}</code>{" "}
+            <code className="text-[15px]">{tab.name}</code>
             {tab.count ? (
               <span className="ml-1 inline-flex items-center justify-center h-4 px-2 text-xs font-medium bg-primary text-primary-foreground rounded-full">
                 {tab.count}

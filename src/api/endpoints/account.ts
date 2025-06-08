@@ -10,7 +10,7 @@ const ACCOUNT_API = {
     DELETE: (id: string) => `${API_HOST}/api/account/${id}`,
     COURSE_PROGRESS: `${API_HOST}/api/account/course-progress`,
     MY_COURSE: `${API_HOST}/api/account/my-course`,
-
+    
 }
 
 export default ACCOUNT_API;
