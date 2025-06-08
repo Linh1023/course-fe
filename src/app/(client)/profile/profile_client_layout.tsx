@@ -55,19 +55,6 @@ export default function ProfileClientLayout({ children }: { children: React.Reac
     if (isMobile) {
         return (
             <div className="max-w-md mx-auto bg-white min-h-screen">
-                {/* Mobile Header */}
-                <div className="flex items-center justify-between p-4 border-b bg-white sticky top-0 z-10">
-                    <button 
-                        onClick={() => router.back()}
-                        className="p-2 -ml-2 hover:bg-gray-100 rounded-full"
-                    >
-                        <ArrowLeft size={20} />
-                    </button>
-                    <h1 className="text-lg font-semibold">Hồ sơ cá nhân</h1>
-                    <button className="p-2 -mr-2 hover:bg-gray-100 rounded-full">
-                        <Share2 size={20} />
-                    </button>
-                </div>
 
                 {/* Mobile Profile Section */}
                 <div className="p-4 border-b bg-white">
@@ -83,13 +70,19 @@ export default function ProfileClientLayout({ children }: { children: React.Reac
                             <h2 className="text-xl font-semibold text-gray-900 mb-1">
                                 {currentAccount?.name || "User Name"}
                             </h2>
-                            <p className="text-gray-600 text-sm">Học viên</p>
+                            <p className="text-gray-600 text-sm">
+                                {currentAccount?.role === "ADMIN"
+                                    ? "Quản Trị Viên"
+                                    : currentAccount?.role === "CLIENT"
+                                    ? "Học Viên"
+                                    : currentAccount?.role ?? ""}
+                            </p>
                         </div>
                     </div>
                 </div>
 
                 {/* Mobile Tab Navigation */}
-                <div className="flex border-b bg-white sticky top-[73px] z-10">
+                <div className="flex border-b bg-white top-[73px]">
                     {tabs.map((tab) => (
                         <Link 
                             href={tab.link} 
