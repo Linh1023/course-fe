@@ -15,13 +15,13 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         />
       </div>
       <div className="p-4">
-        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 truncate">
           {course.name}
         </h3>
 
         {/* Chỉ hiển thị giá nếu có */}
         {course.price && (
-          <p className="text-md text-red-500 mb-3 font-bold">
+          <p className="text-md text-red-500 mb-3 font-bold truncate">
             {course.price}đ
           </p>
         )}
