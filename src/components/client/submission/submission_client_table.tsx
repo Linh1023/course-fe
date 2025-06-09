@@ -32,7 +32,7 @@ export function SubmissionClientTable(props: Props) {
     const timeout = setTimeout(() => {
       console.log("URL params changed, stop loading >>> ", pa.toString())
       setIsLoading(false)
-    }, 1000)
+    }, 500)
 
     return () => clearTimeout(timeout)
   }, [pa])

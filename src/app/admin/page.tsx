@@ -1,7 +1,9 @@
+import DashboardWrapper from "@/components/admin/dashboard/dashborad_wrapper"
+
 const DashboardPage = () => {
     return (
         <>
-         DashboardPage
+         <DashboardWrapper></DashboardWrapper>
         </>
     )
 }
