@@ -49,6 +49,8 @@ export function DataTableFilterItem<TData>({
   const [open, setOpen] = React.useState(defaultOpen)
 
 
+
+
   React.useEffect(() => {
     console.log("debounceValue >>> ", debounceValue)
     if (debounceValue != "") {
@@ -162,7 +164,7 @@ export function DataTableFilterItem<TData>({
               )
 
               console.log("deleted >>> ", `${pathname}?${newSearchParams}`)
-              router.push(`${pathname}?${newSearchParams}`, {
+              router.replace(`${pathname}?${newSearchParams}`, {
                 scroll: false,
               })
 
