@@ -1,3 +1,4 @@
+
 import { SubmissionTable } from "@/components/admin/submission/submission_table"
 import { DataTableSkeleton } from "@/components/admin/share/data-table/data-table-skeleton"
 import React from "react"
@@ -13,22 +14,15 @@ export interface SubmissionPageProps {
 const SubmissionPage = async (props: SubmissionPageProps) => {
     const { searchParams } = props
     const query = new URLSearchParams(searchParams).toString();
-    const res = await FetchServerGetApi(API.SUBMISSON.SUBMISSION + `?${query}`, "/admin/submission");
-    let submissions:SubmissionAdminResponse[] = [];
-    let totalPages:number = 0
-    if (res && res.status === 200) {
-        submissions = res.result
-        totalPages  =res.totalPages
-        
-    }
-    console.log("submissions >>> ", res)
+    const submissionsPromise =  FetchServerGetApi(API.SUBMISSON.SUBMISSION + `?${query}`, "/admin/submission");
+  
  
 
     return (
         <>
             <div className="flex flex-col gap-4">
                 <div className="h-[100px] flex items-center justify-between gap-2">
-                    <h1 className="text-xl font-semibold">Quản Lý Danh Mục</h1>
+                    <h1 className="text-xl font-semibold">Quản Lý bài nộp</h1>
                 </div>
                 <React.Suspense fallback={<DataTableSkeleton
                     columnCount={3}
@@ -36,16 +30,9 @@ const SubmissionPage = async (props: SubmissionPageProps) => {
                     shrinkZero
                 />} > 
                     {/* Khoang tg */}
-                    <DateRangePicker
-                 triggerSize="sm"
-                 triggerClassName="ml-auto w-56 sm:w-60 mr-1"
-                 className="dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
-                 align="end"
-               />
-                    <SubmissionTable 
-                    submissions = {submissions}
-                    totalPages = {totalPages}
 
+                    <SubmissionTable 
+                    submissionsPromise = {submissionsPromise}
                     />
                 </React.Suspense>
             </div>

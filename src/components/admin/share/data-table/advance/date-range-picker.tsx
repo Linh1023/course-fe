@@ -67,6 +67,8 @@ interface DateRangePickerProps
    * @type string
    */
   triggerClassName?: string
+
+    setIsLoading?:(v : boolean) => void
 }
 
 export function DateRangePicker({
@@ -77,6 +79,7 @@ export function DateRangePicker({
   triggerSize = "default",
   triggerClassName,
   className,
+  setIsLoading,
   ...props
 }: DateRangePickerProps) {
   const [fromDate, setFromDate] = useQueryState(
@@ -128,6 +131,9 @@ export function DateRangePicker({
             selected={{ from, to }}
             disabled={(date) => date > new Date()}
             onSelect={(value) => {
+              if (setIsLoading) {
+                setIsLoading(true)
+              }
               // eslint-disable-next-line @typescript-eslint/no-floating-promises
               setFromDate(value?.from ?? null)
               // eslint-disable-next-line @typescript-eslint/no-floating-promises

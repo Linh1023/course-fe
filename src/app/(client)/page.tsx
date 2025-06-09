@@ -13,10 +13,10 @@ const HomePage = async () => {
   let data_hot: CourseCardResponse[] = [];
   let data_newset: CourseCardResponse[] = [];
 
-  if (res_hot.status == 200 && res_hot) {
+  if (  res_hot && res_hot.status == 200 ) {
     data_hot = res_hot.result;
   }
-  if (res_newest.status == 200 && res_newest) {
+  if (  res_newest && res_newest.status == 200 ) {
     data_newset = res_newest.result;
   }
 

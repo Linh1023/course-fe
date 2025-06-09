@@ -14,10 +14,12 @@ import { useEffect } from "react"
 
 interface DataTablePaginationProps {
   pageSizeOptions?: number[]
+  setIsLoading?: (v: boolean) => void
 }
 
 export function DataTablePagination({
   pageSizeOptions = [10, 20, 30, 40, 50],
+  setIsLoading
 }: DataTablePaginationProps) {
   const searchParams = useSearchParams()
 
@@ -26,10 +28,17 @@ export function DataTablePagination({
   const page = searchParams.get("page") ?? 1
   const perPage = searchParams.get("perPage") ?? 10
   useEffect(() => {
-    if (Number(page) > table.getPageCount()) {
-      table.setPageIndex(table.getPageCount() - 1)
+    const pageIndex = Number(searchParams.get("page") ?? 1) - 1
+    table.setPageIndex(pageIndex)
+  }, [searchParams])
+
+  const handleLoading = () => {
+    if (setIsLoading) {
+      setIsLoading(true)
     }
-  }, [searchParams, table])
+  }
+
+
   return (
     <div className="flex w-full flex-col-reverse items-center justify-between gap-4 overflow-auto p-1 sm:flex-row sm:gap-8">
       <div className="flex-1 whitespace-nowrap text-sm text-muted-foreground">
@@ -42,8 +51,9 @@ export function DataTablePagination({
           <Select
             value={`${perPage}`}
             onValueChange={(value) => {
-              table.setPageIndex(0)
-              table.setPageSize(Number(value))
+              table.setPageIndex(0);
+              table.setPageSize(Number(value));
+              handleLoading()
             }}
           >
             <SelectTrigger className="h-8 w-[4.5rem]">
@@ -68,8 +78,11 @@ export function DataTablePagination({
           <Button
             aria-label="Go to first page"
             variant="outline"
-            className="hidden size-8 p-0 lg:flex"
-            onClick={() => table.setPageIndex(0)}
+            className=" size-8 p-0 lg:flex"
+            onClick={() => {
+              table.setPageIndex(0);
+              handleLoading()
+            }}
             disabled={!table.getCanPreviousPage()}
           >
             <ChevronsLeft className="size-4" aria-hidden="true" />
@@ -79,7 +92,8 @@ export function DataTablePagination({
             variant="outline"
             size="icon"
             className="size-8"
-            onClick={() => table.previousPage()}
+            onClick={() => {table.previousPage();
+              handleLoading()} }
             disabled={!table.getCanPreviousPage()}
           >
             <ChevronLeft className="size-4" aria-hidden="true" />
@@ -89,7 +103,8 @@ export function DataTablePagination({
             variant="outline"
             size="icon"
             className="size-8"
-            onClick={() => table.nextPage()}
+            onClick={() => {table.nextPage();
+              handleLoading()}}
             disabled={!table.getCanNextPage()}
           >
             <ChevronRight className="size-4" aria-hidden="true" />
@@ -98,8 +113,9 @@ export function DataTablePagination({
             aria-label="Go to last page"
             variant="outline"
             size="icon"
-            className="hidden size-8 lg:flex"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            className=" size-8 lg:flex"
+            onClick={() => {table.setPageIndex(table.getPageCount() - 1);
+               handleLoading()} }
             disabled={!table.getCanNextPage()}
           >
             <ChevronsRight className="size-4" aria-hidden="true" />

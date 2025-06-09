@@ -13,6 +13,7 @@ import { useTableInstanceContext } from "../table-instance-provider"
 import { DataTableFilterOption } from "@/types/ui/data-table"
 import { TrashIcon } from "lucide-react"
 import { DataTableAdvancedFacetedFilter } from "./data-table-advanced-faceted-filter"
+import { split } from "postcss/lib/list"
 
 interface DataTableFilterItemProps<TData> {
   selectedOption: DataTableFilterOption<TData>
@@ -20,12 +21,16 @@ interface DataTableFilterItemProps<TData> {
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
   defaultOpen: boolean
+  setIsLoading?: (v: boolean) => void
+  isLoading?: boolean
 }
 
 export function DataTableFilterItem<TData>({
   selectedOption,
   setSelectedOptions,
   defaultOpen,
+  isLoading,
+  setIsLoading
 }: DataTableFilterItemProps<TData>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -43,16 +48,27 @@ export function DataTableFilterItem<TData>({
   const debounceValue = useDebounce(value, 500)
   const [open, setOpen] = React.useState(defaultOpen)
 
+
   React.useEffect(() => {
+    console.log("debounceValue >>> ", debounceValue)
+    if (debounceValue != "") {
+      if (setIsLoading) {
+        setIsLoading(true)
+      }
+    }
+
     if (selectedOption.options.length > 0) {
       // key=value1.value2.value3
       const filterValues = selectedOption.filterValues ?? []
       const newSearchParams = createQueryString(
         {
           [selectedOption.value]: filterValues.join("."),
+          page: "1",
         },
         searchParams
       )
+
+
       router.push(`${pathname}?${newSearchParams}`, {
         scroll: false,
       })
@@ -61,15 +77,23 @@ export function DataTableFilterItem<TData>({
       const newSearchParams = createQueryString(
         {
           [selectedOption.value]: debounceValue,
+          page: "1",
         },
         searchParams
       )
+
+
+
       router.push(`${pathname}?${newSearchParams}`, {
         scroll: false,
       })
     }
+
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedOption, debounceValue])
+
+
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -118,7 +142,13 @@ export function DataTableFilterItem<TData>({
             variant="ghost"
             size="icon"
             className="size-7 text-muted-foreground"
+            disabled={isLoading}
             onClick={() => {
+
+              if (setIsLoading) {
+                setIsLoading(true)
+              }
+
               setSelectedOptions((prev) =>
                 prev.filter((item) => item.value !== selectedOption.value)
               )
@@ -126,12 +156,16 @@ export function DataTableFilterItem<TData>({
               const newSearchParams = createQueryString(
                 {
                   [selectedOption.value]: undefined,
+                  page: "1",
                 },
                 searchParams
               )
+
+              console.log("deleted >>> ", `${pathname}?${newSearchParams}`)
               router.push(`${pathname}?${newSearchParams}`, {
                 scroll: false,
               })
+
             }}
           >
             <TrashIcon className="size-4" aria-hidden="true" />

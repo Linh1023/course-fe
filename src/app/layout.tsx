@@ -8,6 +8,7 @@ import API from "@/api/api";
 import { LoadingProvider } from "@/context/loading_context";
 import Loading from "@/components/share/loading";
 import { Toaster } from "@/components/ui/toaster";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 
 const geistSans = localFont({
@@ -43,14 +44,17 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <LoadingProvider>
-          <CurrentAccountProvider
-            currentAccountRes={currentAccount}
-          >
-            <Loading />
-            {children}
-          </CurrentAccountProvider>
-        </LoadingProvider>
+        <NuqsAdapter>
+          <LoadingProvider>
+            <CurrentAccountProvider
+              currentAccountRes={currentAccount}
+            >
+              <Loading />
+              {children}
+            </CurrentAccountProvider>
+          </LoadingProvider>
+        </NuqsAdapter>
+
 
 
 
