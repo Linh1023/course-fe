@@ -1,9 +1,11 @@
-'use client'
+'use client';
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useCurrentAccountContext } from '@/context/current_account_context';
+import { FetchServerPutApi } from '@/actions/server/fetch_server_api';
 import {
   Dialog,
   DialogContent,
@@ -11,23 +13,26 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
-import {  
-  Shield, 
+import {
+  Shield,
   ChevronRight,
   SlidersHorizontal,
   X,
   Eye,
-  EyeOff
+  EyeOff,
 } from 'lucide-react';
 import { z } from 'zod';
+import API from '@/api/api';
+import { toast } from 'sonner'; // Import toast từ sonner
+
 // Password change schema
 export const changePasswordSchema = z.object({
-  currentPassword: z.string().min(1, "Mật khẩu hiện tại là bắt buộc"),
-  newPassword: z.string().min(6, "Mật khẩu mới phải có ít nhất 6 ký tự"),
-  confirmPassword: z.string().min(1, "Vui lòng nhập lại mật khẩu mới"),
+  currentPassword: z.string().min(1, 'Mật khẩu hiện tại là bắt buộc'),
+  newPassword: z.string().min(6, 'Mật khẩu mới phải có ít nhất 6 ký tự'),
+  confirmPassword: z.string().min(1, 'Vui lòng nhập lại mật khẩu mới'),
 }).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Mật khẩu mới không khớp",
-  path: ["confirmPassword"],
+  message: 'Mật khẩu mới không khớp',
+  path: ['confirmPassword'],
 });
 
 export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>;
@@ -38,8 +43,10 @@ interface AccountCenterProps {
 }
 
 const AccountCenter: React.FC<AccountCenterProps> = ({
-  onPasswordChange, onContactEmail,
+  onPasswordChange,
+  onContactEmail,
 }) => {
+  const { currentAccount } = useCurrentAccountContext();
   const [activeSection, setActiveSection] = useState<string>('password-security');
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState<boolean>(false);
@@ -48,25 +55,30 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
     new: false,
     confirm: false,
   });
-  
+
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
   });
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false); // Thêm trạng thái loading
+  const [successMessage, setSuccessMessage] = useState<string | null>(null); // Thông báo thành công
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // Thông báo lỗi
+
+  console.log('Current Account', currentAccount);
 
   const securityItems = [
     {
       id: 'change-password',
       title: 'Đổi mật khẩu',
-      onClick: () => setIsPasswordModalOpen(true)
+      onClick: () => setIsPasswordModalOpen(true),
     },
     {
       id: 'email-contact',
       title: 'Email liên hệ',
-      onClick: onContactEmail
+      onClick: onContactEmail,
     },
   ];
 
@@ -79,51 +91,72 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
   };
 
   const togglePasswordVisibility = (field: 'current' | 'new' | 'confirm') => {
-    setShowPasswords(prev => ({
+    setShowPasswords((prev) => ({
       ...prev,
-      [field]: !prev[field]
+      [field]: !prev[field],
     }));
   };
 
   const handlePasswordFormChange = (field: string, value: string) => {
-    setPasswordForm(prev => ({
+    setPasswordForm((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
-    
+
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [field]: ''
+        [field]: '',
       }));
     }
+    // Clear success/error messages when form changes
+    setSuccessMessage(null);
+    setErrorMessage(null);
   };
 
-  const handleSavePassword = () => {
+  const handleSavePassword = async () => {
     try {
       // Validate using zod schema
       changePasswordSchema.parse(passwordForm);
-      
+
       // Clear any existing errors
       setErrors({});
-      
-      // Call the onPasswordChange callback if provided
-      if (onPasswordChange) {
-        onPasswordChange();
+
+      // Set loading state
+      setLoading(true);
+
+      // Call API using FetchServerPutApi
+      const response = await FetchServerPutApi(API.ACCOUNT.UPDATE_PASSWORD, {
+        oldPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword,
+      }, '/'); // Revalidate root path if needed
+
+      if (response && response.status === 200) {
+        // Handle success
+        toast.success(`Thành công: ${response.message}`, {
+          duration: 3000, // Hiển thị trong 3 giây
+        });
+        setPasswordForm({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: '',
+        });
+        setShowPasswords({
+          current: false,
+          new: false,
+          confirm: false,
+        });
+        setIsPasswordModalOpen(false);
+
+        // Call callback if provided
+        if (onPasswordChange) {
+          onPasswordChange();
+        }
+      } else {
+        // Handle API errors
+        throw new Error(response.errors?.[0]?.message || response.message || 'Lỗi không xác định');
       }
-      
-      // Reset form and close modal
-      setPasswordForm({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-      });
-      setIsPasswordModalOpen(false);
-      
-      // Success message could be handled by parent component
-      console.log('Đổi mật khẩu thành công!');
-      
     } catch (error) {
       if (error instanceof z.ZodError) {
         // Set validation errors
@@ -134,23 +167,56 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
           }
         });
         setErrors(newErrors);
+      } else if (error instanceof Error) {
+        // Handle API or network errors
+        const errorMessage = error.message;
+        if (errorMessage === 'Old Password Incorrect') {
+          toast.error('Lỗi: Mật khẩu cũ không chính xác', {
+            duration: 3000,
+          });
+        } else if (errorMessage === 'New password same as old password') {
+          toast.error('Lỗi: Mật khẩu mới không được giống mật khẩu cũ', {
+            duration: 3000,
+          });
+        } else if (errorMessage === 'Failed to save password') {
+          toast.error('Lỗi: Không thể lưu mật khẩu, vui lòng thử lại', {
+            duration: 3000,
+          });
+        } else {
+          toast.error(`Lỗi: ${errorMessage || 'Đã xảy ra lỗi không xác định'}`, {
+            duration: 3000,
+          });
+        }
+      } else {
+        // Handle unexpected error types
+        toast.error('Lỗi: Đã xảy ra lỗi không xác định', {
+          duration: 3000,
+        });
       }
+    } finally {
+      // Reset loading state
+      setLoading(false);
     }
   };
 
-  const handleClosePasswordModal = () => {
-    setPasswordForm({
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: '',
-    });
-    setShowPasswords({
-      current: false,
-      new: false,
-      confirm: false,
-    });
-    setErrors({});
-    setIsPasswordModalOpen(false);
+  const handleClosePasswordModal = (open: boolean) => {
+    if (!open) {
+      // Reset form khi modal đóng (khi nhấn nút "x")
+      setPasswordForm({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      });
+      setShowPasswords({
+        current: false,
+        new: false,
+        confirm: false,
+      });
+      setErrors({});
+      setSuccessMessage(null);
+      setErrorMessage(null);
+    }
+    setIsPasswordModalOpen(open);
   };
 
   return (
@@ -169,18 +235,20 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
 
       {/* Mobile Overlay */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
           onClick={closeSidebar}
         />
       )}
 
       {/* Sidebar */}
-      <div className={`
-        fixed lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out z-50
-        w-80 bg-white border-r border-gray-200 p-6 h-full lg:h-auto
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-      `}>
+      <div
+        className={`
+          fixed lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out z-50
+          w-80 bg-white border-r border-gray-200 p-6 h-full lg:h-auto
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        `}
+      >
         {/* Mobile Close Button */}
         <div className="lg:hidden flex justify-end mb-4">
           <Button
@@ -200,11 +268,13 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
               setActiveSection('password-security');
               closeSidebar();
             }}
-            className={`w-full flex items-center p-3 rounded-lg transition-colors text-left ${
-              activeSection === 'password-security' 
-                ? 'bg-red-50 text-red-600 border border-red-200' 
+            className={`
+              w-full flex items-center p-3 rounded-lg transition-colors text-left
+              ${activeSection === 'password-security'
+                ? 'bg-red-50 text-red-600 border border-red-200'
                 : 'hover:bg-gray-100 text-gray-900'
-            }`}
+              }
+            `}
           >
             <Shield className="w-5 h-5 mr-3" />
             <span>Mật khẩu và bảo mật</span>
@@ -217,49 +287,68 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
         <div className="max-w-4xl mx-auto">
           {/* Mobile spacing for menu button */}
           <div className="lg:hidden h-12 mb-4"></div>
-          
+
           <h1 className="text-xl sm:text-2xl font-semibold mb-2 text-gray-900">
             Mật khẩu và bảo mật
           </h1>
-          
-          <div className="mb-6 sm:mb-8">
-            <p className="text-gray-600 text-sm sm:text-base">
-              Quản lý mật khẩu, tùy chọn đăng nhập và phương thức khôi phục.
-            </p>
-          </div>
 
-          <div className="space-y-3">
-            {securityItems.map((item) => (
-              <Card 
-                key={item.id}
-                className="bg-white border-gray-200 hover:bg-gray-50 hover:border-red-200 transition-all duration-200 cursor-pointer shadow-sm"
-                onClick={item.onClick}
-              >
-                <CardContent className="p-3 sm:p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className="text-gray-900 font-medium text-sm sm:text-base">
-                        {item.title}
-                      </span>
-                    </div>
-                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="mb-6 sm:mb-8">
+            {!currentAccount?.googleId ? (
+              <p className="text-gray-600 text-sm sm:text-base">
+                Quản lý mật khẩu, tùy chọn đăng nhập và phương thức khôi phục.
+              </p>
+            ) : (
+              <p className="text-gray-600 text-sm sm:text-base">
+                Bạn đã đăng nhập bằng Google nên ứng dụng không hỗ trợ tính năng này.
+              </p>
+            )}
           </div>
+          {!currentAccount?.googleId && (
+            <div className="space-y-3">
+              {securityItems.map((item) => (
+                <Card
+                  key={item.id}
+                  className="bg-white border-gray-200 hover:bg-gray-50 hover:border-red-200 transition-all duration-200 cursor-pointer shadow-sm"
+                  onClick={item.onClick}
+                >
+                  <CardContent className="p-3 sm:p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <span className="text-gray-900 font-medium text-sm sm:text-base">
+                          {item.title}
+                        </span>
+                      </div>
+                      <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {/* Hiển thị thông báo thành công hoặc lỗi */}
+          {successMessage && (
+            <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-md">
+              {successMessage}
+            </div>
+          )}
+          {errorMessage && (
+            <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md">
+              {errorMessage}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Password Change Modal */}
-      <Dialog open={isPasswordModalOpen} onOpenChange={setIsPasswordModalOpen}>
+      <Dialog open={isPasswordModalOpen} onOpenChange={handleClosePasswordModal}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold text-gray-900">
               Đổi mật khẩu
             </DialogTitle>
           </DialogHeader>
-          
+
           <div className="space-y-4 py-4">
             {/* Current Password */}
             <div className="space-y-2">
@@ -269,11 +358,12 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
               <div className="relative">
                 <Input
                   id="current-password"
-                  type={showPasswords.current ? "text" : "password"}
+                  type={showPasswords.current ? 'text' : 'password'}
                   value={passwordForm.currentPassword}
                   onChange={(e) => handlePasswordFormChange('currentPassword', e.target.value)}
                   className={`pr-10 ${errors.currentPassword ? 'border-red-500 focus:border-red-500' : ''}`}
                   placeholder="Nhập mật khẩu hiện tại"
+                  disabled={loading}
                 />
                 <Button
                   type="button"
@@ -281,6 +371,7 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
                   size="sm"
                   className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                   onClick={() => togglePasswordVisibility('current')}
+                  disabled={loading}
                 >
                   {showPasswords.current ? (
                     <EyeOff className="h-4 w-4 text-gray-400" />
@@ -302,11 +393,12 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
               <div className="relative">
                 <Input
                   id="new-password"
-                  type={showPasswords.new ? "text" : "password"}
+                  type={showPasswords.new ? 'text' : 'password'}
                   value={passwordForm.newPassword}
                   onChange={(e) => handlePasswordFormChange('newPassword', e.target.value)}
                   className={`pr-10 ${errors.newPassword ? 'border-red-500 focus:border-red-500' : ''}`}
                   placeholder="Nhập mật khẩu mới"
+                  disabled={loading}
                 />
                 <Button
                   type="button"
@@ -314,6 +406,7 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
                   size="sm"
                   className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                   onClick={() => togglePasswordVisibility('new')}
+                  disabled={loading}
                 >
                   {showPasswords.new ? (
                     <EyeOff className="h-4 w-4 text-gray-400" />
@@ -335,11 +428,12 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
               <div className="relative">
                 <Input
                   id="confirm-password"
-                  type={showPasswords.confirm ? "text" : "password"}
+                  type={showPasswords.confirm ? 'text' : 'password'}
                   value={passwordForm.confirmPassword}
                   onChange={(e) => handlePasswordFormChange('confirmPassword', e.target.value)}
                   className={`pr-10 ${errors.confirmPassword ? 'border-red-500 focus:border-red-500' : ''}`}
                   placeholder="Nhập lại mật khẩu mới"
+                  disabled={loading}
                 />
                 <Button
                   type="button"
@@ -347,6 +441,7 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
                   size="sm"
                   className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                   onClick={() => togglePasswordVisibility('confirm')}
+                  disabled={loading}
                 >
                   {showPasswords.confirm ? (
                     <EyeOff className="h-4 w-4 text-gray-400" />
@@ -365,8 +460,9 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
             <Button
               type="button"
               variant="outline"
-              onClick={handleClosePasswordModal}
+              onClick={() => handleClosePasswordModal(false)}
               className="mt-3 sm:mt-0"
+              disabled={loading}
             >
               Đóng
             </Button>
@@ -374,8 +470,9 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
               type="button"
               onClick={handleSavePassword}
               className="bg-red-600 hover:bg-red-700 text-white"
+              disabled={loading}
             >
-              Lưu
+              {loading ? 'Đang xử lý...' : 'Lưu'}
             </Button>
           </DialogFooter>
         </DialogContent>
