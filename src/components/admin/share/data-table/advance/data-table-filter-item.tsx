@@ -144,6 +144,11 @@ export function DataTableFilterItem<TData>({
             className="size-7 text-muted-foreground"
             disabled={isLoading}
             onClick={() => {
+
+              if (setIsLoading) {
+                setIsLoading(true)
+              }
+
               setSelectedOptions((prev) =>
                 prev.filter((item) => item.value !== selectedOption.value)
               )
@@ -156,10 +161,7 @@ export function DataTableFilterItem<TData>({
                 searchParams
               )
 
-              if (setIsLoading) {
-                setIsLoading(true)
-              }
-
+              console.log("deleted >>> ", `${pathname}?${newSearchParams}`)
               router.push(`${pathname}?${newSearchParams}`, {
                 scroll: false,
               })
