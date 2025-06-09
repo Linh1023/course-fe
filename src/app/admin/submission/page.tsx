@@ -30,12 +30,7 @@ const SubmissionPage = async (props: SubmissionPageProps) => {
                     shrinkZero
                 />} > 
                     {/* Khoang tg */}
-                    <DateRangePicker
-                 triggerSize="sm"
-                 triggerClassName="ml-auto w-56 sm:w-60 mr-1"
-                 className="dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
-                 align="end"
-               />
+
                     <SubmissionTable 
                     submissionsPromise = {submissionsPromise}
                     />

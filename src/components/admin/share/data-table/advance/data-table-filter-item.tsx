@@ -22,12 +22,14 @@ interface DataTableFilterItemProps<TData> {
   >
   defaultOpen: boolean
   setIsLoading?: (v: boolean) => void
+  isLoading?: boolean
 }
 
 export function DataTableFilterItem<TData>({
   selectedOption,
   setSelectedOptions,
   defaultOpen,
+  isLoading,
   setIsLoading
 }: DataTableFilterItemProps<TData>) {
   const router = useRouter()
@@ -48,15 +50,12 @@ export function DataTableFilterItem<TData>({
 
 
   React.useEffect(() => {
-
     console.log("debounceValue >>> ", debounceValue)
     if (debounceValue != "") {
       if (setIsLoading) {
         setIsLoading(true)
       }
     }
-
-
 
     if (selectedOption.options.length > 0) {
       // key=value1.value2.value3
@@ -89,8 +88,12 @@ export function DataTableFilterItem<TData>({
         scroll: false,
       })
     }
+
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedOption, debounceValue])
+
+
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -139,6 +142,7 @@ export function DataTableFilterItem<TData>({
             variant="ghost"
             size="icon"
             className="size-7 text-muted-foreground"
+            disabled={isLoading}
             onClick={() => {
               setSelectedOptions((prev) =>
                 prev.filter((item) => item.value !== selectedOption.value)
