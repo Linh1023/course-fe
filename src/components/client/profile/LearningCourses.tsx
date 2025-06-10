@@ -6,6 +6,7 @@ import SearchHeader from "./SearchHeader";
 import PaginationCourse from "./PaginationCourse";
 import { MyCourseResponse, Course } from "@/types/response/account/my_course";
 import CoursesGrid from "./CourseGrid";
+import { LoaderIcon } from "@/components/share/loading-icon"
 
 interface LearningCoursesProps {
   coursePromise: Promise<MyCourseResponse>;
@@ -16,6 +17,7 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
   const searchParams = useSearchParams();
   const [courses, setCourses] = React.useState<Course[]>([]);
   const [totalPages, setTotalPages] = React.useState(1);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const initialName = searchParams.get("name") || "";
   const initialPage = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
@@ -24,10 +26,20 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
   const [page, setPage] = React.useState(initialPage);
 
   React.useEffect(() => {
-    coursePromise.then(({ result, totalPages }) => {
-      setCourses(result); // Bỏ lọc theo status
-      setTotalPages(totalPages);
-    });
+    const loadCourses = async () => {
+      setIsLoading(true);
+      try {
+        const { result, totalPages } = await coursePromise;
+        setCourses(result);
+        setTotalPages(totalPages);
+      } catch (error) {
+        console.error("Error loading courses:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCourses();
   }, [coursePromise]);
 
   React.useEffect(() => {
@@ -40,18 +52,28 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
   return (
     <div className="grid gap-4">
       <SearchHeader name={name} setName={setName} setPage={setPage} />
-      <CoursesGrid
-        courses={courses.map((course) => ({
-          ...course,
-          imageUrl: course.imageUrl || "/placeholder.jpg",
-          price: (course as any).price ?? 0, // Ensure price is included; adjust as needed
-        }))}
-      />
-      <PaginationCourse
-        currentPage={page}
-        totalPages={totalPages}
-        setPage={setPage}
-      />
+      
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8">
+          <LoaderIcon className="mr-1.5 size-4 animate-spin" aria-hidden="true" />
+          <span className="text-sm text-gray-600">Đang tải khóa học...</span>
+        </div>
+      ) : (
+        <>
+          <CoursesGrid
+            courses={courses.map((course) => ({
+              ...course,
+              imageUrl: course.imageUrl || "/placeholder.jpg",
+              price: (course as any).price ?? 0,
+            }))}
+          />
+          <PaginationCourse
+            currentPage={page}
+            totalPages={totalPages}
+            setPage={setPage}
+          />
+        </>
+      )}
     </div>
   );
 }
