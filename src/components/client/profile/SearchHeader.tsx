@@ -9,9 +9,10 @@ interface SearchHeaderProps {
   name: string;
   setName: React.Dispatch<React.SetStateAction<string>>;
   setPage: React.Dispatch<React.SetStateAction<number>>;
+  setIsSearching: React.Dispatch<React.SetStateAction<boolean>>; // Thêm prop mới
 }
 
-export default function SearchHeader({ name, setName, setPage }: SearchHeaderProps) {
+export default function SearchHeader({ name, setName, setPage, setIsSearching }: SearchHeaderProps) {
   // State để lưu giá trị input trước khi debounce
   const [inputValue, setInputValue] = React.useState(name);
 
@@ -28,7 +29,13 @@ export default function SearchHeader({ name, setName, setPage }: SearchHeaderPro
 
   // Xử lý thay đổi input
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    const newValue = e.target.value;
+    setInputValue(newValue);
+    
+    // Bật loading ngay lập tức khi người dùng nhập (chỉ khi có thay đổi thực sự)
+    if (newValue !== name) {
+      setIsSearching(true);
+    }
   };
 
   return (

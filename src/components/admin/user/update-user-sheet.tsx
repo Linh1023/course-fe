@@ -96,7 +96,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
 
   return (
     <Sheet {...props}>
-      <SheetContent className="flex flex-col gap-6 sm:max-w-[600px]">
+      <SheetContent className="flex flex-col gap-6 sm:max-w-[400px] overflow-y-auto">
         <SheetHeader className="text-left">
           <SheetTitle>Cập nhật người dùng</SheetTitle>
           <SheetDescription>
@@ -106,7 +106,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            className="flex flex-col gap-4"
           >
             <FormField
               control={form.control}
@@ -125,6 +125,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="email"
@@ -143,6 +144,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="username"
@@ -160,6 +162,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="phone"
@@ -178,6 +181,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="avatarUrl"
@@ -196,6 +200,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="birthday"
@@ -214,6 +219,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="sex"
@@ -247,6 +253,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="role"
@@ -277,6 +284,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="status"
@@ -307,6 +315,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="password"
@@ -325,24 +334,23 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
-            <div className="col-span-1 md:col-span-2">
-              <SheetFooter className="gap-2 pt-2 sm:space-x-0">
-                <SheetClose asChild>
-                  <Button type="button" variant="outline">
-                    Hủy
-                  </Button>
-                </SheetClose>
-                <Button disabled={isUpdatePending}>
-                  {isUpdatePending && (
-                    <LoaderIcon
-                      className="mr-1.5 size-4 animate-spin"
-                      aria-hidden="true"
-                    />
-                  )}
-                  Lưu
+            
+            <SheetFooter className="gap-2 pt-2 sm:space-x-0">
+              <SheetClose asChild>
+                <Button type="button" variant="outline">
+                  Hủy
                 </Button>
-              </SheetFooter>
-            </div>
+              </SheetClose>
+              <Button disabled={isUpdatePending}>
+                {isUpdatePending && (
+                  <LoaderIcon
+                    className="mr-1.5 size-4 animate-spin"
+                    aria-hidden="true"
+                  />
+                )}
+                Lưu
+              </Button>
+            </SheetFooter>
           </form>
         </Form>
       </SheetContent>
