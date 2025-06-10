@@ -18,6 +18,7 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
   const [courses, setCourses] = React.useState<Course[]>([]);
   const [totalPages, setTotalPages] = React.useState(1);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isSearching, setIsSearching] = React.useState(false); // Thêm state cho search loading
 
   const initialName = searchParams.get("name") || "";
   const initialPage = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
@@ -36,6 +37,7 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
         console.error("Error loading courses:", error);
       } finally {
         setIsLoading(false);
+        setIsSearching(false); // Tắt search loading khi hoàn thành
       }
     };
 
@@ -51,12 +53,19 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
 
   return (
     <div className="grid gap-4">
-      <SearchHeader name={name} setName={setName} setPage={setPage} />
+      <SearchHeader 
+        name={name} 
+        setName={setName} 
+        setPage={setPage}
+        setIsSearching={setIsSearching} // Truyền function để set search loading
+      />
       
-      {isLoading ? (
+      {(isLoading || isSearching) ? ( // Hiển thị loading khi đang load hoặc đang search
         <div className="flex items-center justify-center py-8">
           <LoaderIcon className="mr-1.5 size-4 animate-spin" aria-hidden="true" />
-          <span className="text-sm text-gray-600">Đang tải khóa học...</span>
+          <span className="text-sm text-gray-600">
+            {isSearching ? "Đang tìm kiếm..." : "Đang tải khóa học..."}
+          </span>
         </div>
       ) : (
         <>
