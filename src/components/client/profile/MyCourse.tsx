@@ -1,25 +1,60 @@
-'use client';
-import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import LearningCourse from './LearningCourses';
-import LearnedCourse from './LearnedCourses';
+"use client";
 
+import * as React from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import LearningCourses from "./LearningCourses";
+import { MyCourseResponse } from "@/types/response/account/my_course";
+
+interface MyCourseProps {
+  coursePromise: Promise<MyCourseResponse>;
+}
 
 const tabs = [
   {
-    name: 'Đang học',
-    value: 'pnpm',
-    count: 9,
-  },
-  {
-    name: 'Đã học',
-    value: 'npm',
-    content: 'npx shadcn@latest add tabs',
+    name: "Đang học",
+    value: "inProgress",
+    count: 0,
   },
 ];
 
+export default function MyCourse({ coursePromise }: MyCourseProps) {
+  const [isMobile, setIsMobile] = React.useState(false);
 
-export default function MyCourse() {
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  if (isMobile) {
+    return (
+      <div className="bg-white">
+        {/* Mobile Header */}
+        <div className="p-4 border-b">
+          <h1 className="text-lg font-semibold text-gray-900">Khóa học của tôi</h1>
+        </div>
+        
+        {/* Mobile Tab */}
+        <div className="border-b">
+          <div className="px-4">
+            <button className="py-3 text-sm font-medium text-blue-600 border-b-2 border-blue-600">
+              Đang học
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Content */}
+        <div className="p-4">
+          <LearningCourses coursePromise={coursePromise} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Tabs defaultValue={tabs[0].value} className="max-w-5xl w-full">
       <TabsList className="w-full p-0 bg-background justify-start border-b rounded-none gap-1">
@@ -29,7 +64,7 @@ export default function MyCourse() {
             value={tab.value}
             className="rounded-none bg-background h-full data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
           >
-            <code className="text-[15px]">{tab.name}</code>{' '}
+            <code className="text-[15px]">{tab.name}</code>
             {tab.count ? (
               <span className="ml-1 inline-flex items-center justify-center h-4 px-2 text-xs font-medium bg-primary text-primary-foreground rounded-full">
                 {tab.count}
@@ -40,11 +75,7 @@ export default function MyCourse() {
       </TabsList>
       {tabs.map((tab) => (
         <TabsContent key={tab.value} value={tab.value} className="mt-4">
-          {tab.value === 'pnpm' ? (
-            <LearningCourse/>
-          ) : (
-            <LearnedCourse />
-          )}
+          <LearningCourses coursePromise={coursePromise} />
         </TabsContent>
       ))}
     </Tabs>

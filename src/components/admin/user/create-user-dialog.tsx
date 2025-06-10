@@ -38,7 +38,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { LoaderIcon, PlusIcon } from "lucide-react";
-// Update the import path below to the correct relative path if needed, for example:
 import { FetchServerPostApi } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
 import { CreateUserSchema, createUserSchema } from "@/validation/userSchema";
@@ -96,7 +95,7 @@ export function CreateUserDialog() {
         </Tooltip>
       </TooltipProvider>
 
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Tạo người dùng</DialogTitle>
           <DialogDescription>
@@ -106,8 +105,9 @@ export function CreateUserDialog() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            className="flex flex-col gap-4"
           >
+            {/* Thông tin cơ bản */}
             <FormField
               control={form.control}
               name="name"
@@ -125,6 +125,7 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="email"
@@ -143,6 +144,7 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="username"
@@ -160,6 +162,7 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="password"
@@ -178,6 +181,7 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="phone"
@@ -196,6 +200,7 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="avatarUrl"
@@ -214,6 +219,7 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="birthday"
@@ -232,6 +238,7 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="sex"
@@ -265,6 +272,7 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="role"
@@ -295,6 +303,7 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="status"
@@ -325,24 +334,23 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
-            <div className="col-span-1 md:col-span-2">
-              <DialogFooter className="gap-2 pt-2 sm:space-x-0">
-                <DialogClose asChild>
-                  <Button type="button" variant="outline">
-                    Hủy
-                  </Button>
-                </DialogClose>
-                <Button disabled={isCreatePending}>
-                  {isCreatePending && (
-                    <LoaderIcon
-                      className="mr-1.5 size-4 animate-spin"
-                      aria-hidden="true"
-                    />
-                  )}
-                  Tạo mới
+            
+            <DialogFooter className="gap-2 pt-2 sm:space-x-0">
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Hủy
                 </Button>
-              </DialogFooter>
-            </div>
+              </DialogClose>
+              <Button disabled={isCreatePending}>
+                {isCreatePending && (
+                  <LoaderIcon
+                    className="mr-1.5 size-4 animate-spin"
+                    aria-hidden="true"
+                  />
+                )}
+                Tạo mới
+              </Button>
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>
