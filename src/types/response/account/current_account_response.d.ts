@@ -5,4 +5,5 @@ interface CurrentAccountResponse{
      phone:string;
      role:string;
      avatarUrl:string;
+     id:string
 }
