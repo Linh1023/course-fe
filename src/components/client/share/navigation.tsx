@@ -368,22 +368,25 @@ const Navigation = () => {
                           </div>
                         </Link>
 
-                        <div className="dropdown-item-custom">
-                          <Settings className="mr-[15px]" /> Cài đặt
+                                                <Link href={"/setting"}>
+                                                    <div className="dropdown-item-custom">
+                                                        <Settings className="mr-[15px]" /> Cài đặt
+                                                    </div>
+                                                </Link>
+                                                
+                                                <div className=" bg-gray-200 h-[1px]" />
+                                                <div
+                                                    className="dropdown-item-custom"
+                                                    onClick={() => handleLogout()}
+                                                >
+                                                    <LogOut className="mr-[15px]" /> Đăng xuất
+                                                </div>
+                                            </div>
+                                        </PopoverContent>
+                                    </>
+                                )}
+                            </Popover>
                         </div>
-                        <div className=" bg-gray-200 h-[1px]" />
-                        <div
-                          className="dropdown-item-custom"
-                          onClick={() => handleLogout()}
-                        >
-                          <LogOut className="mr-[15px]" /> Đăng xuất
-                        </div>
-                      </div>
-                    </PopoverContent>
-                  </>
-                )}
-              </Popover>
-            </div>
 
             <Sheet>
               <SheetTrigger asChild className="lg:hidden">

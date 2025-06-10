@@ -3,7 +3,7 @@
 import { SquarePen } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { FetchClientPutApi } from '@/actions/client/fetch_client_api';
+import { FetchServerPutApi } from '@/actions/server/fetch_server_api';
 import API from '@/api/api';
 import { toast } from "@/hooks/use-toast"
 import { FetchServerGetApi } from '@/actions/server/fetch_server_api';
@@ -93,7 +93,7 @@ const MyInformation = () => {
       };
 
       // Gọi API PUT
-      const response = await FetchClientPutApi(API.PROFILE.CHANGE_PROFILE, bodyData);
+      const response = await FetchServerPutApi(API.PROFILE.CHANGE_PROFILE, bodyData);
 
       if (response && response.status === 200) {
         // Cập nhật formData với dữ liệu mới từ response
@@ -144,18 +144,23 @@ const MyInformation = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto bg-white">
+    <div className="max-w-4xl w-full bg-white px-4 md:p-0">
       <div className="max-w-4xl mx-auto flex items-center justify-between border-b border-gray-200 my-2">
-        <h1 className="text-2xl font-bold text-gray-900">Thông tin cá nhân</h1>
-        <Button
-          variant="outline"
-          className='text-white mb-2 bg-black hover:bg-black hover:text-white'
-          onClick={toggleEditing}
-          disabled={isSaving}
-        >
-          <SquarePen size={30} /> Chỉnh sửa
-        </Button>
-      </div>
+      <h1 className="text-lg font-semibold text-gray-900">
+         Thông tin cá nhân
+      </h1>
+
+  <Button
+    variant="outline"
+    className="text-white mb-2 bg-red-500 hover:bg-red-400 p-2 flex items-center justify-center"
+    onClick={toggleEditing}
+    disabled={isSaving}
+  >
+    <SquarePen size={24} />
+    <span className="hidden md:inline ml-2">Chỉnh sửa</span>
+  </Button>
+</div>
+
       <div className="space-y-6">
         {/* Email and Username */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

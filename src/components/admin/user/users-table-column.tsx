@@ -17,6 +17,8 @@ import { UpdateUserSheet } from "./update-user-sheet"
 import { DeleteUsersDialog } from "./delete-users-dialog"
 import { Ellipsis } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import Link from "next/link";
+
 
 export function getColumns(): ColumnDef<User>[] {
   return [
@@ -58,11 +60,6 @@ export function getColumns(): ColumnDef<User>[] {
               <span className="max-w-[15rem] truncate font-medium">
                 {user.name}
               </span>
-              {user.username && (
-                <span className="max-w-[15rem] truncate text-xs text-muted-foreground">
-                  @{user.username}
-                </span>
-              )}
             </div>
           </div>
         );
@@ -84,14 +81,14 @@ export function getColumns(): ColumnDef<User>[] {
       enableSorting: true,
     },
     {
-      accessorKey: "phone", 
+      accessorKey: "username", 
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Số điện thoại" />
+        <DataTableColumnHeader column={column} title="Tài khoản" />
       ),
       cell: ({ row }) => (
         <div className="flex space-x-2">
           <span className="max-w-[10rem] truncate font-medium">
-            {row.getValue("phone") || "—"}
+            {row.getValue("username") || "—"}
           </span>
         </div>
       ),
@@ -109,31 +106,6 @@ export function getColumns(): ColumnDef<User>[] {
           </span>
         </div>
       ),
-      enableSorting: true,
-    },
-    {
-      accessorKey: "sex",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Giới tính" />
-      ),
-      cell: ({ row }) => {
-        const sex = row.getValue("sex") as string;
-        const sexMap = {
-          "MALE": { label: "Nam", icon: "👨" },
-          "FEMALE": { label: "Nữ", icon: "👩" }, 
-          "OTHER": { label: "Khác", icon: "👤" }
-        };
-        const sexInfo = sexMap[sex as keyof typeof sexMap] || { label: "Khác", icon: "👤" };
-        
-        return (
-          <div className="flex items-center space-x-2">
-            <span>{sexInfo.icon}</span>
-            <span className="max-w-[10rem] truncate font-medium">
-              {sexInfo.label}
-            </span>
-          </div>
-        );
-      },
       enableSorting: true,
     },
     {
@@ -199,6 +171,8 @@ export function getColumns(): ColumnDef<User>[] {
         const [showUpdateUserSheet, setShowUpdateUserSheet] = React.useState(false)
         const [showDeleteUserDialog, setShowDeleteUserDialog] = React.useState(false)
 
+        const user = row.original;
+
         return (
           <>
             <UpdateUserSheet
@@ -234,7 +208,6 @@ export function getColumns(): ColumnDef<User>[] {
                     }, 0)
                   }}
                 >
-                 
                   Chỉnh sửa
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -246,10 +219,15 @@ export function getColumns(): ColumnDef<User>[] {
                   }}
                   className="text-red-600"
                 >
-                 
                   Xóa
                   <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <Link href={`/admin/user/${user.id}?page=1`} className="text-blue-600">
+                  <DropdownMenuItem>
+                    Xem tiến độ
+                  </DropdownMenuItem>
+                </Link>
               </DropdownMenuContent>
             </DropdownMenu>
           </>
