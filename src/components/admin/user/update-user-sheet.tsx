@@ -1,41 +1,19 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet"
-import { updateUserSchema, UpdateUserSchema } from "@/validation/userSchema"
-import { LoaderIcon } from "@/components/share/loading-icon"
-import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import API from "@/api/api"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { FetchServerPutApi } from "@/actions/server/fetch_server_api"
+import * as React from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter, SheetClose } from "@/components/ui/sheet";
+import { Form, FormItem, FormLabel, FormControl, FormMessage, FormField } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { LoaderIcon } from "lucide-react";
+import { FetchServerPutApi } from "@/actions/server/fetch_server_api";
+import API from "@/api/api";
+import { updateUserSchema, UpdateUserSchema } from "@/validation/userSchema";
 
 interface User {
   id: string;
@@ -49,15 +27,16 @@ interface User {
   phone: string;
   avatarUrl: string;
   birthday: string;
+  password: string;
 }
 
 interface UpdateUserSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
-  user: User
+  user: User;
 }
 
 export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
-  const router = useRouter()
-  const [isUpdatePending, startUpdateTransition] = React.useTransition()
+  const router = useRouter();
+  const [isUpdatePending, startUpdateTransition] = React.useTransition();
 
   const form = useForm<UpdateUserSchema>({
     resolver: zodResolver(updateUserSchema),
@@ -71,10 +50,11 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
       phone: user.phone || "",
       avatarUrl: user.avatarUrl || "",
       birthday: user.birthday || "",
+      password: user.password || "", // Mặc định rỗng
     },
-  })
+  });
 
-  // Reset form chỉ khi user thay đổi
+  // Reset form khi user thay đổi
   React.useEffect(() => {
     form.reset({
       name: user.name || "",
@@ -86,8 +66,9 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
       phone: user.phone || "",
       avatarUrl: user.avatarUrl || "",
       birthday: user.birthday || "",
-    })
-  }, [user.id, form])
+      password: user.password || "",
+    });
+  }, [user.id, form]);
 
   function onSubmit(input: UpdateUserSchema) {
     startUpdateTransition(async () => {
@@ -96,26 +77,26 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
           API.ACCOUNT.UPDATE(user.id),
           input,
           "/admin/user"
-        )
+        );
         if (updateUserResponse.status === 200) {
-          toast.success("Cập nhật người dùng thành công!")
-          props.onOpenChange?.(false)
-          router.refresh()
+          toast.success("Cập nhật người dùng thành công!");
+          props.onOpenChange?.(false);
+          router.refresh();
         } else {
           toast.error(
             updateUserResponse.message || "Cập nhật thất bại, vui lòng thử lại!"
-          )
+          );
         }
       } catch (error) {
-        toast.error("Lỗi hệ thống, vui lòng thử lại sau!")
-        console.error("Update user error:", error)
+        toast.error("Lỗi hệ thống, vui lòng thử lại sau!");
+        console.error("Update user error:", error);
       }
-    })
+    });
   }
 
   return (
     <Sheet {...props}>
-      <SheetContent className="flex flex-col gap-6 sm:max-w-[600px]">
+      <SheetContent className="flex flex-col gap-6 sm:max-w-[400px] overflow-y-auto">
         <SheetHeader className="text-left">
           <SheetTitle>Cập nhật người dùng</SheetTitle>
           <SheetDescription>
@@ -125,7 +106,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            className="flex flex-col gap-4"
           >
             <FormField
               control={form.control}
@@ -144,6 +125,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="email"
@@ -162,6 +144,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="username"
@@ -179,6 +162,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="phone"
@@ -197,6 +181,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="avatarUrl"
@@ -215,6 +200,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="birthday"
@@ -233,6 +219,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="sex"
@@ -266,6 +253,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="role"
@@ -296,6 +284,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="status"
@@ -326,27 +315,45 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
-            <div className="col-span-1 md:col-span-2">
-              <SheetFooter className="gap-2 pt-2 sm:space-x-0">
-                <SheetClose asChild>
-                  <Button type="button" variant="outline">
-                    Hủy
-                  </Button>
-                </SheetClose>
-                <Button disabled={isUpdatePending}>
-                  {isUpdatePending && (
-                    <LoaderIcon
-                      className="mr-1.5 size-4 animate-spin"
-                      aria-hidden="true"
+            
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mật khẩu</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Nhập mật khẩu mới"
+                      type="text"
+                      className="resize-none"
+                      {...field}
                     />
-                  )}
-                  Lưu
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <SheetFooter className="gap-2 pt-2 sm:space-x-0">
+              <SheetClose asChild>
+                <Button type="button" variant="outline">
+                  Hủy
                 </Button>
-              </SheetFooter>
-            </div>
+              </SheetClose>
+              <Button disabled={isUpdatePending}>
+                {isUpdatePending && (
+                  <LoaderIcon
+                    className="mr-1.5 size-4 animate-spin"
+                    aria-hidden="true"
+                  />
+                )}
+                Lưu
+              </Button>
+            </SheetFooter>
           </form>
         </Form>
       </SheetContent>
     </Sheet>
-  )
+  );
 }

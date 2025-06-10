@@ -28,19 +28,14 @@ export function UsersTable({ userPromise }: UsersTableProps) {
       placeholder: "Lọc theo họ tên...",
     },
     {
+      label: "Tài khoản",
+      value: "username",
+      placeholder: "Lọc theo tài khoản...",
+    },
+    {
       label: "Email",
       value: "email",
       placeholder: "Lọc theo email...",
-    },
-    {
-      label: "Giới tính",
-      value: "sex",
-      placeholder: "Lọc theo giới tính...",
-      options: [
-        { label: "Nam", value: "MALE" },
-        { label: "Nữ", value: "FEMALE" },
-        { label: "Khác", value: "OTHER" },
-      ],
     },
     {
       label: "Vai trò",
