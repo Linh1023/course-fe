@@ -78,7 +78,7 @@ export function DataTablePagination({
           <Button
             aria-label="Go to first page"
             variant="outline"
-            className="hidden size-8 p-0 lg:flex"
+            className=" size-8 p-0 lg:flex"
             onClick={() => {
               table.setPageIndex(0);
               handleLoading()
@@ -113,7 +113,7 @@ export function DataTablePagination({
             aria-label="Go to last page"
             variant="outline"
             size="icon"
-            className="hidden size-8 lg:flex"
+            className=" size-8 lg:flex"
             onClick={() => {table.setPageIndex(table.getPageCount() - 1);
                handleLoading()} }
             disabled={!table.getCanNextPage()}

@@ -57,18 +57,57 @@ import {
 } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
 import { useLoadingContext } from "@/context/loading_context";
-
+type CourseType = {
+  id: string;
+  name: string;
+  imageUrl: string;
+  price: number;
+  createdAt: string;
+};
 const Navigation = () => {
-    const { currentAccount, fetchGetCurrentAccount } = useCurrentAccountContext();
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext();
+  const { currentAccount, fetchGetCurrentAccount } = useCurrentAccountContext();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext();
+  const [suggestions, setSuggestions] = useState<CourseType[]>([]);
+  const [page, setPage] = useState(0);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [keyword, setKeyword] = useState("");
+  const [shouldSyncKeyword, setShouldSyncKeyword] = useState(true);
+  const [showSuggestions, setShowSuggestions] = useState(true);
+  // Lấy keyword từ URL để khởi tạo input
+  // const [keyword, setKeyword] = useState(
+  //   () => searchParams.get("keyword") || ""
+  // );
 
-    const [categories, setCategories] = useState<Category[]>([]);
-    // Lấy keyword từ URL để khởi tạo input
-    const [keyword, setKeyword] = useState(
-        () => searchParams.get("keyword") || ""
-    );
+  useEffect(() => {
+    if (!keyword.trim()) {
+      setSuggestions([]);
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        const res = await FetchServerGetApiNoToken(
+          API.COURSE.COURSE_FILTER +
+            `?keyword=${encodeURIComponent(keyword.trim())}&page=0&size=4`
+        );
+
+        if (res && res.status === 200) {
+          // console.log("Search suggestions:", res);
+          setSuggestions(res.result || []);
+          setPage(res.totalPages || 0);
+        } else {
+          setSuggestions([]);
+        }
+      } catch (err) {
+        console.error("API error:", err);
+        setSuggestions([]);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [keyword]);
 
     useEffect(() => {
         const fetchCategory = async () => {
@@ -82,11 +121,22 @@ const Navigation = () => {
         fetchCategory();
     }, []);
 
-    // Đồng bộ khi URL thay đổi (nếu bạn muốn input tự cập nhật theo URL)
-    useEffect(() => {
-        const kw = searchParams.get("keyword") || "";
-        setKeyword(kw);
-    }, [searchParams]);
+  // Đồng bộ khi URL thay đổi (nếu bạn muốn input tự cập nhật theo URL)
+ useEffect(() => {
+  if (keyword.trim()) {
+    setShowSuggestions(true); // ✅ Chỉ bật lại khi có gõ gì mới
+  }
+}, [keyword]);
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (keyword.trim()) params.set("keyword", keyword.trim());
+    params.set("page", "0");
+    setShouldSyncKeyword(false); // ⛔ ngắt đồng bộ input từ URL
+    setKeyword(""); // ✅ reset input
+    setSuggestions([]);
+    router.push(`/search?${params.toString()}`);
+  };
 
     const handleLogout = async () => {
         startLoadingSpiner();
@@ -126,12 +176,16 @@ const Navigation = () => {
             params.set("keyword", keyword.trim());
         }
 
-        // Nếu bạn muốn reset page về 0 mỗi khi search mới
-        params.set("page", "0");
+    params.set("page", "0");
 
-        // Push đến đường dẫn /search với query params
-        router.push(`/search?${params.toString()}`);
-    };
+    router.push(`/search?${params.toString()}`);
+
+    setKeyword(""); // Xoá input
+      setShowSuggestions(false); // Ẩn hẳn
+    setSuggestions([]); // Ẩn gợi ý
+  };
+
+
 
     return (
         <>
@@ -195,18 +249,60 @@ const Navigation = () => {
                             </NavigationMenuList>
                         </NavigationMenu>
 
-                        <div className="hidden items-center gap-4 lg:flex">
-                            <div className="flex items-center">
-                                <Search className="mr-[15px]" onClick={updateUrlKeyword} />
-                                <Input
-                                    type="text"
-                                    placeholder="Tìm kiếm khóa học"
-                                    className="w-[300px]"
-                                    value={keyword}
-                                    onChange={(e) => setKeyword(e.target.value)}
-                                    onKeyDown={handleKeyDown}
-                                />
-                            </div>
+            <div className="hidden items-center gap-4 lg:flex">
+              <div className="relative max-w-xl mx-auto">
+                <div className="flex items-center border rounded-md px-2 shadow-sm">
+                  <Search
+                    className="mr-2 text-gray-500"
+                    onClick={updateUrlKeyword}
+                  />
+                  <Input
+                    type="text"
+                    placeholder="Tìm kiếm khóa học..."
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                    className="w-full border-none focus:ring-0"
+                    onKeyDown={handleKeyDown}
+                  />
+                </div>
+
+                {showSuggestions && keyword.trim() && (
+                  <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-md mt-1 z-50 max-h-60 overflow-y-auto border">
+                    {suggestions.length > 0 ? (
+                      <>
+                        {suggestions.slice(0, 4).map((course) => (
+                          <div
+                            key={course.id}
+                            className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100 cursor-default"
+                          >
+                            <img
+                              src={course.imageUrl}
+                              alt={course.name}
+                              className="w-10 h-10 rounded object-cover"
+                            />
+                            <span className="font-bold text-sm w-4/5 truncate">
+                              {course.name}
+                            </span>
+                          </div>
+                        ))}
+
+                        {page > 1 && (
+                          <div
+                            className="px-4 py-2 text-sm text-red-500 hover:underline cursor-pointer"
+                            onClick={updateUrlKeyword}
+                          >
+                            Xem thêm...
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="px-4 py-2 text-sm text-gray-500 italic">
+                        Không có kết quả tìm kiếm
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
 
                             <Popover>
                                 {currentAccount == null ? (
@@ -228,18 +324,18 @@ const Navigation = () => {
                                             />
                                         </PopoverTrigger>
 
-                                        <PopoverContent className="mr-[20px]">
-                                            <div className="flex items-center cursor-pointer">
-                                                <img
-                                                    src={currentAccount.avatarUrl}
-                                                    className=" rounded-[100px] h-[45px] w-[45px]"
-                                                    alt="Avatar"
-                                                />
-                                                <div className="ml-[10px] flex flex-col justify-center max-w-[200px]">
-                                                    <span className="truncate">{currentAccount.name}</span>
-                                                    <span className="truncate" >{currentAccount.email}</span>
-                                                </div>
-                                            </div>
+                    <PopoverContent className="mr-[20px]">
+                      <div className="flex items-center cursor-pointer">
+                        <img
+                          src={currentAccount.avatarUrl}
+                          className=" rounded-[100px] h-[45px] w-[45px]"
+                          alt="Avatar"
+                        />
+                        <div className="ml-[10px] flex flex-col justify-center truncate ">
+                          <span>{currentAccount.name}</span>
+                          <span className="truncate" >{currentAccount.email}</span>
+                        </div>
+                      </div>
 
                                             <DropdownMenuSeparator className="mt-[20px] bg-gray-200 h-[1px]" />
                                             <div className=" flex flex-col gap-2">
@@ -387,21 +483,38 @@ const Navigation = () => {
                                         </>
                                     )}
 
-                                    <div className="flex flex-col gap-6">
-                                        <div className="flex items-center">
-                                            <Search className="mr-[15px]" />
-                                            <Input
-                                                type="text"
-                                                placeholder="Tìm kiếm khóa học"
-                                                className="w-[300px]"
-                                                value={keyword}
-                                                onChange={(e) => setKeyword(e.target.value)}
-                                                onKeyDown={handleKeyDown}
-                                            />
-                                            <Button className="ml-2" onClick={updateUrlKeyword}>
-                                                Tìm
-                                            </Button>
-                                        </div>
+                  <div className="flex flex-col gap-6">
+                    <div className="relative max-w-xl mx-auto">
+                      <div className="flex items-center border rounded-md px-2 shadow-sm">
+                        <Search className="mr-2 text-gray-500" />
+                        <Input
+                          type="text"
+                          placeholder="Tìm kiếm khóa học..."
+                          value={keyword}
+                          onChange={(e) => setKeyword(e.target.value)}
+                          className="w-full border-none focus:ring-0"
+                          onKeyDown={handleKeyDown}
+                        />
+                      </div>
+
+                      {suggestions.length > 0 && (
+                        <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-md mt-1 z-50 max-h-60 overflow-y-auto border">
+                          {suggestions.map((course) => (
+                            <div
+                              key={course.id}
+                              className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100 cursor-default"
+                            >
+                              <img
+                                src={course.imageUrl}
+                                alt={course.name}
+                                className="w-10 h-10 rounded object-cover"
+                              />
+                              <span>{course.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
 
                                         <Link href="/" className="font-medium">
                                             Trang chủ

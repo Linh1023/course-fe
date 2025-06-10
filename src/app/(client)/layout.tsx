@@ -1,4 +1,5 @@
 import Footer from "@/components/client/share/Footer";
+import MyConnect from "@/components/client/share/MyConnect";
 import Navbar from "@/components/client/share/navbar";
 import { Navigation } from "@/components/client/share/navigation";
 
@@ -13,6 +14,7 @@ export default function ClientLayout({
       <Navigation></Navigation>
       {/* <Navbar></Navbar> */}
         {children}
+      <MyConnect/>
       <Footer/>
     </>
 
