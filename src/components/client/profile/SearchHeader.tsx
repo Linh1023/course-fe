@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { useDebounce } from "@/hooks/use-debounce"; // Giả định bạn có hook useDebounce
 
 interface SearchHeaderProps {
   name: string;
@@ -11,9 +12,23 @@ interface SearchHeaderProps {
 }
 
 export default function SearchHeader({ name, setName, setPage }: SearchHeaderProps) {
+  // State để lưu giá trị input trước khi debounce
+  const [inputValue, setInputValue] = React.useState(name);
+
+  // Debounce giá trị input với delay 500ms
+  const debouncedValue = useDebounce(inputValue, 500);
+
+  // Cập nhật state name và reset page khi debouncedValue thay đổi
+  React.useEffect(() => {
+    if (debouncedValue !== name) {
+      setName(debouncedValue);
+      setPage(1); // Reset về trang 1 khi tìm kiếm
+    }
+  }, [debouncedValue, name, setName, setPage]);
+
+  // Xử lý thay đổi input
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-    setPage(1); // Reset về trang 1 khi tìm kiếm
+    setInputValue(e.target.value);
   };
 
   return (
@@ -23,7 +38,7 @@ export default function SearchHeader({ name, setName, setPage }: SearchHeaderPro
           type="text"
           placeholder="Tìm kiếm khóa học..."
           className="pl-10"
-          value={name}
+          value={inputValue}
           onChange={handleSearch}
         />
         <Search
