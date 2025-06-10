@@ -171,14 +171,17 @@ const Navigation = () => {
 
   // Khi nhấn Enter
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    startLoadingSpiner();
+
     if (e.key === "Enter") {
       updateUrlKeyword();
     }
+    stopLoadingSpiner();
+
   };
 
   // Cập nhật URL với keyword mới
   const updateUrlKeyword = () => {
-    startLoadingSpiner();
     const params = new URLSearchParams();
 
     if (keyword.trim()) {
@@ -192,7 +195,6 @@ const Navigation = () => {
     setKeyword(""); // Xoá input
     setShowSuggestions(false); // Ẩn hẳn
     setSuggestions([]); // Ẩn gợi ý
-    stopLoadingSpiner();
   };
 
   return (
@@ -367,26 +369,25 @@ const Navigation = () => {
                             nhân
                           </div>
                         </Link>
+                        <Link href={"/setting"}>
+                          <div className="dropdown-item-custom">
+                            <Settings className="mr-[15px]" /> Cài đặt
+                          </div>
+                        </Link>
 
-                                                <Link href={"/setting"}>
-                                                    <div className="dropdown-item-custom">
-                                                        <Settings className="mr-[15px]" /> Cài đặt
-                                                    </div>
-                                                </Link>
-                                                
-                                                <div className=" bg-gray-200 h-[1px]" />
-                                                <div
-                                                    className="dropdown-item-custom"
-                                                    onClick={() => handleLogout()}
-                                                >
-                                                    <LogOut className="mr-[15px]" /> Đăng xuất
-                                                </div>
-                                            </div>
-                                        </PopoverContent>
-                                    </>
-                                )}
-                            </Popover>
+                        <div className=" bg-gray-200 h-[1px]" />
+                        <div
+                          className="dropdown-item-custom"
+                          onClick={() => handleLogout()}
+                        >
+                          <LogOut className="mr-[15px]" /> Đăng xuất
                         </div>
+                      </div>
+                    </PopoverContent>
+                  </>
+                )}
+              </Popover>
+            </div>
 
             <Sheet>
               <SheetTrigger asChild className="lg:hidden">

@@ -138,6 +138,10 @@ const Search = () => {
               <LoaderIcon className="size-5 animate-spin mr-2 text-blue-500" />
               <span className="text-sm text-gray-500">Đang tải dữ liệu...</span>
             </div>
+          ) : research.length === 0 ? (
+            <div className="flex justify-center items-center h-[200px] text-gray-500 text-sm italic">
+              Không có khóa học nào phù hợp với tìm kiếm của bạn.
+            </div>
           ) : (
             <CourseList
               title="Kết quả tìm kiếm"
