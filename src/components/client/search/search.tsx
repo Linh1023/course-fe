@@ -6,12 +6,13 @@ import { FetchServerGetApiNoToken } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
 import CourseList from "../home/CourseList";
 import { LoaderIcon } from "@/components/share/loading-icon";
+import { useLoadingContext } from "@/context/loading_context";
 
 const Search = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
-
+  const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext();
   const [research, setResearch] = useState<CourseCardResponse[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -20,6 +21,8 @@ const Search = () => {
   const [currentPage, setCurrentPage] = useState<number>(0);
 
   const handleSortChange = (sort: string) => {
+        setIsLoading(true);
+
     const isSame = sortType === sort;
     const newSort = isSame ? "" : sort;
     setSortType(newSort);
@@ -32,9 +35,11 @@ const Search = () => {
     }
     params.set("page", "0");
     router.push(`/search?${params.toString()}`);
+
   };
 
   const handleCategorySelect = (id: string) => {
+    setIsLoading(true);
     const isAlreadySelected = selectedCategory === id;
     const newSelected = isAlreadySelected ? "" : id;
     setSelectedCategory(newSelected);
@@ -156,9 +161,12 @@ const Search = () => {
               <button
                 key={index}
                 onClick={() => {
+                  setIsLoading(true);
+
                   const params = new URLSearchParams(searchParams.toString());
                   params.set("page", index.toString());
                   router.push(`/search?${params.toString()}`);
+                   
                 }}
                 className={`px-3 py-1 border rounded-md text-sm ${
                   index === currentPage
