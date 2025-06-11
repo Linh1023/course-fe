@@ -14,9 +14,10 @@ import { toast } from "sonner"
 
 interface CategoriesTableFloatingBarProps {
   table: Table<Category>
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export function CategoriesTableFloatingBar({ table }: CategoriesTableFloatingBarProps) {
+export function CategoriesTableFloatingBar({ table, setIsLoading }: CategoriesTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
   const [isOpen, setIsOpen] = React.useState(false)
   return (
@@ -25,6 +26,7 @@ export function CategoriesTableFloatingBar({ table }: CategoriesTableFloatingBar
         <DeleteCategoriesDialog
           open={isOpen}
           onOpenChange={setIsOpen}
+          setIsLoading={setIsLoading}
           categories={table
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}

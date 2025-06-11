@@ -7,19 +7,21 @@ import { DeleteCoursesDialog } from "./delete-course-dialog"
 import { CreateCourseDialog } from "./create-course-dialog"
 
 
-interface CategoriesTableToolbarActionsProps {
+interface CoursesTableToolbarActionsProps {
   table: Table<Course>
   listCategory: Category[]
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export function CoursesTableToolbarActions({
-  table, listCategory
-}: CategoriesTableToolbarActionsProps) {
+  table, listCategory, setIsLoading
+}: CoursesTableToolbarActionsProps) {
 
   return (
     <div className="flex items-center gap-2">
       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
         <DeleteCoursesDialog
+          setIsLoading={setIsLoading}
           courses={table
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
@@ -32,7 +34,7 @@ export function CoursesTableToolbarActions({
           }
         />
       ) : null}
-      <CreateCourseDialog listCategory={listCategory} />
+      <CreateCourseDialog listCategory={listCategory} setIsLoading={setIsLoading} />
       {/**
        * Other actions can be added here.
        * For example, import, view, etc.

@@ -18,11 +18,13 @@ import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
 import { UpdateCourseSheet } from "./update-course-sheet"
 import { DeleteCoursesDialog } from "./delete-course-dialog"
+import Link from "next/link"
 
 interface getColumnsProps {
   listCategory: Category[]
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
-export function getColumns({ listCategory }: getColumnsProps): ColumnDef<Course>[] {
+export function getColumns({ listCategory, setIsLoading }: getColumnsProps): ColumnDef<Course>[] {
   return [
     {
       id: "select",
@@ -135,23 +137,24 @@ export function getColumns({ listCategory }: getColumnsProps): ColumnDef<Course>
     {
       id: "actions",
       cell: function Cell({ row }) {
-        const [isUpdatePending, startUpdateTransition] = React.useTransition()
-        const [showUpdateCategorySheet, setShowUpdateCategorySheet] =
+        const [showUpdateCourseSheet, setShowUpdateCourseSheet] =
           React.useState(false)
-        const [showDeleteCategoryDialog, setShowDeleteCategoryDialog] =
+        const [showDeleteCourseDialog, setShowDeleteCourseDialog] =
           React.useState(false)
 
         return (
           <>
             <UpdateCourseSheet
-              open={showUpdateCategorySheet}
-              onOpenChange={setShowUpdateCategorySheet}
+              open={showUpdateCourseSheet}
+              setIsLoading={setIsLoading}
+              onOpenChange={setShowUpdateCourseSheet}
               listCategory={listCategory}
               course={row.original}
             />
             <DeleteCoursesDialog
-              open={showDeleteCategoryDialog}
-              onOpenChange={setShowDeleteCategoryDialog}
+              setIsLoading={setIsLoading}
+              open={showDeleteCourseDialog}
+              onOpenChange={setShowDeleteCourseDialog}
               courses={[row.original]}
               showTrigger={false}
               onSuccess={() => {
@@ -175,22 +178,27 @@ export function getColumns({ listCategory }: getColumnsProps): ColumnDef<Course>
                 align="end"
                 className="w-40 overflow-visible dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/40"
               >
+                <Link href={`/admin/course/${row.original.id}`}>
+                  <DropdownMenuItem >
+                    Xem chương
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem onSelect={() => {
                   setTimeout(() => {
-                    setShowUpdateCategorySheet(true)
+                    setShowUpdateCourseSheet(true)
                   }, 0)
                 }}>
-                  Edit
+                  Sửa
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onSelect={() => {
                     setTimeout(() => {
-                      setShowDeleteCategoryDialog(true)
+                      setShowDeleteCourseDialog(true)
                     }, 0)
                   }}
                 >
-                  Delete
+                  Xóa
                   <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
                 </DropdownMenuItem>
               </DropdownMenuContent>

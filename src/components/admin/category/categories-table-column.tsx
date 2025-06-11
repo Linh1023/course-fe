@@ -20,7 +20,11 @@ import { Ellipsis } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
 
-export function getColumns(): ColumnDef<Category>[] {
+interface getColumnsProps {
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export function getColumns({ setIsLoading }: getColumnsProps): ColumnDef<Category>[] {
   return [
     {
       id: "select",
@@ -109,10 +113,12 @@ export function getColumns(): ColumnDef<Category>[] {
           <>
             <UpdateCategorySheet
               open={showUpdateCategorySheet}
+              setIsLoading={setIsLoading}
               onOpenChange={setShowUpdateCategorySheet}
               category={row.original}
             />
             <DeleteCategoriesDialog
+              setIsLoading={setIsLoading}
               open={showDeleteCategoryDialog}
               onOpenChange={setShowDeleteCategoryDialog}
               categories={[row.original]}

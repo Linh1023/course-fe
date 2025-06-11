@@ -1,6 +1,7 @@
 import ACCOUNT_API from "./endpoints/account";
 import AUTH_API from "./endpoints/auth";
 import CATEGORY_API from "./endpoints/category";
+import CHAPTER_API from "./endpoints/chapter";
 import COMMENT_API from "./endpoints/comment";
 import COURSE_API from "./endpoints/course";
 import COURSE_ENROLLMENT_API from "./endpoints/course_enrollment";
@@ -19,6 +20,7 @@ const API = {
   COMMENT:COMMENT_API,
   COURSE_ENROLLMENT:COURSE_ENROLLMENT_API,
   COURSE:COURSE_API,
+  CHAPTER:CHAPTER_API,
   LESSON_PROGRESS:LESSON_PROGRESS_API,
   LESSON:LESSON_API,
   PROFILE:PROFILE_API,

@@ -27,12 +27,14 @@ interface DeleteCategoriesDialogProps
   categories: Row<Category>["original"][]
   showTrigger?: boolean
   onSuccess?: () => void
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export function DeleteCategoriesDialog({
   categories,
   showTrigger = true,
   onSuccess,
+  setIsLoading,
   ...props
 }: DeleteCategoriesDialogProps) {
   const [isDeletePending, startDeleteTransition] = React.useTransition()
@@ -74,7 +76,9 @@ export function DeleteCategoriesDialog({
                   toast.error("Xóa danh mục thất bại, vui lòng thử lại sau")
                 } else {
                   onSuccess?.()
+                  setIsLoading(true)
                 }
+                setIsLoading(true)
                 props.onOpenChange?.(false)
               })
             }}
