@@ -455,7 +455,7 @@ const Navigation = () => {
                               )}
 
                               <Link
-                                href={"/"}
+                                href={"/profile"}
                                 className="rounded-md p-3 transition-colors hover:bg-muted/70"
                               >
                                 <div className="flex">
@@ -467,7 +467,7 @@ const Navigation = () => {
                               </Link>
 
                               <Link
-                                href={"/"}
+                                href={"/setting"}
                                 className="rounded-md p-3 transition-colors hover:bg-muted/70"
                               >
                                 <div className="flex">

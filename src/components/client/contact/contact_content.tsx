@@ -33,16 +33,16 @@ const MyContact = () => {
           <div className="flex flex-col items-center">
             <p className="mb-2 font-medium">Facebook</p>
             <img
-              src="/images/qr-facebook.png"
+              src="https://res.cloudinary.com/moment-images/fb_cuong_ks6fqc"
               alt="QR Facebook"
-              className="w-60 h-60 object-contain border rounded shadow"
+              className="w-60 h-60  object-contain border rounded shadow"
             />
           </div>
 
           <div className="flex flex-col items-center">
             <p className="mb-2 font-medium">Zalo</p>
             <img
-              src="/images/qr-zalo.png"
+              src="https://res.cloudinary.com/moment-images/fb_cuong_ks6fqc"
               alt="QR Zalo"
               className="w-60 h-60 object-contain border rounded shadow"
             />
@@ -52,30 +52,30 @@ const MyContact = () => {
 
       {/* Phần form */}
       <div className="border-t pt-8">
-        <h2 className="text-2xl font-bold mb-6">Điền vào form</h2>
+        <h2 className="text-2xl font-bold mb-6">Liên hệ</h2>
         <form className="space-y-4">
           <input
             type="text"
-            placeholder="Tên"
+            placeholder="Tên của bạn"
             className="w-full bg-gray-100 p-3 rounded outline-none"
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               type="email"
-              placeholder="Email"
+              placeholder="Email của bạn"
               className="w-full bg-gray-100 p-3 rounded outline-none"
             />
             <input
               type="tel"
-              placeholder="Số điện thoại"
+              placeholder="Số điện thoại của bạn"
               className="w-full bg-gray-100 p-3 rounded outline-none"
             />
           </div>
 
           <textarea
             rows={5}
-            placeholder="Lời nhắn"
+            placeholder="Lời nhắn tới chúng tôi"
             className="w-full bg-gray-100 p-3 rounded outline-none resize-none"
           />
 
@@ -83,7 +83,7 @@ const MyContact = () => {
             type="submit"
             className="bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition"
           >
-            Submit
+            Gửi
           </button>
         </form>
       </div>

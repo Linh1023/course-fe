@@ -3,6 +3,7 @@
 import { FetchServerGetApiNoToken } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
 import HomeWrapper from "@/components/client/home/home_wrapper";
+import MyConnect from "@/components/client/share/MyConnect";
 import { console } from "node:inspector";
 
 const HomePage = async () => {
@@ -23,6 +24,7 @@ const HomePage = async () => {
   return (
     <>
       <HomeWrapper data_hot={data_hot} data_newest={data_newset} />
+       <MyConnect/>
     </>
   );
 };

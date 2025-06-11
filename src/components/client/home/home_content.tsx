@@ -116,7 +116,7 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
               courses={enrollCourse}
               layout="list"
             />
-            <div className="flex gap-4 items-center justify-center pt-4">
+            {/* <div className="flex gap-4 items-center justify-center pt-4">
               <Facebook
                 href=""
                 className="w-8 h-8 hover:text-red-500 cursor-pointer rounded"
@@ -125,7 +125,7 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
                 href=""
                 className="w-8 h-8 hover:text-red-500 cursor-pointer rounded"
               />
-            </div>
+            </div> */}
           </div>
         )}
       </div>
