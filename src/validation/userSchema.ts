@@ -23,7 +23,7 @@ export const updateUserSchema = z.object({
   phone: z.string().optional(),
   avatarUrl: z.string().optional(),
   birthday: z.string().optional(),
-  password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+  password: z.string().optional(),
 });
 
 export type CreateUserSchema = z.infer<typeof createUserSchema>
