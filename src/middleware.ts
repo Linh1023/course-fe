@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/', request.url))
     }
 
-    if (currentPath === "/" || currentPath.startsWith("/course") || currentPath === "/login" || currentPath.startsWith("/search")) {
+    if (currentPath === "/" || currentPath.startsWith("/course") || currentPath === "/login" || currentPath.startsWith("/search") || currentPath === "/contact") {
        
         if (auth.response != null) {
             return auth.response;

@@ -96,7 +96,7 @@ const Navigation = () => {
       try {
         const res = await FetchServerGetApiNoToken(
           API.COURSE.COURSE_FILTER +
-            `?keyword=${encodeURIComponent(keyword.trim())}&page=0&size=4`
+          `?keyword=${encodeURIComponent(keyword.trim())}&page=0&size=4`
         );
 
         if (res && res.status === 200) {
@@ -119,7 +119,7 @@ const Navigation = () => {
 
   useEffect(() => {
     const fetchCategory = async () => {
-      const res = await FetchServerGetApiNoToken(API.CATEGORY.ROOT);
+      const res = await FetchServerGetApiNoToken(`${API.CATEGORY.ROOT}?status=active`);
       if (res && res.status === 200) {
         setCategories(res.result);
       } else {
@@ -139,7 +139,7 @@ const Navigation = () => {
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (keyword.trim()) params.set("keyword", keyword.trim());
-    params.set("page", "0");
+    params.set("page", "1");
     setShouldSyncKeyword(false); // ⛔ ngắt đồng bộ input từ URL
     setKeyword(""); // ✅ reset input
     setSuggestions([]);
@@ -173,7 +173,7 @@ const Navigation = () => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 
     if (e.key === "Enter") {
-     startLoadingSpiner();
+
 
       updateUrlKeyword();
     }
@@ -182,13 +182,20 @@ const Navigation = () => {
 
   // Cập nhật URL với keyword mới
   const updateUrlKeyword = () => {
+    
+
     const params = new URLSearchParams();
+
 
     if (keyword.trim()) {
       params.set("keyword", keyword.trim());
     }
 
-    params.set("page", "0");
+    params.set("page", "1");
+
+    if (searchParams.toString() != params.toString()) {
+        startLoadingSpiner();
+    }
 
     router.push(`/search?${params.toString()}`);
 
@@ -229,7 +236,7 @@ const Navigation = () => {
                     <div className="grid w-[600px] grid-cols-2 p-3">
                       {categories.map((category, index) => (
                         <Link
-                          href={`/search?category=${category.id}&page=0&size=12`}
+                          href={`/search?category=${category.id}&page=1&size=12`}
                           key={index}
                           className="rounded-md p-3 transition-colors hover:bg-muted/70"
                         >
@@ -369,25 +376,25 @@ const Navigation = () => {
                             nhân
                           </div>
                         </Link>
-                                                <Link href={"/setting"}>
-                                                    <div className="dropdown-item-custom">
-                                                        <Settings className="mr-[15px]" /> Cài đặt
-                                                    </div>
-                                                </Link>
-                                                
-                                                <div className=" bg-gray-200 h-[1px]" />
-                                                <div
-                                                    className="dropdown-item-custom"
-                                                    onClick={() => handleLogout()}
-                                                >
-                                                    <LogOut className="mr-[15px]" /> Đăng xuất
-                                                </div>
-                                            </div>
-                                        </PopoverContent>
-                                    </>
-                                )}
-                            </Popover>
+                        <Link href={"/setting"}>
+                          <div className="dropdown-item-custom">
+                            <Settings className="mr-[15px]" /> Cài đặt
+                          </div>
+                        </Link>
+
+                        <div className=" bg-gray-200 h-[1px]" />
+                        <div
+                          className="dropdown-item-custom"
+                          onClick={() => handleLogout()}
+                        >
+                          <LogOut className="mr-[15px]" /> Đăng xuất
                         </div>
+                      </div>
+                    </PopoverContent>
+                  </>
+                )}
+              </Popover>
+            </div>
 
             <Sheet>
               <SheetTrigger asChild className="lg:hidden">
@@ -398,8 +405,8 @@ const Navigation = () => {
               <SheetContent side="top" className="max-h-screen overflow-auto">
                 <SheetHeader>
                   <SheetTitle>
-                    <a
-                      href="https://www.shadcnblocks.com"
+                    <Link
+                      href="/"
                       className="flex items-center gap-2"
                     >
                       <img
@@ -410,7 +417,7 @@ const Navigation = () => {
                       <span className="text-lg font-semibold tracking-tighter">
                         Khóa học
                       </span>
-                    </a>
+                    </Link>
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col p-4">
@@ -567,21 +574,21 @@ const Navigation = () => {
                         Danh mục khóa học
                       </AccordionTrigger>
                       <AccordionContent>
-                        <div className="grid md:grid-cols-2">
+                        <div className="grid md:grid-cols-2" >
                           {categories.map((category, index) => (
                             <Link
-                              href={`/search/category/${category.id}?page=1&size=10`}
+                              href={`/search?category=${category.id}&page=1&size=12`}
                               key={index}
                               className="rounded-md p-3 transition-colors hover:bg-muted/70"
                             >
-                              <div key={category.id}>
+                             
                                 <p className="mb-1 font-semibold text-foreground">
                                   {category.name}
                                 </p>
                                 <p className="text-sm text-muted-foreground">
                                   {category.detail}
                                 </p>
-                              </div>
+                           
                             </Link>
                           ))}
                         </div>

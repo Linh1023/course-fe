@@ -52,8 +52,8 @@ const MyContact = () => {
       </div>
               <h3 className="text-xl font-bold text-gray-800 mb-4">Điện Thoại</h3>
               <div className="space-y-2 flex-1">
-                <p className="text-gray-600 hover:text-red-500 transition-colors cursor-pointer">088888888888</p>
-                <p className="text-gray-600 hover:text-red-500 transition-colors cursor-pointer">088888888888</p>
+                <p className="text-gray-600 hover:text-red-500 transition-colors cursor-pointer">0865 275 183</p>
+
               </div>
             </div>
           </div>
@@ -66,7 +66,7 @@ const MyContact = () => {
               <h3 className="text-xl font-bold text-gray-800 mb-4">Email</h3>
               <div className="flex-1">
                 <p className="text-gray-600 hover:text-red-500 transition-colors cursor-pointer">
-                  Nguoidung232312@gmail.com
+                  trancuongtn82@gmail.com
                 </p>
               </div>
             </div>
@@ -103,7 +103,7 @@ const MyContact = () => {
                   alt="QR Facebook"
                   className="w-48 h-48 mx-auto object-contain border-4 border-white rounded-2xl shadow-lg group-hover:scale-105 transition-transform"
                 />
-                <p className="mt-4 text-gray-600">Quét mã QR để theo dõi Facebook</p>
+                <p className="mt-4 text-gray-600">Quét mã QR để liên hệ qua Facebook</p>
               </div>
             </div>
 
@@ -113,7 +113,7 @@ const MyContact = () => {
               </div>
               <div className="bg-gray-50 p-8 rounded-b-2xl border-2 border-t-0 border-red-200 group-hover:bg-red-50 transition-colors">
                 <img
-                  src="https://res.cloudinary.com/moment-images/fb_cuong_ks6fqc"
+                  src="https://res.cloudinary.com/moment-images/zalocuong_whfcoa"
                   alt="QR Zalo"
                   className="w-48 h-48 mx-auto object-contain border-4 border-white rounded-2xl shadow-lg group-hover:scale-105 transition-transform"
                 />

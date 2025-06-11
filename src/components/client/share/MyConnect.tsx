@@ -11,7 +11,7 @@ const MyConnect = () => {
           <div className=" p-2 rounded-full bg-gray-100 shadow-md flex gap-4 items-center justify-center">
 
             <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="45" fill="#1877F2" stroke="#1565C0" stroke-width="2" />
+              <circle cx="50" cy="50" r="45" fill="#1877F2" stroke="#1565C0" strokeWidth="2" />
               <path d="M45 25 L45 40 L40 40 L40 48 L45 48 L45 75 L53 75 L53 48 L60 48 L61 40 L53 40 L53 32 Q53 28 57 28 L61 28 L61 20 Q58 20 55 20 Q45 20 45 30 L45 25 Z" fill="white" />
             </svg>
 
@@ -28,9 +28,9 @@ const MyConnect = () => {
           /> */}
 
             <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="45" fill="#0084FF" stroke="#0066CC" stroke-width="2" />
+              <circle cx="50" cy="50" r="45" fill="#0084FF" stroke="#0066CC" strokeWidth="2" />
               <path d="M25 35 Q25 25 35 25 L65 25 Q75 25 75 35 L75 55 Q75 65 65 65 L45 65 L35 75 L35 65 Q25 65 25 55 Z" fill="white" />
-              <text x="50" y="48" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#0084FF">Zalo</text>
+              <text x="50" y="48" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="bold" textAnchor="middle" fill="#0084FF">Zalo</text>
             </svg>
           </div>
         </a>

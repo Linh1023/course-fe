@@ -6,6 +6,7 @@ interface CourseListProps {
   courses: CourseCardResponse[]
   layout?: 'grid' | 'list'
   seeMoreLink?: string
+  isProgress?:boolean
 }
 
 const CourseList: React.FC<CourseListProps> = ({
@@ -13,6 +14,7 @@ const CourseList: React.FC<CourseListProps> = ({
   courses,
   layout = 'grid',
   seeMoreLink,
+  isProgress,
 }) => {
   const layoutClass =
     layout === 'grid'
@@ -36,7 +38,9 @@ const CourseList: React.FC<CourseListProps> = ({
 
       <div className={layoutClass}>
         {courses.map((course, index) => (
-          <CourseCard key={index} course={course} />
+          <CourseCard key={index} course={course}
+           isProgress = {isProgress}
+          />
         ))}
       </div>
     </div>

@@ -7,8 +7,8 @@ import MyConnect from "@/components/client/share/MyConnect";
 import { console } from "node:inspector";
 
 const HomePage = async () => {
-  const res_hot = await FetchServerGetApiNoToken(API.COURSE.COURSE_FILTER+ "?sort=hot&page=0&size=4" );
-  const res_newest = await FetchServerGetApiNoToken(API.COURSE.COURSE_FILTER + "?sort=newest&page=0&size=4");
+  const res_hot = await FetchServerGetApiNoToken(API.COURSE.COURSE_FILTER+ "?sort=hot&page=1&size=4" );
+  const res_newest = await FetchServerGetApiNoToken(API.COURSE.COURSE_FILTER + "?sort=newest&page=1&size=4");
  
   
   let data_hot: CourseCardResponse[] = [];
