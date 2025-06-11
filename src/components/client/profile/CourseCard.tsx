@@ -83,4 +83,6 @@ const CourseCard = React.memo(({ course, isProgress }: CourseCardProps) => {
   );
 });
 
+CourseCard.displayName = 'CourseCard';
+
 export default CourseCard;
