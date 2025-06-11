@@ -16,9 +16,15 @@ interface CategoriesTableProps {
 
 export function CategoriesTable({ categoryPromise }: CategoriesTableProps) {
   const { result, totalPages } = React.use(categoryPromise)
+  const [isLoading, setIsLoading] = React.useState(false)
+
+  React.useEffect(() => {
+    setIsLoading(false)
+
+  }, [result, totalPages])
 
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo(() => getColumns(), [])
+  const columns = React.useMemo(() => getColumns({ setIsLoading }), [setIsLoading])
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -66,10 +72,11 @@ export function CategoriesTable({ categoryPromise }: CategoriesTableProps) {
     <TableInstanceProvider table={table}>
       <DataTable
         table={table}
-        floatingBar={<CategoriesTableFloatingBar table={table} />}
+        isLoading={isLoading}
+        floatingBar={<CategoriesTableFloatingBar table={table} setIsLoading={setIsLoading} />}
       >
-        <DataTableAdvancedToolbar filterFields={filterFields}>
-          <CategoriesTableToolbarActions table={table} />
+        <DataTableAdvancedToolbar filterFields={filterFields} setIsLoading={setIsLoading}>
+          <CategoriesTableToolbarActions table={table} setIsLoading={setIsLoading} />
         </DataTableAdvancedToolbar>
       </DataTable>
     </TableInstanceProvider>
