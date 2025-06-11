@@ -121,14 +121,21 @@ export const SidebarUser = () => {
 
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="cursor-pointer">
-                <CircleUserRound />
-                Thông tin cá nhân
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                <Settings />
-                Cài đặt
-              </DropdownMenuItem>
+              
+              <Link href={"/profile"}>
+                <DropdownMenuItem className="cursor-pointer">
+                  <CircleUserRound />
+                  Thông tin cá nhân
+                </DropdownMenuItem>
+              </Link>
+
+              <Link href={"/setting"}>
+                <DropdownMenuItem className="cursor-pointer">
+                  <Settings />
+                  Cài đặt
+                </DropdownMenuItem>
+              </Link>
+
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
 

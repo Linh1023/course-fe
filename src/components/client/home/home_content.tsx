@@ -83,6 +83,7 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
                 title="Khóa học đang học"
                 courses={enrollCourse}
                 layout="list"
+                isProgress= {isProgress}
               />
             </div>
           )}
