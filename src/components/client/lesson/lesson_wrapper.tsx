@@ -6,13 +6,15 @@ import { Button } from "@/components/ui/button"
 import { BookCheck, ChevronLeft, ChevronRight, CirclePlay } from "lucide-react"
 interface Props {
     lessonResponse:LessonClientDetailResponse
+    commentResponse:CommentClientResponse
 }
 const LessonWrapper = (props: Props) => {
-    const { lessonResponse } = props
+    const { lessonResponse,commentResponse } = props
     return (
         <>
             <LessonContent 
             lessonResponse = {lessonResponse}
+            commmentResponse={commentResponse}
             />
         </>
     )

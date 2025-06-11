@@ -1,8 +1,10 @@
 "use client";
 
 import {
+  FetchServerGetApi,
   FetchServerGetApiNoToken,
   FetchServerPostApi,
+  FetchServerPutApi,
 } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,17 +14,18 @@ import { formatTimeShort } from "@/utils/format_time";
 import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-
 interface CommentItemProps {
   comment: CommentClient;
   level?: number;
   lessonId: string;
+  currentAccount?: CurrentAccountResponse;
 }
 
 export const CommentItem = ({
   comment,
   level = 0,
   lessonId,
+  currentAccount,
 }: CommentItemProps) => {
   const [replies, setReplies] = useState<CommentClient[]>([]);
   const [showReplies, setShowReplies] = useState(false);
@@ -32,6 +35,7 @@ export const CommentItem = ({
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [isShowAction,setIsShowAction]=useState<boolean>(true)
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
   // Khi showReplyInput bật lên, focus vào input
@@ -43,10 +47,10 @@ export const CommentItem = ({
 
   const fetchReplies = async (page: number, append = false) => {
     setLoadingReplies(true);
-    const data = await FetchServerGetApiNoToken(
-      `${API.COMMENT.PUBLIC_COMMENT_REPLY}?commentId=${comment.id}&pageIndex=${page}`
+    const data = await FetchServerGetApi(
+      `${API.COMMENT.COMMENT_LESSON_REPLY}?commentId=${comment.id}&pageIndex=${page}`
     );
-    setReplies((prev) => (append ? [...prev, ...data.result] : data.result));
+    setReplies((prev) => (append ? [...prev, ...data.result] : data?.result));
     setReplyTotalPages(data.totalPages || 1);
     setShowReplies(true);
     setLoadingReplies(false);
@@ -93,10 +97,33 @@ export const CommentItem = ({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // optional: chặn xuống dòng (nếu dùng textarea thì mới cần)
+      e.preventDefault(); 
       handleSubmitReply();
     }
   };
+  const handleDeleteComment = async (commentId: string) => {
+  if (!window.confirm("Bạn có chắc chắn muốn xóa bình luận này?")) return;
+  const res = await FetchServerPutApi(API.COMMENT.ADMIN_DELETE_COMMENT, {
+    commentId: commentId,
+    status: "inactive",
+  });
+
+  if (res.status === 200) {
+    // Nếu comment hiện tại là comment cha (comment.id == commentId), có thể ẩn nó hoặc để component cha xử lý
+    if (comment.id === commentId) {
+      // Ví dụ: ẩn nội dung comment này (soft delete UI)
+      comment.content = "[Bình luận đã bị xóa]";
+      comment.replyCount = 0;
+      setReplies([]); // ẩn replies
+      setIsShowAction(false)
+    } else {
+      // Nếu là reply nằm trong replies của mình → xoá trong replies của mình
+      setReplies((prev) => prev.filter((r) => r.id !== commentId));
+    }
+  } else {
+    alert("Xóa bình luận thất bại!");
+  }
+};
 
   return (
     <div className={level > 0 ? `ml-2 pt-2` : ""}>
@@ -109,7 +136,7 @@ export const CommentItem = ({
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <div className="font-semibold text-gray-900 dark:text-gray-100">
-                {comment.authorName}
+                {comment.authorName+"   "+comment.id}
               </div>
             </div>
             <p
@@ -119,6 +146,7 @@ export const CommentItem = ({
             >
               {comment.content}
             </p>
+            { isShowAction &&
             <div className="flex items-center gap-2">
               <div className="text-xs text-gray-500 dark:text-gray-400">
                 {formatTimeShort(comment.createdAt)}
@@ -132,7 +160,19 @@ export const CommentItem = ({
               >
                 Trả lời
               </Button>
+              {(currentAccount?.role == "ADMIN" ||
+               ((currentAccount?.role=="CLIENT")&& currentAccount?.id == comment.authorId) )&& (
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="text-red-500 hover:underline"
+                  onClick={() => handleDeleteComment(comment.id)} 
+                >
+                  Xóa
+                </Button>
+              )}
             </div>
+            }
           </div>
         </div>
       </div>
@@ -180,6 +220,7 @@ export const CommentItem = ({
               comment={reply}
               level={level + 1}
               lessonId={lessonId}
+              currentAccount={currentAccount}
             />
           ))}
           {replyPageIndex + 1 < replyTotalPages && (

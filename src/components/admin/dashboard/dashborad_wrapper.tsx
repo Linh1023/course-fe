@@ -159,7 +159,7 @@ const DashboardWrapper = () => {
                                     {/* Rank Number */}
                                     <div className="flex-shrink-0">
                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-yellow-100 text-black bg-gray-40`}>
-                                            {index + 1}
+                                             {(pageCurrent - 1) * 5 + index + 1}
                                         </div>
                                     </div>
                                     <StatCourseCard

@@ -26,7 +26,7 @@ import { Ellipsis } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { DataTableColumnHeader } from "../share/data-table/data-table-column-header";
-import { DeleteCommentsDialog } from "./delete-comments-dialog";
+import { DeleteCommentsDialog } from "./delete_comments_dialog";
 import { set } from "zod";
 
 export function getCommentColumns(): ColumnDef<CommentAdmin>[] {
