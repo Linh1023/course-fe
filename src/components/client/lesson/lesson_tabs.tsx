@@ -9,12 +9,14 @@ import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu"
 import { Check } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
+import CommentSection from "../share/comment-section"
 interface Props {
     lessonResponse: LessonClientDetailResponse
+    commmentResponse:CommentClientResponse
 }
 
 const LessonTabs = (props: Props) => {
-    const { lessonResponse } = props
+    const { lessonResponse,commmentResponse } = props
     const [file, setFile] = useState<File | null>(null);
     const bottomRef = useRef<HTMLDivElement>(null)
     const [isEmptyInputSubmiss, setIsEmptyInputSubmiss] = useState(false)
@@ -67,7 +69,7 @@ const LessonTabs = (props: Props) => {
 
     return (
         <>
-            <Tabs defaultValue="content" className="w-full">
+            <Tabs defaultValue="content" className="w-full min-h-[500px]">
                 <TabsList className={`grid w-full 
                     ${lessonResponse.assignmentUrl === null ? `grid-cols-2` : `grid-cols-3`}`}>
 
@@ -117,6 +119,7 @@ const LessonTabs = (props: Props) => {
 
                 <TabsContent value="comment" className=" bg-[#f1f5f9] p-4 rounded-md">
                     <span className="text-[16px] font-bold">Comment</span>
+                    <CommentSection comments={commmentResponse} lessonId={lessonResponse.id}/>
                 </TabsContent>
 
                 {/* <TabsContent value="assignment" className=" bg-[#f1f5f9] p-4 rounded-md">

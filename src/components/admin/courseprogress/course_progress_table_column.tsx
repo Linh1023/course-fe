@@ -7,7 +7,8 @@ import { DataTableColumnHeader } from "@/components/admin/share/data-table/data-
 
 import { set } from "date-fns"
 
-export function getCourseProgressColumns(): ColumnDef<CourseProgressResponse>[] {
+export function getCourseProgressColumns(
+): ColumnDef<CourseProgressResponse>[] {
     return [
 
 

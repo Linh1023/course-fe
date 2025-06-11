@@ -10,7 +10,7 @@ import {
 
 import { TrashIcon, X } from "lucide-react"
 import { toast } from "sonner"
-import { DeleteCommentsDialog } from "./delete-comments-dialog"
+import { DeleteCommentsDialog } from "./delete_comments_dialog"
 
 interface CommentsTableFloatingBarProps {
   table: Table<CommentAdmin>

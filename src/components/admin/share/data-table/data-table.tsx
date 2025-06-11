@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table"
 import { DataTablePagination } from "./data-table-pagination"
 import { LoaderIcon } from "@/components/share/loading-icon"
+import { useSearchParams } from "next/navigation"
 
 
 interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
@@ -29,6 +30,7 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
    */
   floatingBar?: React.ReactNode | null
   isLoading?: boolean
+  setIsLoading?: (v: boolean) => void
 }
 
 export function DataTable<TData>({
@@ -37,8 +39,12 @@ export function DataTable<TData>({
   children,
   className,
   isLoading,
+  setIsLoading,
   ...props
 }: DataTableProps<TData>) {
+
+
+
   return (
     <div
       className={cn("w-full space-y-2.5 overflow-auto", className)}
@@ -121,7 +127,9 @@ export function DataTable<TData>({
         </Table>
       </div>
       <div className="flex flex-col gap-2.5">
-        <DataTablePagination />
+        <DataTablePagination 
+        setIsLoading = {setIsLoading}
+        />
         {table.getFilteredSelectedRowModel().rows.length > 0 && floatingBar}
       </div>
     </div>

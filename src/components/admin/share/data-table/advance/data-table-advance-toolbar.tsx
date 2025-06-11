@@ -13,7 +13,8 @@ import { DataTableFilterItem } from "./data-table-filter-item"
 interface DataTableAdvancedToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
   filterFields?: DataTableFilterField<TData>[]
-  setIsLoading?: (v: boolean) => void
+  setIsLoading?: (v: boolean) => void,
+  isLoading?: boolean
 }
 
 export function DataTableAdvancedToolbar<TData>({
@@ -21,6 +22,7 @@ export function DataTableAdvancedToolbar<TData>({
   children,
   className,
   setIsLoading,
+  isLoading,
   ...props
 }: DataTableAdvancedToolbarProps<TData>) {
   const searchParams = useSearchParams()
@@ -107,6 +109,7 @@ export function DataTableAdvancedToolbar<TData>({
             .map((selectedOption) => (
               <DataTableFilterItem
                 setIsLoading={setIsLoading}
+                isLoading={isLoading}
                 key={String(selectedOption.value)}
                 selectedOption={selectedOption}
                 setSelectedOptions={setSelectedOptions}
@@ -134,6 +137,7 @@ export function DataTableAdvancedToolbar<TData>({
                 variant="outline"
                 size="sm"
                 className="h-7 rounded-full"
+                disabled={isLoading}
                 onClick={() => setOpenCombobox(true)}
               >
                 <PlusIcon className="mr-2 size-4 opacity-50" />

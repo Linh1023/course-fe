@@ -8,11 +8,12 @@ export default async function ProfileLayout({
 
     return (
         <>
-            <div className="flex justify-center min-h-screen">
-                <ProfileClientLayout>
-                   {children}
-                </ProfileClientLayout>
-            </div>
+            <div className="min-h-screen md:flex md:justify-center">
+  <ProfileClientLayout>
+    {children}
+  </ProfileClientLayout>
+</div>
+
 
         </>
 

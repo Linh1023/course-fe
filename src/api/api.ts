@@ -9,6 +9,7 @@ import LESSON_API from "./endpoints/lesson";
 import LESSON_PROGRESS_API from "./endpoints/lesson_progress";
 import PROFILE_API from "./endpoints/profile";
 import REFRESH_TOKEN_API from "./endpoints/refresh_token";
+import STATISTIC_API from "./endpoints/statistic";
 import SUBMISSION_API from "./endpoints/submission";
 
 const API = {
@@ -24,6 +25,7 @@ const API = {
   LESSON:LESSON_API,
   PROFILE:PROFILE_API,
   SUBMISSON:SUBMISSION_API,
+  STATISTIC:STATISTIC_API
 };
 
 export default API;
