@@ -31,8 +31,8 @@ export default function MyCourse({ coursePromise }: MyCourseProps) {
     return () => window.removeEventListener('resize', debounceCheckMobile);
   }, []);
 
-  // Hàm debounce
-  function debounce(func: Function, wait: number) {
+  // Hàm debounce với kiểu chính xác
+  function debounce(func: (...args: any[]) => void, wait: number) {
     let timeout: NodeJS.Timeout;
     return (...args: any[]) => {
       clearTimeout(timeout);
