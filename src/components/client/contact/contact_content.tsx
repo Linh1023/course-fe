@@ -103,7 +103,8 @@ const MyContact = () => {
                   alt="QR Facebook"
                   className="w-48 h-48 mx-auto object-contain border-4 border-white rounded-2xl shadow-lg group-hover:scale-105 transition-transform"
                 />
-                <p className="mt-4 text-gray-600">Quét mã QR để liên hệ qua Facebook</p>
+                <p className="mt-4 text-gray-600">Quét mã QR để liên hệ qua Facebook <a href="https://www.facebook.com/tran.cuong.737360"  className="text-blue-600 underline hover:text-blue-800"  target="_blank">tran.cuong.737360</a></p> 
+                
               </div>
             </div>
 

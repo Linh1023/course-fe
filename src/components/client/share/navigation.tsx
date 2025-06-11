@@ -182,7 +182,7 @@ const Navigation = () => {
 
   // Cập nhật URL với keyword mới
   const updateUrlKeyword = () => {
-    
+
 
     const params = new URLSearchParams();
 
@@ -194,7 +194,7 @@ const Navigation = () => {
     params.set("page", "1");
 
     if (searchParams.toString() != params.toString()) {
-        startLoadingSpiner();
+      startLoadingSpiner();
     }
 
     router.push(`/search?${params.toString()}`);
@@ -219,6 +219,8 @@ const Navigation = () => {
                 Khóa học
               </span>
             </Link>
+
+
 
             <NavigationMenu className="hidden lg:block">
               <NavigationMenuList>
@@ -398,9 +400,30 @@ const Navigation = () => {
 
             <Sheet>
               <SheetTrigger asChild className="lg:hidden">
-                <Button variant="outline" size="icon">
-                  <MenuIcon className="h-4 w-4" />
-                </Button>
+                <div className="flex  items-center" >
+                  {currentAccount === null && (<>
+                    <Link href={"/login"} className="mr-[10px]">
+                      <Button className="bg-[#FE4444] hover:bg-[#F87171]">
+                        {" "}
+                        Đăng nhập{" "}
+                      </Button>
+                    </Link>
+                  </>)}
+
+                  <div className="flex  items-center">
+                    {currentAccount != null && (<>
+                      <img
+                        src={currentAccount.avatarUrl}
+                        className=" rounded-[100px] h-[45px] w-[45px] mr-[10px]"
+                        alt="Avatar"
+                      />
+                    </>)}
+
+                    <Button variant="outline" >
+                      <MenuIcon className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               </SheetTrigger>
               <SheetContent side="top" className="max-h-screen overflow-auto">
                 <SheetHeader>
@@ -581,14 +604,14 @@ const Navigation = () => {
                               key={index}
                               className="rounded-md p-3 transition-colors hover:bg-muted/70"
                             >
-                             
-                                <p className="mb-1 font-semibold text-foreground">
-                                  {category.name}
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                  {category.detail}
-                                </p>
-                           
+
+                              <p className="mb-1 font-semibold text-foreground">
+                                {category.name}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                {category.detail}
+                              </p>
+
                             </Link>
                           ))}
                         </div>
@@ -602,7 +625,7 @@ const Navigation = () => {
                     </Link>
                   </div>
 
-                  {currentAccount === null && (
+                  {/* {currentAccount === null && (
                     <>
                       <div className="mt-6 flex flex-col gap-4">
                         <Link href={"/login"}>
@@ -613,7 +636,7 @@ const Navigation = () => {
                         </Link>
                       </div>
                     </>
-                  )}
+                  )} */}
                 </div>
               </SheetContent>
             </Sheet>

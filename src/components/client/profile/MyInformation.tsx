@@ -137,7 +137,7 @@ const MyInformation = () => {
     return (
       <div className="max-w-4xl mx-auto bg-white">
         <div className="flex items-center justify-center h-64">
-          <LoaderIcon className="mr-1.5 size-4 animate-spin" aria-hidden="true" />
+          <LoaderIcon className="mr-1.5 size-9 animate-spin" aria-hidden="true" />
         </div>
       </div>
     );
