@@ -10,9 +10,11 @@ export interface CategoryPageProps {
 }
 
 const CategoryPage = async ({ searchParams }: CategoryPageProps) => {
-    const query = new URLSearchParams(searchParams).toString();
-    console.log("Query params:", query); // Debugging log
-        
+    const params = new URLSearchParams(searchParams);
+    if (!params.has("page")) {
+        params.set("page", "1");
+    }
+    const query = params.toString();
     const categoryPromise = FetchServerGetApi(API.CATEGORY.ROOT + `?${query}`, "/admin/category");
     return (
         <div className="flex flex-col gap-4">
@@ -24,13 +26,6 @@ const CategoryPage = async ({ searchParams }: CategoryPageProps) => {
                 cellWidths={["5rem", "40rem", "12rem", "5rem"]}
                 shrinkZero
             />} >
-                {/* Khoang tg */}
-                {/* <DateRangePicker
-          triggerSize="sm"
-          triggerClassName="ml-auto w-56 sm:w-60 mr-1"
-          className="dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
-          align="end"
-        /> */}
                 <CategoriesTable categoryPromise={categoryPromise} />
             </React.Suspense>
         </div>

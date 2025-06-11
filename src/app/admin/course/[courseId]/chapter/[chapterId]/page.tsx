@@ -16,8 +16,12 @@ export interface ChapterPageProps {
   }
 }
 const ChapterPage = ({ searchParams, params }: ChapterPageProps) => {
+  const paramsQuery = new URLSearchParams(searchParams);
+  if (!paramsQuery.has("page")) {
+    paramsQuery.set("page", "1");
+  }
+  const query = paramsQuery.toString();
   const chapterId = params.chapterId;
-  const query = new URLSearchParams(searchParams).toString();
   const lessonPromise = FetchServerGetApi(`${API.LESSON.ROOT}/${chapterId}?${query}`, "/admin/course");
 
   return (
