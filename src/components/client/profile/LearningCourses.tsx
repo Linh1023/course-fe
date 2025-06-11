@@ -1,3 +1,4 @@
+// LearningCourses.tsx
 "use client";
 
 import * as React from "react";
@@ -26,35 +27,40 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
   const [name, setName] = React.useState(initialName);
   const [page, setPage] = React.useState(initialPage);
 
-  React.useEffect(() => {
-    const loadCourses = async () => {
-      setIsLoading(true);
-      try {
-        const { result, totalPages } = await coursePromise;
-        setCourses(result);
-        setTotalPages(totalPages);
-      } catch (error) {
-        console.error("Error loading courses:", error);
-      } finally {
-        setIsLoading(false);
-        setIsSearching(false);
-      }
-    };
+  // Biến để theo dõi query trước đó
+  const [prevQuery, setPrevQuery] = React.useState<string>("");
 
-    loadCourses();
-  }, [coursePromise]);
+  React.useEffect(() => {
+    const query = new URLSearchParams(searchParams).toString();
+
+    // Chỉ tải lại nếu query thay đổi
+    if (query !== prevQuery) {
+      const loadCourses = async () => {
+        setIsLoading(true);
+        try {
+          const { result, totalPages } = await coursePromise;
+          setCourses(result);
+          setTotalPages(totalPages);
+          setPrevQuery(query); // Cập nhật query trước đó
+        } catch (error) {
+          console.error("Error loading courses:", error);
+        } finally {
+          setIsLoading(false);
+          setIsSearching(false);
+        }
+      };
+
+      loadCourses();
+    }
+  }, [coursePromise, searchParams]);
 
   React.useEffect(() => {
     const params = new URLSearchParams();
     if (name) params.set("name", name);
     params.set("page", page.toString());
-    const newUrl = `/profile/course?${params.toString()}`;
-    if (newUrl !== window.location.pathname + window.location.search) {
-      router.push(newUrl, { scroll: false });
-    }
+    router.push(`/profile/course?${params.toString()}`, { scroll: false });
   }, [name, page, router]);
 
-  // Kiểm tra xem có khóa học nào không
   const hasNoCourses = !isLoading && !isSearching && courses.length === 0;
 
   return (
