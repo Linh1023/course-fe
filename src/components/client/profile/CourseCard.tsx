@@ -5,7 +5,7 @@ interface CourseCardProps {
   isProgress?: boolean;
 }
 
-const CourseCard: React.FC<CourseCardProps> = ({ course, isProgress }) => {
+const CourseCard = React.memo(({ course, isProgress }: CourseCardProps) => {
   // Tính phần trăm tiến độ
   const progressPercentage = course.totalLessons > 0 
     ? Math.round((course.viewedLessons / course.totalLessons) * 100) 
@@ -40,11 +40,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isProgress }) => {
         </h3>
 
         {typeof course.price === 'number' && course.price > 0 && !isProgress && (
-  <p className="text-md text-red-500 mb-3 font-bold truncate">
-    {course.price.toLocaleString('vi-VN')}đ
-  </p>
-)}
-
+          <p className="text-md text-red-500 mb-3 font-bold truncate">
+            {course.price.toLocaleString('vi-VN')}đ
+          </p>
+        )}
 
         {/* Thanh tiến độ - chỉ hiển thị khi isProgress = true */}
         {isProgress && (
@@ -63,7 +62,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isProgress }) => {
                 {getStatusText()}
               </span>
             </div>
-            
+
             {/* Progress bar */}
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
@@ -71,7 +70,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isProgress }) => {
                 style={{ width: `${progressPercentage}%` }}
               ></div>
             </div>
-            
+
             <div className="text-right mt-1">
               <span className="text-sm font-medium text-gray-700">
                 {progressPercentage}%
@@ -82,6 +81,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isProgress }) => {
       </div>
     </div>
   );
-};
+});
 
 export default CourseCard;

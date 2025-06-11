@@ -6,18 +6,18 @@ interface CoursesGridProps {
   isProgress?: boolean;
 }
 
-const CoursesGrid: React.FC<CoursesGridProps> = ({ courses, isProgress }) => {
+const CoursesGrid = React.memo(({ courses, isProgress }: CoursesGridProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {courses.map((course, index) => (
+      {courses.map((course) => (
         <CourseCard 
-          key={index} 
+          key={course.id || course.name} // Sử dụng id nếu có, hoặc name làm key
           course={course} 
           isProgress={isProgress}
         />
       ))}
     </div>
   );
-};
+});
 
 export default CoursesGrid;
