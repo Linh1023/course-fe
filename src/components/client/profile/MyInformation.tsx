@@ -8,7 +8,7 @@ import API from '@/api/api';
 import { toast } from "@/hooks/use-toast"
 import { FetchServerGetApi } from '@/actions/server/fetch_server_api';
 import { useCurrentAccountContext } from '@/context/current_account_context';
-
+import { LoaderIcon } from "@/components/share/loading-icon"
 
 
 const MyInformation = () => {
@@ -137,7 +137,7 @@ const MyInformation = () => {
     return (
       <div className="max-w-4xl mx-auto bg-white">
         <div className="flex items-center justify-center h-64">
-          <div className="text-gray-500">Đang tải thông tin...</div>
+          <LoaderIcon className="mr-1.5 size-4 animate-spin" aria-hidden="true" />
         </div>
       </div>
     );

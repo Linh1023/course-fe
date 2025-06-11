@@ -4,7 +4,11 @@ import React from 'react'
 
 const ContactPage = () => {
   return (
-    <MyContact/>
+    <>
+      <MyContact />
+      <MyConnect />
+    </>
+
   )
 }
 
