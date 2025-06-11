@@ -33,6 +33,21 @@ export const FetchClientDeleteApi = async (api: string) => {
 }
 
 
+export const FetchClientGetApiNoToken = async (api: string) => {
+  try {
+    const res = await fetch(api, {
+      method: "GET", // Đúng phương thức
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json", // Đặt Content-Type là JSON
+      },
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+  }
+}
 
 export const FetchClientPostApiNoToken = async (api: string, bodyData: any) => {
   try {

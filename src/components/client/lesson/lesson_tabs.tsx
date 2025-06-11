@@ -108,7 +108,7 @@ const LessonTabs = (props: Props) => {
                         <ul className="list-disc ms-9">
                             <li className="mt-[25px] break-words">
                                 Facebook :
-                                <a href="https://www.facebook.com/tran.cuong.737360"
+                                <a href="https://www.facebook.com/tran.cuong.737360" target="_blank"
                                     className="text-blue-600 underline hover:text-blue-800"
                                 > https://www.facebook.com/tran.cuong.737360</a>
                             </li>

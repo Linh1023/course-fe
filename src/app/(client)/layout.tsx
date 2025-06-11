@@ -14,7 +14,6 @@ export default function ClientLayout({
       <Navigation></Navigation>
       {/* <Navbar></Navbar> */}
         {children}
-      <MyConnect/>
       <Footer/>
     </>
 
