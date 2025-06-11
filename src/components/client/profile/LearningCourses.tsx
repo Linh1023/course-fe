@@ -1,3 +1,4 @@
+// LearningCourses.tsx
 "use client";
 
 import * as React from "react";
@@ -6,7 +7,7 @@ import SearchHeader from "./SearchHeader";
 import PaginationCourse from "./PaginationCourse";
 import { MyCourseResponse, Course } from "@/types/response/account/my_course";
 import CoursesGrid from "./CourseGrid";
-import { LoaderIcon } from "@/components/share/loading-icon"
+import { LoaderIcon } from "@/components/share/loading-icon";
 
 interface LearningCoursesProps {
   coursePromise: Promise<MyCourseResponse>;
@@ -26,23 +27,32 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
   const [name, setName] = React.useState(initialName);
   const [page, setPage] = React.useState(initialPage);
 
-  React.useEffect(() => {
-    const loadCourses = async () => {
-      setIsLoading(true);
-      try {
-        const { result, totalPages } = await coursePromise;
-        setCourses(result);
-        setTotalPages(totalPages);
-      } catch (error) {
-        console.error("Error loading courses:", error);
-      } finally {
-        setIsLoading(false);
-        setIsSearching(false);
-      }
-    };
+  // Biến để theo dõi query trước đó
+  const [prevQuery, setPrevQuery] = React.useState<string>("");
 
-    loadCourses();
-  }, [coursePromise]);
+  React.useEffect(() => {
+    const query = new URLSearchParams(searchParams).toString();
+
+    // Chỉ tải lại nếu query thay đổi
+    if (query !== prevQuery) {
+      const loadCourses = async () => {
+        setIsLoading(true);
+        try {
+          const { result, totalPages } = await coursePromise;
+          setCourses(result);
+          setTotalPages(totalPages);
+          setPrevQuery(query); // Cập nhật query trước đó
+        } catch (error) {
+          console.error("Error loading courses:", error);
+        } finally {
+          setIsLoading(false);
+          setIsSearching(false);
+        }
+      };
+
+      loadCourses();
+    }
+  }, [coursePromise, searchParams]);
 
   React.useEffect(() => {
     const params = new URLSearchParams();
@@ -51,7 +61,6 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
     router.push(`/profile/course?${params.toString()}`, { scroll: false });
   }, [name, page, router]);
 
-  // Kiểm tra xem có khóa học nào không
   const hasNoCourses = !isLoading && !isSearching && courses.length === 0;
 
   return (
@@ -62,7 +71,7 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
         setPage={setPage}
         setIsSearching={setIsSearching}
       />
-      
+
       {(isLoading || isSearching) ? (
         <div className="flex items-center justify-center py-8">
           <LoaderIcon className="mr-1.5 size-4 animate-spin" aria-hidden="true" />

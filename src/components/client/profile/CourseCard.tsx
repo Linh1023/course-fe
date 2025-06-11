@@ -1,3 +1,4 @@
+// src/components/client/profile/CourseCard.tsx
 import React from 'react';
 
 interface CourseCardProps {
@@ -5,13 +6,11 @@ interface CourseCardProps {
   isProgress?: boolean;
 }
 
-const CourseCard: React.FC<CourseCardProps> = ({ course, isProgress }) => {
-  // Tính phần trăm tiến độ
+const CourseCard: React.FC<CourseCardProps> = React.memo(({ course, isProgress }) => {
   const progressPercentage = course.totalLessons > 0 
     ? Math.round((course.viewedLessons / course.totalLessons) * 100) 
     : 0;
 
-  // Xác định màu sắc dựa trên trạng thái
   const getProgressColor = () => {
     if (course.status === 'completed') return 'bg-green-500';
     if (progressPercentage >= 75) return 'bg-blue-500';
@@ -40,13 +39,11 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isProgress }) => {
         </h3>
 
         {typeof course.price === 'number' && course.price > 0 && !isProgress && (
-  <p className="text-md text-red-500 mb-3 font-bold truncate">
-    {course.price.toLocaleString('vi-VN')}đ
-  </p>
-)}
+          <p className="text-md text-red-500 mb-3 font-bold truncate">
+            {course.price.toLocaleString('vi-VN')}đ
+          </p>
+        )}
 
-
-        {/* Thanh tiến độ - chỉ hiển thị khi isProgress = true */}
         {isProgress && (
           <div className="mb-3">
             <div className="flex justify-between items-center mb-2">
@@ -64,7 +61,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isProgress }) => {
               </span>
             </div>
             
-            {/* Progress bar */}
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
                 className={`h-2 rounded-full transition-all duration-300 ${getProgressColor()}`}
@@ -82,6 +78,8 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isProgress }) => {
       </div>
     </div>
   );
-};
+});
+
+CourseCard.displayName = 'CourseCard';
 
 export default CourseCard;
