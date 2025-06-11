@@ -1,3 +1,4 @@
+// src/components/client/profile/CoursesGrid.tsx
 import React from 'react';
 import CourseCard from './CourseCard';
 
@@ -6,12 +7,12 @@ interface CoursesGridProps {
   isProgress?: boolean;
 }
 
-const CoursesGrid = React.memo(({ courses, isProgress }: CoursesGridProps) => {
+const CoursesGrid: React.FC<CoursesGridProps> = React.memo(({ courses, isProgress }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {courses.map((course) => (
         <CourseCard 
-          key={course.id || course.name} // Sử dụng id nếu có, hoặc name làm key
+          key={course.id} // Assuming course.id exists; replace with a unique identifier if different
           course={course} 
           isProgress={isProgress}
         />

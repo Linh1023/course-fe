@@ -12,8 +12,12 @@ export interface ChapterPageProps {
   params: { courseId: string }
 }
 const ChapterPage = ({ searchParams, params }: ChapterPageProps) => {
+  const paramsQuery = new URLSearchParams(searchParams);
+  if (!paramsQuery.has("page")) {
+    paramsQuery.set("page", "1");
+  }
+  const query = paramsQuery.toString();
   const courseId = params.courseId;
-  const query = new URLSearchParams(searchParams).toString();
   const chapterPromise = FetchServerGetApi(`${API.CHAPTER.ROOT}/${courseId}?${query}`, "/admin/course");
   return (
     <div className="flex flex-col gap-4 p-4">

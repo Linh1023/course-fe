@@ -24,21 +24,11 @@ export default function MyCourse({ coursePromise }: MyCourseProps) {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-
-    const debounceCheckMobile = debounce(checkMobile, 200);
+    
     checkMobile();
-    window.addEventListener('resize', debounceCheckMobile);
-    return () => window.removeEventListener('resize', debounceCheckMobile);
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
-  // Hàm debounce với kiểu chính xác
-  function debounce(func: (...args: any[]) => void, wait: number) {
-    let timeout: NodeJS.Timeout;
-    return (...args: any[]) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func(...args), wait);
-    };
-  }
 
   if (isMobile) {
     return (
@@ -47,7 +37,7 @@ export default function MyCourse({ coursePromise }: MyCourseProps) {
         <div className="p-4 border-b">
           <h1 className="text-lg font-semibold text-gray-900">Khóa học của tôi</h1>
         </div>
-
+        
         {/* Mobile Tab */}
         <div className="border-b">
           <div className="px-4">
