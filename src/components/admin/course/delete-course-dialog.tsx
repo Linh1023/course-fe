@@ -22,19 +22,21 @@ import { FetchServerDeleteApi } from "@/actions/server/fetch_server_api"
 import { toast } from "sonner"
 
 
-interface DeleteCategoriesDialogProps
+interface DeleteCoursesDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  courses: Row<Category>["original"][]
+  courses: Row<Course>["original"][]
   showTrigger?: boolean
   onSuccess?: () => void
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export function DeleteCoursesDialog({
   courses,
   showTrigger = true,
   onSuccess,
+  setIsLoading,
   ...props
-}: DeleteCategoriesDialogProps) {
+}: DeleteCoursesDialogProps) {
   const [isDeletePending, startDeleteTransition] = React.useTransition()
   return (
     <Dialog {...props}>
@@ -74,6 +76,7 @@ export function DeleteCoursesDialog({
                   toast.error("Xóa khóa học thất bại, vui lòng thử lại sau")
                 } else {
                   onSuccess?.()
+                  setIsLoading(true)
                 }
                 props.onOpenChange?.(false)
               })

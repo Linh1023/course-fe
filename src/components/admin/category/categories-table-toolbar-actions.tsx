@@ -9,16 +9,18 @@ import { toast } from "sonner"
 
 interface CategoriesTableToolbarActionsProps {
   table: Table<Category>
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export function CategoriesTableToolbarActions({
-  table,
+  table, setIsLoading
 }: CategoriesTableToolbarActionsProps) {
 
   return (
     <div className="flex items-center gap-2">
       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
         <DeleteCategoriesDialog
+          setIsLoading={setIsLoading}
           categories={table
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
@@ -31,7 +33,7 @@ export function CategoriesTableToolbarActions({
           }
         />
       ) : null}
-      <CreateCategoryDialog />
+      <CreateCategoryDialog setIsLoading={setIsLoading} />
       {/**
        * Other actions can be added here.
        * For example, import, view, etc.

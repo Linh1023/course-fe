@@ -13,7 +13,6 @@ import { useTableInstanceContext } from "../table-instance-provider"
 import { DataTableFilterOption } from "@/types/ui/data-table"
 import { TrashIcon } from "lucide-react"
 import { DataTableAdvancedFacetedFilter } from "./data-table-advanced-faceted-filter"
-import { split } from "postcss/lib/list"
 
 interface DataTableFilterItemProps<TData> {
   selectedOption: DataTableFilterOption<TData>

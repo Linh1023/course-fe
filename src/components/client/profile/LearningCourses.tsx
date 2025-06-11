@@ -26,23 +26,38 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
   const [name, setName] = React.useState(initialName);
   const [page, setPage] = React.useState(initialPage);
 
+  // Stable hóa coursePromise bằng useMemo
+  const stableCoursePromise = React.useMemo(() => coursePromise, [coursePromise]);
+
   React.useEffect(() => {
+    let isCancelled = false;
+    
     const loadCourses = async () => {
       setIsLoading(true);
       try {
-        const { result, totalPages } = await coursePromise;
-        setCourses(result);
-        setTotalPages(totalPages);
+        const { result, totalPages } = await stableCoursePromise;
+        if (!isCancelled) {
+          setCourses(result);
+          setTotalPages(totalPages);
+        }
       } catch (error) {
-        console.error("Error loading courses:", error);
+        if (!isCancelled) {
+          console.error("Error loading courses:", error);
+        }
       } finally {
-        setIsLoading(false);
-        setIsSearching(false);
+        if (!isCancelled) {
+          setIsLoading(false);
+          setIsSearching(false);
+        }
       }
     };
 
     loadCourses();
-  }, [coursePromise]);
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [stableCoursePromise]);
 
   React.useEffect(() => {
     const params = new URLSearchParams();
