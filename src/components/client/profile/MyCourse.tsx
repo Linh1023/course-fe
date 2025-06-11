@@ -17,31 +17,17 @@ const tabs = [
   },
 ];
 
-// Định nghĩa debounce function bên ngoài component
-function debounce(func: (...args: any[]) => void, wait: number) {
-  let timeout: NodeJS.Timeout;
-  return (...args: any[]) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-}
-
 export default function MyCourse({ coursePromise }: MyCourseProps) {
   const [isMobile, setIsMobile] = React.useState(false);
-
-  // Stable reference cho coursePromise
-  const stableCoursePromise = React.useMemo(() => coursePromise, [coursePromise]);
 
   React.useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-
-    const debounceCheckMobile = debounce(checkMobile, 200);
-
+    
     checkMobile();
-    window.addEventListener('resize', debounceCheckMobile);
-    return () => window.removeEventListener('resize', debounceCheckMobile);
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   if (isMobile) {
@@ -51,7 +37,7 @@ export default function MyCourse({ coursePromise }: MyCourseProps) {
         <div className="p-4 border-b">
           <h1 className="text-lg font-semibold text-gray-900">Khóa học của tôi</h1>
         </div>
-
+        
         {/* Mobile Tab */}
         <div className="border-b">
           <div className="px-4">
@@ -63,7 +49,7 @@ export default function MyCourse({ coursePromise }: MyCourseProps) {
 
         {/* Mobile Content */}
         <div className="p-4">
-          <LearningCourses coursePromise={stableCoursePromise} />
+          <LearningCourses coursePromise={coursePromise} />
         </div>
       </div>
     );
@@ -89,7 +75,7 @@ export default function MyCourse({ coursePromise }: MyCourseProps) {
       </TabsList>
       {tabs.map((tab) => (
         <TabsContent key={tab.value} value={tab.value} className="mt-4">
-          <LearningCourses coursePromise={stableCoursePromise} />
+          <LearningCourses coursePromise={coursePromise} />
         </TabsContent>
       ))}
     </Tabs>
