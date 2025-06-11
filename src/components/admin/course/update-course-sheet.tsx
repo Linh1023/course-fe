@@ -35,9 +35,10 @@ interface UpdateCategorySheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
   listCategory: Category[]
   course: Course
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export function UpdateCourseSheet({ listCategory, course, ...props }: UpdateCategorySheetProps) {
+export function UpdateCourseSheet({ listCategory, course, setIsLoading, ...props }: UpdateCategorySheetProps) {
   const [previewImage, setPreviewImage] = React.useState<string | null>(null)
   const [previewVideo, setPreviewVideo] = React.useState<string | null>(null)
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
@@ -72,6 +73,7 @@ export function UpdateCourseSheet({ listCategory, course, ...props }: UpdateCate
       if (res.status === 200) {
         toast.success("Cập nhật thành công!")
         props.onOpenChange?.(false)
+        setIsLoading(true)
       }
       else {
         toast.error("Cập nhật thất bại, vui lòng thử lại sau.")
@@ -216,7 +218,7 @@ export function UpdateCourseSheet({ listCategory, course, ...props }: UpdateCate
                     <FormLabel>Video trailer</FormLabel>
                     <Input type="file" accept="video/mp4" onChange={(e) => handleVideoChange(e.target.files || undefined)} />
                     {previewVideo && (
-                      <video controls className="mt-2 w-full max-w-full rounded shadow">
+                      <video key={previewVideo} controls className="mt-2 w-full max-w-full rounded shadow">
                         <source src={previewVideo} type="video/mp4" />
                         Trình duyệt của bạn không hỗ trợ video.
                       </video>

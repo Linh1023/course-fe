@@ -26,8 +26,9 @@ import { FetchServerPostApi } from "@/actions/server/fetch_server_api"
 
 interface CreateCourseDialogProps {
   listCategory: Category[]
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
-export function CreateCourseDialog({ listCategory }: CreateCourseDialogProps) {
+export function CreateCourseDialog({ listCategory, setIsLoading }: CreateCourseDialogProps) {
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
@@ -76,6 +77,7 @@ export function CreateCourseDialog({ listCategory }: CreateCourseDialogProps) {
         setPreviewImage(null)
         setPreviewVideo(null)
         setOpen(false)
+        setIsLoading(true)
       } else {
         toast.error("Tạo khóa học thất bại, vui lòng thử lại sau")
       }
@@ -212,7 +214,7 @@ export function CreateCourseDialog({ listCategory }: CreateCourseDialogProps) {
                     <FormLabel>Video trailer</FormLabel>
                     <Input type="file" accept="video/mp4" onChange={(e) => handleVideoChange(e.target.files || undefined)} />
                     {previewVideo && (
-                      <video controls className="mt-2 w-full max-w-full rounded shadow">
+                      <video key={previewVideo} controls className="mt-2 w-full max-w-full rounded shadow">
                         <source src={previewVideo} type="video/mp4" />
                         Trình duyệt của bạn không hỗ trợ video.
                       </video>

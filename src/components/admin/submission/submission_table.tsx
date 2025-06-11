@@ -26,13 +26,13 @@ export function SubmissionTable(props: Props) {
   const pa = useSearchParams()
 
   React.useEffect(() => {
-  // const timeout = setTimeout(() => {
+    // const timeout = setTimeout(() => {
     console.log("URL params changed, stop loading >>> ", pa.toString())
     setIsLoading(false)
-  // }, 500)
+    // }, 500)
 
-  // return () => clearTimeout(timeout)
-}, [pa,submissionsPromise])
+    // return () => clearTimeout(timeout)
+  }, [pa, submissionsPromise])
 
 
 
@@ -104,7 +104,7 @@ export function SubmissionTable(props: Props) {
 
       <DateRangePicker
         setIsLoading={setIsLoading}
-        isLoading = {isLoading}
+        isLoading={isLoading}
         triggerSize="sm"
         triggerClassName="ml-auto w-56 sm:w-60 mr-1"
         className="dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
