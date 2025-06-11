@@ -74,7 +74,7 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
 
       {(isLoading || isSearching) ? (
         <div className="flex items-center justify-center py-8">
-          <LoaderIcon className="mr-1.5 size-4 animate-spin" aria-hidden="true" />
+          <LoaderIcon className="mr-1.5 size-9 animate-spin" aria-hidden="true" />
           <span className="text-sm text-gray-600">
             {isSearching ? "Đang tìm kiếm..." : "Đang tải khóa học..."}
           </span>

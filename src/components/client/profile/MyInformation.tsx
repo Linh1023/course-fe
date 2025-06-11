@@ -5,11 +5,11 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { FetchServerPutApi } from '@/actions/server/fetch_server_api';
 import API from '@/api/api';
-import { toast } from "@/hooks/use-toast"
+// import { toast } from "@/hooks/use-toast"
 import { FetchServerGetApi } from '@/actions/server/fetch_server_api';
 import { useCurrentAccountContext } from '@/context/current_account_context';
 import { LoaderIcon } from "@/components/share/loading-icon"
-
+import { toast } from "sonner"
 
 const MyInformation = () => {
   // console.log('Current Account:', currentProfile);
@@ -107,22 +107,15 @@ const MyInformation = () => {
           sex: response.result.sex || ''
         });
         fetchGetCurrentAccount()
-        toast({
-          title: "Thành công",
-          description: "Cập nhật thông tin cá nhân thành công!",
-          variant: "default"
-        });
+        
+        toast.success("Cập nhật thông tin cá nhân thành công!") 
         setIsEditing(false);
       } else {
         throw new Error('Failed to update profile');
       }
     } catch (error) {
       console.error('Error updating profile:', error);
-      toast({
-        title: "Lỗi",
-        description: "Không thể cập nhật thông tin. Vui lòng thử lại.",
-        variant: "destructive"
-      });
+      toast.error("Không thể cập nhật thông tin. Vui lòng thử lại.")
     } finally {
       setIsSaving(false);
     }
@@ -137,14 +130,14 @@ const MyInformation = () => {
     return (
       <div className="max-w-4xl mx-auto bg-white">
         <div className="flex items-center justify-center h-64">
-          <LoaderIcon className="mr-1.5 size-4 animate-spin" aria-hidden="true" />
+          <LoaderIcon className="mr-1.5 size-9 animate-spin" aria-hidden="true" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl w-full bg-white px-4 md:p-0">
+    <div className="max-w-4xl w-full bg-white px-4 md:p-0 mb-[20px]">
       <div className="max-w-4xl mx-auto flex items-center justify-between border-b border-gray-200 my-2">
       <h1 className="text-lg font-semibold text-gray-900">
          Thông tin cá nhân
