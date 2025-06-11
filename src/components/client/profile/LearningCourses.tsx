@@ -18,7 +18,7 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
   const [courses, setCourses] = React.useState<Course[]>([]);
   const [totalPages, setTotalPages] = React.useState(1);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [isSearching, setIsSearching] = React.useState(false); // Thêm state cho search loading
+  const [isSearching, setIsSearching] = React.useState(false);
 
   const initialName = searchParams.get("name") || "";
   const initialPage = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
@@ -51,21 +51,28 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
     router.push(`/profile/course?${params.toString()}`, { scroll: false });
   }, [name, page, router]);
 
+  // Kiểm tra xem có khóa học nào không
+  const hasNoCourses = !isLoading && !isSearching && courses.length === 0;
+
   return (
     <div className="grid gap-4">
       <SearchHeader 
         name={name} 
         setName={setName} 
         setPage={setPage}
-        setIsSearching={setIsSearching} // Truyền function để set search loading
+        setIsSearching={setIsSearching}
       />
       
-      {(isLoading || isSearching) ? ( // Hiển thị loading khi đang load hoặc đang search
+      {(isLoading || isSearching) ? (
         <div className="flex items-center justify-center py-8">
           <LoaderIcon className="mr-1.5 size-4 animate-spin" aria-hidden="true" />
           <span className="text-sm text-gray-600">
             {isSearching ? "Đang tìm kiếm..." : "Đang tải khóa học..."}
           </span>
+        </div>
+      ) : hasNoCourses ? (
+        <div className="flex items-center justify-center py-8">
+          <span className="text-sm text-gray-600">Không tìm thấy khóa học</span>
         </div>
       ) : (
         <>
@@ -75,6 +82,7 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
               imageUrl: course.imageUrl || "/placeholder.jpg",
               price: (course as any).price ?? 0,
             }))}
+            isProgress={true}
           />
           <PaginationCourse
             currentPage={page}

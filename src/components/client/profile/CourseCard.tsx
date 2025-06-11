@@ -2,9 +2,10 @@ import React from 'react';
 
 interface CourseCardProps {
   course: CourseCardResponse;
+  isProgress?: boolean;
 }
 
-const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
+const CourseCard: React.FC<CourseCardProps> = ({ course, isProgress }) => {
   // Tính phần trăm tiến độ
   const progressPercentage = course.totalLessons > 0 
     ? Math.round((course.viewedLessons / course.totalLessons) * 100) 
@@ -38,44 +39,46 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
           {course.name}
         </h3>
 
-        {/* Chỉ hiển thị giá nếu có */}
-        {course.price && (
-          <p className="text-md text-red-500 mb-3 font-bold truncate">
-            {course.price.toLocaleString('vi-VN')}đ
-          </p>
-        )}
+        {typeof course.price === 'number' && course.price > 0 && !isProgress && (
+  <p className="text-md text-red-500 mb-3 font-bold truncate">
+    {course.price.toLocaleString('vi-VN')}đ
+  </p>
+)}
 
-        {/* Thanh tiến độ */}
-        <div className="mb-3">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-gray-600">
-              Tiến độ: {course.viewedLessons}/{course.totalLessons} bài học
-            </span>
-            <span className={`text-xs px-2 py-1 rounded-full ${
-              course.status === 'completed' 
-                ? 'bg-green-100 text-green-800' 
-                : course.status === 'inProgress'
-                ? 'bg-blue-100 text-blue-800'
-                : 'bg-gray-100 text-gray-800'
-            }`}>
-              {getStatusText()}
-            </span>
+
+        {/* Thanh tiến độ - chỉ hiển thị khi isProgress = true */}
+        {isProgress && (
+          <div className="mb-3">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm text-gray-600">
+                Tiến độ: {course.viewedLessons}/{course.totalLessons} bài học
+              </span>
+              <span className={`text-xs px-2 py-1 rounded-full ${
+                course.status === 'completed' 
+                  ? 'bg-green-100 text-green-800' 
+                  : course.status === 'inProgress'
+                  ? 'bg-blue-100 text-blue-800'
+                  : 'bg-gray-100 text-gray-800'
+              }`}>
+                {getStatusText()}
+              </span>
+            </div>
+            
+            {/* Progress bar */}
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className={`h-2 rounded-full transition-all duration-300 ${getProgressColor()}`}
+                style={{ width: `${progressPercentage}%` }}
+              ></div>
+            </div>
+            
+            <div className="text-right mt-1">
+              <span className="text-sm font-medium text-gray-700">
+                {progressPercentage}%
+              </span>
+            </div>
           </div>
-          
-          {/* Progress bar */}
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className={`h-2 rounded-full transition-all duration-300 ${getProgressColor()}`}
-              style={{ width: `${progressPercentage}%` }}
-            ></div>
-          </div>
-          
-          <div className="text-right mt-1">
-            <span className="text-sm font-medium text-gray-700">
-              {progressPercentage}%
-            </span>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
