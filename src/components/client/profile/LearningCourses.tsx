@@ -6,7 +6,7 @@ import SearchHeader from "./SearchHeader";
 import PaginationCourse from "./PaginationCourse";
 import { MyCourseResponse, Course } from "@/types/response/account/my_course";
 import CoursesGrid from "./CourseGrid";
-import { LoaderIcon } from "@/components/share/loading-icon"
+import { LoaderIcon } from "@/components/share/loading-icon";
 
 interface LearningCoursesProps {
   coursePromise: Promise<MyCourseResponse>;
@@ -26,44 +26,32 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
   const [name, setName] = React.useState(initialName);
   const [page, setPage] = React.useState(initialPage);
 
-  // Stable hóa coursePromise bằng useMemo
-  const stableCoursePromise = React.useMemo(() => coursePromise, [coursePromise]);
-
   React.useEffect(() => {
-    let isCancelled = false;
-    
     const loadCourses = async () => {
       setIsLoading(true);
       try {
-        const { result, totalPages } = await stableCoursePromise;
-        if (!isCancelled) {
-          setCourses(result);
-          setTotalPages(totalPages);
-        }
+        const { result, totalPages } = await coursePromise;
+        setCourses(result);
+        setTotalPages(totalPages);
       } catch (error) {
-        if (!isCancelled) {
-          console.error("Error loading courses:", error);
-        }
+        console.error("Error loading courses:", error);
       } finally {
-        if (!isCancelled) {
-          setIsLoading(false);
-          setIsSearching(false);
-        }
+        setIsLoading(false);
+        setIsSearching(false);
       }
     };
 
     loadCourses();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [stableCoursePromise]);
+  }, [coursePromise]);
 
   React.useEffect(() => {
     const params = new URLSearchParams();
     if (name) params.set("name", name);
     params.set("page", page.toString());
-    router.push(`/profile/course?${params.toString()}`, { scroll: false });
+    const newUrl = `/profile/course?${params.toString()}`;
+    if (newUrl !== window.location.pathname + window.location.search) {
+      router.push(newUrl, { scroll: false });
+    }
   }, [name, page, router]);
 
   // Kiểm tra xem có khóa học nào không
@@ -77,7 +65,7 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
         setPage={setPage}
         setIsSearching={setIsSearching}
       />
-      
+
       {(isLoading || isSearching) ? (
         <div className="flex items-center justify-center py-8">
           <LoaderIcon className="mr-1.5 size-4 animate-spin" aria-hidden="true" />
