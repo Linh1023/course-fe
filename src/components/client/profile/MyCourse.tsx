@@ -17,8 +17,20 @@ const tabs = [
   },
 ];
 
+// Định nghĩa debounce function bên ngoài component
+function debounce(func: (...args: any[]) => void, wait: number) {
+  let timeout: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}
+
 export default function MyCourse({ coursePromise }: MyCourseProps) {
   const [isMobile, setIsMobile] = React.useState(false);
+
+  // Stable reference cho coursePromise
+  const stableCoursePromise = React.useMemo(() => coursePromise, [coursePromise]);
 
   React.useEffect(() => {
     const checkMobile = () => {
@@ -26,19 +38,11 @@ export default function MyCourse({ coursePromise }: MyCourseProps) {
     };
 
     const debounceCheckMobile = debounce(checkMobile, 200);
+
     checkMobile();
     window.addEventListener('resize', debounceCheckMobile);
     return () => window.removeEventListener('resize', debounceCheckMobile);
   }, []);
-
-  // Hàm debounce với kiểu chính xác
-  function debounce(func: (...args: any[]) => void, wait: number) {
-    let timeout: NodeJS.Timeout;
-    return (...args: any[]) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func(...args), wait);
-    };
-  }
 
   if (isMobile) {
     return (
@@ -59,7 +63,7 @@ export default function MyCourse({ coursePromise }: MyCourseProps) {
 
         {/* Mobile Content */}
         <div className="p-4">
-          <LearningCourses coursePromise={coursePromise} />
+          <LearningCourses coursePromise={stableCoursePromise} />
         </div>
       </div>
     );
@@ -85,7 +89,7 @@ export default function MyCourse({ coursePromise }: MyCourseProps) {
       </TabsList>
       {tabs.map((tab) => (
         <TabsContent key={tab.value} value={tab.value} className="mt-4">
-          <LearningCourses coursePromise={coursePromise} />
+          <LearningCourses coursePromise={stableCoursePromise} />
         </TabsContent>
       ))}
     </Tabs>
