@@ -20,4 +20,6 @@ const CoursesGrid = React.memo(({ courses, isProgress }: CoursesGridProps) => {
   );
 });
 
+CoursesGrid.displayName = 'CoursesGrid';
+
 export default CoursesGrid;
