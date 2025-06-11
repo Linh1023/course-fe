@@ -3,13 +3,13 @@
 import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { useDebounce } from "@/hooks/use-debounce"; // Giả định bạn có hook useDebounce
+import { useDebounce } from "@/hooks/use-debounce";
 
 interface SearchHeaderProps {
   name: string;
   setName: React.Dispatch<React.SetStateAction<string>>;
   setPage: React.Dispatch<React.SetStateAction<number>>;
-  setIsSearching: React.Dispatch<React.SetStateAction<boolean>>; // Thêm prop mới
+  setIsSearching: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function SearchHeader({ name, setName, setPage, setIsSearching }: SearchHeaderProps) {

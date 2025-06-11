@@ -37,7 +37,7 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
         console.error("Error loading courses:", error);
       } finally {
         setIsLoading(false);
-        setIsSearching(false); // Tắt search loading khi hoàn thành
+        setIsSearching(false);
       }
     };
 
