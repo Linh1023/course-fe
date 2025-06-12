@@ -73,28 +73,28 @@ const DashboardWrapper = () => {
 
     const stats: StatCardProps[] = [
         {
-            icon: <Heart className="w-6 h-6 icon-dashboard text-blue-600" />,
+            icon: <Heart className="w-6 h-6 text-blue-600" />,
             count: `${count[0]?.value}/${count[0]?.total}`,
             label: "Tài khoản",
             bgColor: "bg-blue-100",
             link: "/admin/user"
         },
         {
-            icon: <GraduationCap className="w-6 h-6 icon-dashboard text-yellow-600" />,
+            icon: <GraduationCap className="w-6 h-6 text-yellow-600" />,
             count: `${count[1]?.value}/${count[1]?.total}`,
             label: "Khóa học",
             bgColor: "bg-yellow-100",
             link: "/admin/course"
         },
         {
-            icon: <Users className="w-6 h-6 icon-dashboard text-red-600" />,
+            icon: <Users className="w-6 h-6 text-red-600" />,
             count: `${count[2]?.value}/${count[2]?.total}`,
             label: "Học viên đăng ký",
             bgColor: "bg-red-100",
             link: "/admin/course_enrollment"
         },
         {
-            icon: <BookOpen className="w-6 icon-dashboard h-6 text-purple-600" />,
+            icon: <BookOpen className="w-6 h-6 text-purple-600" />,
             count: `${count[3]?.value}`,
             label: "Bài tập chưa chấm",
             bgColor: "bg-purple-100",
@@ -122,7 +122,7 @@ const DashboardWrapper = () => {
                             ></LoaderIcon>
                         </div>
                     </>) : (<>
-                        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {stats.map((stat, index) => (
                                 <div key={index}>
                                     <StatCard
