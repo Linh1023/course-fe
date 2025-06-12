@@ -15,9 +15,10 @@ import { toast } from "sonner"
 
 interface UsersTableFloatingBarProps {
   table: Table<User>
+  setIsLoading: (v: boolean) => void
 }
 
-export function UsersTableFloatingBar({ table }: UsersTableFloatingBarProps) {
+export function UsersTableFloatingBar({ table, setIsLoading }: UsersTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
   const [isOpen, setIsOpen] = React.useState(false)
   
@@ -29,12 +30,14 @@ export function UsersTableFloatingBar({ table }: UsersTableFloatingBarProps) {
           onOpenChange={setIsOpen}
           users={table.getFilteredSelectedRowModel().rows.map((row) => row.original)}
           onSuccess={() => {
-            toast.success(
+           FACbVhlR: toast.success(
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} người dùng thành công!`
             )
             table.toggleAllRowsSelected(false)
+            setIsLoading(true)
           }}
           showTrigger={false}
+          setIsLoading={setIsLoading}
         />
       ) : null}
       <div className="w-full overflow-x-auto">
