@@ -455,16 +455,16 @@ const Navigation = () => {
                           value="solutions"
                           className="border-none"
                         >
-                          <AccordionTrigger className="text-base hover:no-underline">
-                            <div className="flex items-center">
+                          <AccordionTrigger className="text-base hover:no-underline w-full">
+                            <div className="flex items-center truncate w-full ">
                               <img
                                 src={currentAccount.avatarUrl}
                                 className=" rounded-[100px] h-[45px] w-[45px]"
                                 alt="Avatar"
                               />
-                              <div className="ml-[10px] flex flex-col justify-center ">
+                              <div className="ml-[10px] flex flex-col w-full justify-center truncate">
                                 <span>{currentAccount.name}</span>
-                                <span>{currentAccount.email}</span>
+                                <span className="truncate">{currentAccount.email}</span>
                               </div>
                             </div>
                           </AccordionTrigger>
@@ -528,8 +528,8 @@ const Navigation = () => {
                   )}
 
                   <div className="flex flex-col gap-6">
-                    <div className="relative max-w-xl mx-auto">
-                      <div className="flex items-center border rounded-md px-2 shadow-sm">
+                    <div className="relative  mx-auto w-full">
+                      <div className="flex items-center border rounded-md px-2 shadow-sm w-full">
                         <Search
                           className="mr-2 text-gray-500"
                           onClick={updateUrlKeyword}
