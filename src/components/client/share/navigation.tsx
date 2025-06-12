@@ -96,7 +96,7 @@ const Navigation = () => {
       try {
         const res = await FetchServerGetApiNoToken(
           API.COURSE.COURSE_FILTER +
-            `?keyword=${encodeURIComponent(keyword.trim())}&page=0&size=4`
+          `?keyword=${encodeURIComponent(keyword.trim())}&page=0&size=4`
         );
 
         if (res && res.status === 200) {
@@ -119,7 +119,7 @@ const Navigation = () => {
 
   useEffect(() => {
     const fetchCategory = async () => {
-      const res = await FetchServerGetApiNoToken(API.CATEGORY.ROOT);
+      const res = await FetchServerGetApiNoToken(`${API.CATEGORY.ROOT}?status=active`);
       if (res && res.status === 200) {
         setCategories(res.result);
       } else {
@@ -139,7 +139,7 @@ const Navigation = () => {
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (keyword.trim()) params.set("keyword", keyword.trim());
-    params.set("page", "0");
+    params.set("page", "1");
     setShouldSyncKeyword(false); // ⛔ ngắt đồng bộ input từ URL
     setKeyword(""); // ✅ reset input
     setSuggestions([]);
@@ -174,6 +174,7 @@ const Navigation = () => {
 
     if (e.key === "Enter") {
 
+
       updateUrlKeyword();
     }
 
@@ -181,13 +182,20 @@ const Navigation = () => {
 
   // Cập nhật URL với keyword mới
   const updateUrlKeyword = () => {
+
+
     const params = new URLSearchParams();
+
 
     if (keyword.trim()) {
       params.set("keyword", keyword.trim());
     }
 
-    params.set("page", "0");
+    params.set("page", "1");
+
+    if (searchParams.toString() != params.toString()) {
+      startLoadingSpiner();
+    }
 
     router.push(`/search?${params.toString()}`);
 
@@ -212,6 +220,8 @@ const Navigation = () => {
               </span>
             </Link>
 
+
+
             <NavigationMenu className="hidden lg:block">
               <NavigationMenuList>
                 <NavigationMenuItem>
@@ -228,7 +238,7 @@ const Navigation = () => {
                     <div className="grid w-[600px] grid-cols-2 p-3">
                       {categories.map((category, index) => (
                         <Link
-                          href={`/search?category=${category.id}&page=0&size=12`}
+                          href={`/search?category=${category.id}&page=1&size=12`}
                           key={index}
                           className="rounded-md p-3 transition-colors hover:bg-muted/70"
                         >
@@ -368,37 +378,58 @@ const Navigation = () => {
                             nhân
                           </div>
                         </Link>
-                                                <Link href={"/setting"}>
-                                                    <div className="dropdown-item-custom">
-                                                        <Settings className="mr-[15px]" /> Cài đặt
-                                                    </div>
-                                                </Link>
-                                                
-                                                <div className=" bg-gray-200 h-[1px]" />
-                                                <div
-                                                    className="dropdown-item-custom"
-                                                    onClick={() => handleLogout()}
-                                                >
-                                                    <LogOut className="mr-[15px]" /> Đăng xuất
-                                                </div>
-                                            </div>
-                                        </PopoverContent>
-                                    </>
-                                )}
-                            </Popover>
+                        <Link href={"/setting"}>
+                          <div className="dropdown-item-custom">
+                            <Settings className="mr-[15px]" /> Cài đặt
+                          </div>
+                        </Link>
+
+                        <div className=" bg-gray-200 h-[1px]" />
+                        <div
+                          className="dropdown-item-custom"
+                          onClick={() => handleLogout()}
+                        >
+                          <LogOut className="mr-[15px]" /> Đăng xuất
                         </div>
+                      </div>
+                    </PopoverContent>
+                  </>
+                )}
+              </Popover>
+            </div>
 
             <Sheet>
               <SheetTrigger asChild className="lg:hidden">
-                <Button variant="outline" size="icon">
-                  <MenuIcon className="h-4 w-4" />
-                </Button>
+                <div className="flex  items-center" >
+                  {currentAccount === null && (<>
+                    <Link href={"/login"} className="mr-[10px]">
+                      <Button className="bg-[#FE4444] hover:bg-[#F87171]">
+                        {" "}
+                        Đăng nhập{" "}
+                      </Button>
+                    </Link>
+                  </>)}
+
+                  <div className="flex  items-center">
+                    {currentAccount != null && (<>
+                      <img
+                        src={currentAccount.avatarUrl}
+                        className=" rounded-[100px] h-[45px] w-[45px] mr-[10px]"
+                        alt="Avatar"
+                      />
+                    </>)}
+
+                    <Button variant="outline" >
+                      <MenuIcon className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               </SheetTrigger>
               <SheetContent side="top" className="max-h-screen overflow-auto">
                 <SheetHeader>
                   <SheetTitle>
-                    <a
-                      href="https://www.shadcnblocks.com"
+                    <Link
+                      href="/"
                       className="flex items-center gap-2"
                     >
                       <img
@@ -409,7 +440,7 @@ const Navigation = () => {
                       <span className="text-lg font-semibold tracking-tighter">
                         Khóa học
                       </span>
-                    </a>
+                    </Link>
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col p-4">
@@ -424,14 +455,14 @@ const Navigation = () => {
                           value="solutions"
                           className="border-none"
                         >
-                          <AccordionTrigger className="text-base hover:no-underline">
-                            <div className="flex items-center">
+                          <AccordionTrigger className="text-base hover:no-underline w-full">
+                            <div className="flex items-center truncate w-full ">
                               <img
                                 src={currentAccount.avatarUrl}
                                 className=" rounded-[100px] h-[45px] w-[45px]"
                                 alt="Avatar"
                               />
-                              <div className="ml-[10px] flex flex-col justify-center ">
+                              <div className="ml-[10px] flex flex-col w-full justify-center truncate">
                                 <span>{currentAccount.name}</span>
                                 <span className="truncate">{currentAccount.email}</span>
                               </div>
@@ -454,7 +485,7 @@ const Navigation = () => {
                               )}
 
                               <Link
-                                href={"/"}
+                                href={"/profile"}
                                 className="rounded-md p-3 transition-colors hover:bg-muted/70"
                               >
                                 <div className="flex">
@@ -466,7 +497,7 @@ const Navigation = () => {
                               </Link>
 
                               <Link
-                                href={"/"}
+                                href={"/setting"}
                                 className="rounded-md p-3 transition-colors hover:bg-muted/70"
                               >
                                 <div className="flex">
@@ -497,8 +528,8 @@ const Navigation = () => {
                   )}
 
                   <div className="flex flex-col gap-6">
-                    <div className="relative max-w-xl mx-auto">
-                      <div className="flex items-center border rounded-md px-2 shadow-sm">
+                    <div className="relative  mx-auto w-full">
+                      <div className="flex items-center border rounded-md px-2 shadow-sm w-full">
                         <Search
                           className="mr-2 text-gray-500"
                           onClick={updateUrlKeyword}
@@ -566,21 +597,21 @@ const Navigation = () => {
                         Danh mục khóa học
                       </AccordionTrigger>
                       <AccordionContent>
-                        <div className="grid md:grid-cols-2">
+                        <div className="grid md:grid-cols-2" >
                           {categories.map((category, index) => (
                             <Link
-                              href={`/search/category/${category.id}?page=1&size=10`}
+                              href={`/search?category=${category.id}&page=1&size=12`}
                               key={index}
                               className="rounded-md p-3 transition-colors hover:bg-muted/70"
                             >
-                              <div key={category.id}>
-                                <p className="mb-1 font-semibold text-foreground">
-                                  {category.name}
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                  {category.detail}
-                                </p>
-                              </div>
+
+                              <p className="mb-1 font-semibold text-foreground">
+                                {category.name}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                {category.detail}
+                              </p>
+
                             </Link>
                           ))}
                         </div>
@@ -594,7 +625,7 @@ const Navigation = () => {
                     </Link>
                   </div>
 
-                  {currentAccount === null && (
+                  {/* {currentAccount === null && (
                     <>
                       <div className="mt-6 flex flex-col gap-4">
                         <Link href={"/login"}>
@@ -605,7 +636,7 @@ const Navigation = () => {
                         </Link>
                       </div>
                     </>
-                  )}
+                  )} */}
                 </div>
               </SheetContent>
             </Sheet>

@@ -6,9 +6,9 @@ import { use, useMemo } from "react";
 import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table-advance-toolbar";
 import { DataTable } from "../share/data-table/data-table";
 import { TableInstanceProvider } from "../share/data-table/table-instance-provider";
-import { getCommentColumns } from "./comments-table-column";
-import { CommentsTableFloatingBar } from "./comments-table-floating-bar";
-import { CommentsTableToolbarActions } from "./comments-table-toolbar-actions";
+import { getCommentColumns } from "./comments_table_column";
+import { CommentsTableFloatingBar } from "./comments_table_floating_bar";
+import { CommentsTableToolbarActions } from "./comments_table_toolbar_actions";
 
 interface CommentsTableProps {
   commentPromise: Promise<CommentAdminResponse>;

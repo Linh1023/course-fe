@@ -4,9 +4,10 @@ import LessonTabs from "./lesson_tabs"
 import LessonVideo from "./lesson_video"
 interface Props {
     lessonResponse:LessonClientDetailResponse
+    commmentResponse:CommentClientResponse
 }
 const LessonContent = (props: Props) => {
-    const { lessonResponse } = props
+    const { lessonResponse,commmentResponse } = props
     return (
         <>
         {/* <div className="p-2"> */}
@@ -15,6 +16,7 @@ const LessonContent = (props: Props) => {
            />
            <LessonTabs
               lessonResponse = {lessonResponse}
+              commmentResponse={commmentResponse}
            />
         {/* </div> */}
         </>

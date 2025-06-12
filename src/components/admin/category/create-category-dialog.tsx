@@ -38,9 +38,12 @@ import API from "@/api/api"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { FetchServerPostApi } from "@/actions/server/fetch_server_api"
+import { set } from "date-fns"
 
-
-export function CreateCategoryDialog() {
+interface CreateCategoryDialogProps {
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+}
+export function CreateCategoryDialog({ setIsLoading }: CreateCategoryDialogProps) {
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [isCreatePending, startCreateTransition] = React.useTransition()
@@ -60,6 +63,7 @@ export function CreateCategoryDialog() {
         form.reset()
         toast.success("Tạo danh mục thành công")
         setOpen(false)
+        setIsLoading(true)
       } else {
         toast.error("Tạo danh mục thất bại, vui lòng thử lại sau")
       }

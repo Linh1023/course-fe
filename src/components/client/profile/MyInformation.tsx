@@ -5,15 +5,12 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { FetchServerPutApi } from '@/actions/server/fetch_server_api';
 import API from '@/api/api';
-import { toast } from "@/hooks/use-toast"
 import { FetchServerGetApi } from '@/actions/server/fetch_server_api';
 import { useCurrentAccountContext } from '@/context/current_account_context';
-
-
+import { LoaderIcon } from "@/components/share/loading-icon"
+import { toast } from "sonner"
 
 const MyInformation = () => {
-  // console.log('Current Account:', currentProfile);
-
   const [currentProfile, setCurrentProfile] = useState<CurrentProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,10 +37,6 @@ const MyInformation = () => {
     fetchProfile();
   }, []);
 
-
-
-
-
   const [formData, setFormData] = useState({
     email: '',
     name: '',
@@ -52,6 +45,14 @@ const MyInformation = () => {
     bio: '',
     sex: ''
   });
+
+  // State cho validation errors
+  const [errors, setErrors] = useState({
+    name: '',
+    phone: '',
+    birthdate: ''
+  });
+
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -69,34 +70,122 @@ const MyInformation = () => {
     }
   }, [currentProfile]);
 
+  // Hàm validate từng trường
+  const validateField = (name: string, value: string) => {
+    let error = '';
+    
+    switch (name) {
+      case 'name':
+        if (!value.trim()) {
+          error = 'Họ và tên là bắt buộc';
+        }
+        break;
+      
+      case 'phone':
+        if (!value.trim()) {
+          error = 'Số điện thoại là bắt buộc';
+        } else if (!/^\d+$/.test(value)) {
+          error = 'Số điện thoại chỉ được chứa các chữ số';
+        } else if (value.length > 12) {
+          error = 'Số điện thoại không được vượt quá 12 số';
+        } else if (value.length < 10) {
+          error = 'Số điện thoại phải có ít nhất 10 số';
+        }
+        break;
+    
+    }
+    
+    return error;
+  };
+
+  // Validate tất cả các trường bắt buộc
+  const validateAllFields = () => {
+    const newErrors = {
+      name: validateField('name', formData.name),
+      phone: validateField('phone', formData.phone),
+      birthdate: validateField('birthdate', formData.birthdate)
+    };
+    
+    setErrors(newErrors);
+    
+    // Trả về true nếu không có lỗi
+    return !Object.values(newErrors).some(error => error !== '');
+  };
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+    
+    // Xử lý đặc biệt cho số điện thoại - chỉ cho phép nhập số
+    if (name === 'phone') {
+      const numbersOnly = value.replace(/\D/g, '');
+      if (numbersOnly.length <= 12) {
+        setFormData(prev => ({
+          ...prev,
+          [name]: numbersOnly
+        }));
+        
+        // Clear error khi user bắt đầu sửa
+        if (errors[name as keyof typeof errors]) {
+          setErrors(prev => ({
+            ...prev,
+            [name]: ''
+          }));
+        }
+      }
+      return;
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+    
+    // Clear error khi user bắt đầu sửa các trường bắt buộc
+    if (name === 'name' || name === 'birthdate') {
+      if (errors[name as keyof typeof errors]) {
+        setErrors(prev => ({
+          ...prev,
+          [name]: ''
+        }));
+      }
+    }
+  };
+
+  // Validate khi blur khỏi trường
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    if (name === 'name' || name === 'phone' || name === 'birthdate') {
+      const error = validateField(name, value);
+      setErrors(prev => ({
+        ...prev,
+        [name]: error
+      }));
+    }
   };
 
   const handleSave = async () => {
+    // Validate tất cả các trường trước khi lưu
+    if (!validateAllFields()) {
+      toast.error("Vui lòng kiểm tra và sửa các lỗi trong form");
+      return;
+    }
+
     setIsSaving(true);
     try {
-      // Chuẩn bị dữ liệu gửi lên API
       const bodyData = {
         name: formData.name,
         phoneNumber: formData.phone,
         detail: formData.bio,
         birthday: formData.birthdate ? new Date(formData.birthdate).toISOString().split('T')[0] : null,
         sex: formData.sex || null,
-        avatarUrl: currentProfile?.avatarUrl // Giữ nguyên avatarUrl từ currentProfile
+        avatarUrl: currentProfile?.avatarUrl
       };
 
-      // Gọi API PUT
       const response = await FetchServerPutApi(API.PROFILE.CHANGE_PROFILE, bodyData);
 
       if (response && response.status === 200) {
-        // Cập nhật formData với dữ liệu mới từ response
         setFormData({
           email: response.result.email || '',
           name: response.result.name || '',
@@ -107,28 +196,36 @@ const MyInformation = () => {
           sex: response.result.sex || ''
         });
         fetchGetCurrentAccount()
-        toast({
-          title: "Thành công",
-          description: "Cập nhật thông tin cá nhân thành công!",
-          variant: "default"
-        });
+        
+        toast.success("Cập nhật thông tin cá nhân thành công!") 
         setIsEditing(false);
+        
+        // Clear tất cả errors
+        setErrors({
+          name: '',
+          phone: '',
+          birthdate: ''
+        });
       } else {
         throw new Error('Failed to update profile');
       }
     } catch (error) {
       console.error('Error updating profile:', error);
-      toast({
-        title: "Lỗi",
-        description: "Không thể cập nhật thông tin. Vui lòng thử lại.",
-        variant: "destructive"
-      });
+      toast.error("Không thể cập nhật thông tin. Vui lòng thử lại.")
     } finally {
       setIsSaving(false);
     }
   };
 
   const toggleEditing = () => {
+    if (isEditing) {
+      // Khi cancel, clear errors
+      setErrors({
+        name: '',
+        phone: '',
+        birthdate: ''
+      });
+    }
     setIsEditing(!isEditing);
   };
 
@@ -137,29 +234,29 @@ const MyInformation = () => {
     return (
       <div className="max-w-4xl mx-auto bg-white">
         <div className="flex items-center justify-center h-64">
-          <div className="text-gray-500">Đang tải thông tin...</div>
+          <LoaderIcon className="mr-1.5 size-9 animate-spin" aria-hidden="true" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl w-full bg-white px-4 md:p-0">
+    <div className="max-w-4xl w-full bg-white px-4 md:p-0 mb-[20px]">
       <div className="max-w-4xl mx-auto flex items-center justify-between border-b border-gray-200 my-2">
-      <h1 className="text-lg font-semibold text-gray-900">
-         Thông tin cá nhân
-      </h1>
+        <h1 className="text-lg font-semibold text-gray-900">
+          Thông tin cá nhân
+        </h1>
 
-  <Button
-    variant="outline"
-    className="text-white mb-2 bg-red-500 hover:bg-red-400 p-2 flex items-center justify-center"
-    onClick={toggleEditing}
-    disabled={isSaving}
-  >
-    <SquarePen size={24} />
-    <span className="hidden md:inline ml-2">Chỉnh sửa</span>
-  </Button>
-</div>
+        <Button
+          variant="outline"
+          className="text-white mb-2 bg-red-500 hover:bg-red-400 p-2 flex items-center justify-center"
+          onClick={toggleEditing}
+          disabled={isSaving}
+        >
+          <SquarePen size={24} />
+          <span className="hidden md:inline ml-2">Chỉnh sửa</span>
+        </Button>
+      </div>
 
       <div className="space-y-6">
         {/* Email and Username */}
@@ -176,14 +273,14 @@ const MyInformation = () => {
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors disabled:bg-gray-50 disabled:text-gray-500"
                 placeholder="example123@gmail.com"
-                disabled={true} // Email luôn disable
+                disabled={true}
               />
             </div>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Họ và tên
+              Họ và tên <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <input
@@ -191,11 +288,19 @@ const MyInformation = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors disabled:bg-gray-50"
+                onBlur={handleBlur}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent transition-colors disabled:bg-gray-50 ${
+                  errors.name 
+                    ? 'border-red-500 focus:ring-red-500' 
+                    : 'border-gray-300 focus:ring-blue-500'
+                }`}
                 placeholder="Nguyễn Văn A"
                 disabled={!isEditing}
               />
             </div>
+            {errors.name && (
+              <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+            )}
           </div>
         </div>
 
@@ -203,7 +308,7 @@ const MyInformation = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Số điện thoại
+              Số điện thoại <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <input
@@ -211,15 +316,25 @@ const MyInformation = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors disabled:bg-gray-50"
+                onBlur={handleBlur}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent transition-colors disabled:bg-gray-50 ${
+                  errors.phone 
+                    ? 'border-red-500 focus:ring-red-500' 
+                    : 'border-gray-300 focus:ring-blue-500'
+                }`}
+                placeholder="0123456789"
                 disabled={!isEditing}
+                maxLength={12}
               />
             </div>
+            {errors.phone && (
+              <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+            )}
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Ngày sinh
+              Ngày sinh <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <input
@@ -227,10 +342,18 @@ const MyInformation = () => {
                 name="birthdate"
                 value={formData.birthdate}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors disabled:bg-gray-50"
+                onBlur={handleBlur}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent transition-colors disabled:bg-gray-50 ${
+                  errors.birthdate 
+                    ? 'border-red-500 focus:ring-red-500' 
+                    : 'border-gray-300 focus:ring-blue-500'
+                }`}
                 disabled={!isEditing}
               />
             </div>
+            {errors.birthdate && (
+              <p className="text-red-500 text-sm mt-1">{errors.birthdate}</p>
+            )}
           </div>
         </div>
 

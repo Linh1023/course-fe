@@ -7,6 +7,7 @@ import API from "@/api/api";
 import CourseList from "../home/CourseList";
 import { LoaderIcon } from "@/components/share/loading-icon";
 import { useLoadingContext } from "@/context/loading_context";
+import { FetchClientGetApiNoToken } from "@/actions/client/fetch_client_api";
 
 const Search = () => {
   const router = useRouter();
@@ -18,10 +19,10 @@ const Search = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [sortType, setSortType] = useState<string>("");
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const handleSortChange = (sort: string) => {
-        setIsLoading(true);
+    setIsLoading(true);
 
     const isSame = sortType === sort;
     const newSort = isSame ? "" : sort;
@@ -33,7 +34,7 @@ const Search = () => {
     } else {
       params.delete("sort");
     }
-    params.set("page", "0");
+    params.set("page", "1");
     router.push(`/search?${params.toString()}`);
 
   };
@@ -50,13 +51,13 @@ const Search = () => {
     } else {
       params.delete("category");
     }
-    params.set("page", "0");
+    params.set("page", "1");
     router.push(`/search?${params.toString()}`);
   };
 
   useEffect(() => {
     const fetchCategory = async () => {
-      const res = await FetchServerGetApiNoToken(API.CATEGORY.ROOT);
+      const res = await FetchServerGetApiNoToken( `${API.CATEGORY.ROOT}?status=active`);
       if (res && res.status === 200) {
         setCategories(res.result);
       }
@@ -75,7 +76,7 @@ const Search = () => {
 
     const fetch = async () => {
       setIsLoading(true);
-      const res = await FetchServerGetApiNoToken(
+      const res = await FetchClientGetApiNoToken(
         API.COURSE.COURSE_FILTER + `?${searchParams.toString()}&size=12`
       );
       if (res && res.status === 200) {
@@ -83,6 +84,7 @@ const Search = () => {
         setTotalPages(res.totalPages);
       }
       setIsLoading(false);
+      stopLoadingSpiner()
     };
 
     fetch();
@@ -98,21 +100,19 @@ const Search = () => {
             <div className="text-sm font-medium text-gray-600">Sắp xếp:</div>
             <button
               onClick={() => handleSortChange("newest")}
-              className={`px-3 py-1 rounded-md border text-sm transition-all ${
-                sortType === "newest"
-                  ? "bg-blue-100 text-blue-700 border-blue-500"
-                  : "text-gray-600 border-gray-300 hover:bg-gray-100"
-              }`}
+              className={`px-3 py-1 rounded-md border text-sm transition-all ${sortType === "newest"
+                ? "bg-blue-100 text-blue-700 border-blue-500"
+                : "text-gray-600 border-gray-300 hover:bg-gray-100"
+                }`}
             >
               Mới nhất
             </button>
             <button
               onClick={() => handleSortChange("hot")}
-              className={`px-3 py-1 rounded-md border text-sm transition-all ${
-                sortType === "hot"
-                  ? "bg-red-100 text-red-700 border-red-500"
-                  : "text-gray-600 border-gray-300 hover:bg-gray-100"
-              }`}
+              className={`px-3 py-1 rounded-md border text-sm transition-all ${sortType === "hot"
+                ? "bg-red-100 text-red-700 border-red-500"
+                : "text-gray-600 border-gray-300 hover:bg-gray-100"
+                }`}
             >
               Hot
             </button>
@@ -124,11 +124,10 @@ const Search = () => {
               <button
                 key={category.id}
                 onClick={() => handleCategorySelect(category.id)}
-                className={`px-3 py-1 rounded-md border text-sm transition-all ${
-                  selectedCategory === category.id
-                    ? "bg-red-100 text-red-600 border-red-500 font-semibold"
-                    : "text-gray-600 border-gray-300 hover:bg-gray-100"
-                }`}
+                className={`px-3 py-1 rounded-md border text-sm transition-all ${selectedCategory === category.id
+                  ? "bg-red-100 text-red-600 border-red-500 font-semibold"
+                  : "text-gray-600 border-gray-300 hover:bg-gray-100"
+                  }`}
               >
                 {category.name}
               </button>
@@ -139,17 +138,27 @@ const Search = () => {
         {/* Danh sách khóa học */}
         <div className="space-y-8">
           {isLoading ? (
-            <div className="flex justify-center items-center h-[200px]">
-              <LoaderIcon className="size-5 animate-spin mr-2 text-blue-500" />
-              <span className="text-sm text-gray-500">Đang tải dữ liệu...</span>
-            </div>
+            <>
+              <div className="flex justify-center items-center h-[200px]">
+                <LoaderIcon className="size-5 animate-spin mr-2 text-blue-500" />
+                <span className="text-sm text-gray-500">Đang tải dữ liệu...</span>
+              </div>
+            </>
+
           ) : research.length === 0 ? (
-            <div className="flex justify-center items-center h-[200px] text-gray-500 text-sm italic">
-              Không có khóa học nào phù hợp với tìm kiếm của bạn.
-            </div>
+            <>
+              <h2 className="text-xl font-semibold text-gray-800">
+                {`Kết quả tìm kiếm ${searchParams.get("keyword") != null ? `'${searchParams.get("keyword")}'` : ""}`}
+              </h2>
+              <div className="flex justify-center items-center h-[200px] text-gray-500 text-sm italic">
+                Không có khóa học nào phù hợp với tìm kiếm của bạn.
+              </div>
+
+            </>
+
           ) : (
             <CourseList
-              title="Kết quả tìm kiếm"
+              title={`Kết quả tìm kiếm ${searchParams.get("keyword") != null ? `'${searchParams.get("keyword")}'` : ""}`}
               courses={research}
               layout="grid"
             />
@@ -159,20 +168,22 @@ const Search = () => {
           <div className="flex justify-center mt-6 gap-2 flex-wrap">
             {Array.from({ length: totalPages }).map((_, index) => (
               <button
-                key={index}
+                key={index + 1}
                 onClick={() => {
-                  setIsLoading(true);
 
                   const params = new URLSearchParams(searchParams.toString());
-                  params.set("page", index.toString());
+                  params.set("page", (index+1).toString());
+
+                  if (searchParams.toString() !== params.toString()) {
+                    setIsLoading(true);
+                  }
                   router.push(`/search?${params.toString()}`);
-                   
+
                 }}
-                className={`px-3 py-1 border rounded-md text-sm ${
-                  index === currentPage
-                    ? "bg-blue-500 text-white border-blue-600"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                }`}
+                className={`px-3 py-1 border rounded-md text-sm ${index+1 === currentPage
+                  ? "bg-blue-500 text-white border-blue-600"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                  }`}
               >
                 {index + 1}
               </button>
@@ -187,21 +198,19 @@ const Search = () => {
           <div className="text-sm font-medium text-gray-600">Sắp xếp:</div>
           <button
             onClick={() => handleSortChange("newest")}
-            className={`px-3 py-1 rounded-md border text-sm transition-all ${
-              sortType === "newest"
-                ? "bg-blue-100 text-blue-700 border-blue-500"
-                : "text-gray-600 border-gray-300 hover:bg-gray-100"
-            }`}
+            className={`px-3 py-1 rounded-md border text-sm transition-all ${sortType === "newest"
+              ? "bg-blue-100 text-blue-700 border-blue-500"
+              : "text-gray-600 border-gray-300 hover:bg-gray-100"
+              }`}
           >
             Mới nhất
           </button>
           <button
             onClick={() => handleSortChange("hot")}
-            className={`px-3 py-1 rounded-md border text-sm transition-all ${
-              sortType === "hot"
-                ? "bg-red-100 text-red-700 border-red-500"
-                : "text-gray-600 border-gray-300 hover:bg-gray-100"
-            }`}
+            className={`px-3 py-1 rounded-md border text-sm transition-all ${sortType === "hot"
+              ? "bg-red-100 text-red-700 border-red-500"
+              : "text-gray-600 border-gray-300 hover:bg-gray-100"
+              }`}
           >
             Hot
           </button>
@@ -214,11 +223,10 @@ const Search = () => {
           {categories.map((category) => (
             <label
               key={category.id}
-              className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-all duration-150 ease-in-out ${
-                selectedCategory === category.id
-                  ? "bg-red-100 text-red-600 font-semibold"
-                  : "hover:bg-gray-100 text-gray-700"
-              }`}
+              className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-all duration-150 ease-in-out ${selectedCategory === category.id
+                ? "bg-red-100 text-red-600 font-semibold"
+                : "hover:bg-gray-100 text-gray-700"
+                }`}
             >
               <input
                 type="checkbox"

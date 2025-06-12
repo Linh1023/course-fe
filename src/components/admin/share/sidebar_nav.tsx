@@ -49,16 +49,6 @@ export const SidebarNav = () => {
       icon: ClipboardList,
     },
     {
-      title: "Bài học",
-      url: "/admin/lesson",
-      icon: FileText,
-    },
-    {
-      title: "Tiến độ bài học",
-      url: "/admin/lesson_progress",
-      icon: CheckCircle,
-    },
-    {
       title: "Bài nộp",
       url: "/admin/submission",
       icon: Inbox,
@@ -67,11 +57,6 @@ export const SidebarNav = () => {
       title: "Người dùng",
       url: "/admin/user",
       icon: Users,
-    },
-    {
-      title: "Cài đặt",
-      url: "/admin/settings",
-      icon: Settings,
     },
   ];
   const data = {

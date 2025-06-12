@@ -1,6 +1,5 @@
 import { FetchServerGetApi } from "@/actions/server/fetch_server_api"
 import API from "@/api/api"
-import { CategoriesTable } from "@/components/admin/category/categories-table"
 import { CoursesTable } from "@/components/admin/course/courses-table"
 import { DataTableSkeleton } from "@/components/admin/share/data-table/data-table-skeleton"
 import { ReadonlyURLSearchParams } from "next/navigation"
@@ -11,7 +10,11 @@ export interface CoursePageProps {
 }
 
 const CoursePage = async ({ searchParams }: CoursePageProps) => {
-  const query = new URLSearchParams(searchParams).toString();
+  const params = new URLSearchParams(searchParams);
+  if (!params.has("page")) {
+    params.set("page", "1");
+  }
+  const query = params.toString();
   const coursePromise = FetchServerGetApi(API.COURSE.ROOT + `?${query}`, "/admin/course");
   const categoryPromise = FetchServerGetApi(API.CATEGORY.ROOT + `?status=active`, "/admin/course");
   return (

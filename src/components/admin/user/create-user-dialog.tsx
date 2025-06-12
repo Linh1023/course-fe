@@ -42,7 +42,17 @@ import { FetchServerPostApi } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
 import { CreateUserSchema, createUserSchema } from "@/validation/userSchema";
 
-export function CreateUserDialog() {
+// Interface cho error response từ API
+interface ApiError {
+  code: string;
+  message: string;
+}
+
+interface CreateUserDialogProps {
+  setIsLoading: (v: boolean) => void;
+}
+
+export function CreateUserDialog({ setIsLoading }: CreateUserDialogProps) {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [isCreatePending, startCreateTransition] = React.useTransition();
@@ -63,16 +73,85 @@ export function CreateUserDialog() {
     },
   });
 
+  // Hàm xử lý lỗi từ API
+  const handleApiErrors = (errors: ApiError[]) => {
+    if (!Array.isArray(errors)) {
+      toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      return;
+    }
+
+    errors.forEach((error) => {
+      switch (error.code) {
+        case "ACCOUNT_3":
+          form.setError("email", {
+            type: "manual",
+            message: "Email này đã được sử dụng, vui lòng chọn email khác"
+          });
+          toast.error("Email đã tồn tại");
+          break;
+        case "ACCOUNT_4":
+          form.setError("username", {
+            type: "manual",
+            message: "Tên tài khoản này đã được sử dụng, vui lòng chọn tên khác"
+          });
+          toast.error("Tên tài khoản đã tồn tại");
+          break;
+        case "ACCOUNT_2":
+          toast.error("Không thể lưu thông tin người dùng, vui lòng thử lại");
+          break;
+        case "ACCOUNT_1":
+          toast.error("Không tìm thấy tài khoản");
+          break;
+        default:
+          toast.error(error.message || "Có lỗi xảy ra, vui lòng thử lại");
+          break;
+      }
+    });
+  };
+
   function onSubmit(input: CreateUserSchema) {
+    form.clearErrors();
     startCreateTransition(async () => {
-      const res = await FetchServerPostApi(API.ACCOUNT.CREATE, input, "/admin/user");
-      if (res.status === 200) {
-        router.replace("?page=1");
-        form.reset();
-        toast.success("Tạo người dùng thành công");
-        setOpen(false);
-      } else {
-        toast.error("Tạo người dùng thất bại, vui lòng thử lại sau");
+      try {
+        const res = await FetchServerPostApi(API.ACCOUNT.CREATE, input, "/admin/user");
+        
+        if (res.status === 200 || res.status === 201) {
+          router.replace("?page=1");
+          form.reset();
+          toast.success("Tạo người dùng thành công");
+          setOpen(false);
+          setIsLoading(true);
+        } else if (res.status === 400) {
+          if (res.data && res.data.errors && Array.isArray(res.data.errors)) {
+            handleApiErrors(res.data.errors);
+          } else if (res.errors && Array.isArray(res.errors)) {
+            handleApiErrors(res.errors);
+          } else if (res.message) {
+            toast.error(res.message);
+          } else {
+            toast.error("Dữ liệu không hợp lệ, vui lòng kiểm tra lại thông tin");
+          }
+        } else {
+          toast.error("Tạo người dùng thất bại, vui lòng thử lại sau");
+        }
+      } catch (error: any) {
+        console.error("Create user error:", error);
+        if (error.response && error.response.data) {
+          const errorData = error.response.data;
+          if (errorData.errors && Array.isArray(errorData.errors)) {
+            handleApiErrors(errorData.errors);
+          } else if (errorData.message) {
+            toast.error(errorData.message);
+          } else {
+            toast.error("Tạo người dùng thất bại, vui lòng thử lại sau");
+          }
+        } else if (error.message) {
+          toast.error(error.message);
+        } else {
+          toast.error("Có lỗi xảy ra, vui lòng kiểm tra kết nối mạng và thử lại");
+        }
+      } finally {
+        startCreateTransition(() => {}); // Đảm bảo trạng thái loading cục bộ được reset
       }
     });
   }
@@ -83,7 +162,7 @@ export function CreateUserDialog() {
         <Tooltip>
           <TooltipTrigger asChild>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" disabled={isCreatePending}>
                 <PlusIcon className="mr-2 size-4" aria-hidden="true" />
                 Thêm người dùng
               </Button>
@@ -107,7 +186,6 @@ export function CreateUserDialog() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
           >
-            {/* Thông tin cơ bản */}
             <FormField
               control={form.control}
               name="name"
@@ -125,7 +203,6 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="email"
@@ -144,7 +221,6 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="username"
@@ -162,7 +238,6 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="password"
@@ -181,7 +256,6 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="phone"
@@ -200,7 +274,6 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="avatarUrl"
@@ -219,7 +292,6 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="birthday"
@@ -238,7 +310,6 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="sex"
@@ -272,7 +343,6 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="role"
@@ -303,7 +373,6 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="status"
@@ -334,10 +403,9 @@ export function CreateUserDialog() {
                 </FormItem>
               )}
             />
-            
             <DialogFooter className="gap-2 pt-2 sm:space-x-0">
               <DialogClose asChild>
-                <Button type="button" variant="outline">
+                <Button type="button" variant="outline" disabled={isCreatePending}>
                   Hủy
                 </Button>
               </DialogClose>

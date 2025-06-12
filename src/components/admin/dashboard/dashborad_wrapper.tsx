@@ -73,28 +73,28 @@ const DashboardWrapper = () => {
 
     const stats: StatCardProps[] = [
         {
-            icon: <Heart className="w-6 h-6 text-blue-600" />,
+            icon: <Heart className="w-6 h-6 icon-dashboard text-blue-600" />,
             count: `${count[0]?.value}/${count[0]?.total}`,
             label: "Tài khoản",
             bgColor: "bg-blue-100",
             link: "/admin/user"
         },
         {
-            icon: <GraduationCap className="w-6 h-6 text-yellow-600" />,
+            icon: <GraduationCap className="w-6 h-6 icon-dashboard text-yellow-600" />,
             count: `${count[1]?.value}/${count[1]?.total}`,
             label: "Khóa học",
             bgColor: "bg-yellow-100",
             link: "/admin/course"
         },
         {
-            icon: <Users className="w-6 h-6 text-red-600" />,
+            icon: <Users className="w-6 h-6 icon-dashboard text-red-600" />,
             count: `${count[2]?.value}/${count[2]?.total}`,
             label: "Học viên đăng ký",
             bgColor: "bg-red-100",
             link: "/admin/course_enrollment"
         },
         {
-            icon: <BookOpen className="w-6 h-6 text-purple-600" />,
+            icon: <BookOpen className="w-6 icon-dashboard h-6 text-purple-600" />,
             count: `${count[3]?.value}`,
             label: "Bài tập chưa chấm",
             bgColor: "bg-purple-100",
@@ -112,7 +112,7 @@ const DashboardWrapper = () => {
 
     return (
         <>
-            <div className="w-full max-w-9xl mx-auto p-6">
+            <div className="w-full max-w-9xl mx-auto p-6 ">
                 {
                     isLoadingCount ? (<>
                         <div className='w-full flex justify-center' >
@@ -135,7 +135,7 @@ const DashboardWrapper = () => {
                 }
 
 
-                <div className={`${theme === "dark" ? "bg-black " : "bg-gray-200"} rounded-lg shadow-sm p-6 max-w-xl mt-[20px]`}>
+                <div className={` ${isLoadingStatCourse ? "bg-transparent" : `${theme === "dark" ? "bg-black " : "bg-gray-200"}`}   rounded-lg shadow-sm p-6 max-w-xl mt-[30px] mx-auto`}>
                     {/* Header */}
 
                     {isLoadingStatCourse ? (<>
@@ -159,7 +159,7 @@ const DashboardWrapper = () => {
                                     {/* Rank Number */}
                                     <div className="flex-shrink-0">
                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-yellow-100 text-black bg-gray-40`}>
-                                            {index + 1}
+                                             {(pageCurrent - 1) * 5 + index + 1}
                                         </div>
                                     </div>
                                     <StatCourseCard

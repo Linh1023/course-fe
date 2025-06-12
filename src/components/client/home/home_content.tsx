@@ -17,6 +17,7 @@ import {
 
 import CourseList from "./CourseList";
 import { Facebook, PhoneCall } from "lucide-react";
+import Link from "next/link";
 
 interface HomeProps {
   data_hot: CourseCardResponse[];
@@ -28,13 +29,14 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
   const { currentAccount } = useCurrentAccountContext();
   const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext();
   const [enrollCourse, setEnrollCourse] = useState<CourseCardResponse[]>([]);
+  const [isProgress, setIsProgress] = useState(true);
 
   useEffect(() => {
     const fetchEnrollCourse = async () => {
       if (!currentAccount) return;
 
       const res = await FetchServerGetApi(
-        API.COURSE_ENROLLMENT.GET_COURSE_ENROLL
+       `${API.ACCOUNT.MY_COURSE}?perPage=3`
       );
       if (res && res.status === 200) {
         setEnrollCourse(res.result);
@@ -81,6 +83,7 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
                 title="Khóa học đang học"
                 courses={enrollCourse}
                 layout="list"
+                isProgress= {isProgress}
               />
             </div>
           )}
@@ -91,20 +94,20 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
               title="Khóa học nổi bật"
               courses={data_hot}
               layout="grid"
-              seeMoreLink="/search?sort=hot&page=0&size=12"
+              seeMoreLink="/search?sort=hot&page=1&size=12"
             />
             <CourseList
               title="Khóa học mới ra mắt"
               courses={data_newest}
               layout="grid"
-              seeMoreLink="/search?sort=new&page=0&size=12"
+              seeMoreLink="/search?sort=new&page=1&size=12"
             />
-            <CourseList
+            {/* <CourseList
               title="Khóa học mới ra mắt"
               courses={data_newest}
               layout="grid"
               seeMoreLink="/search?category=newest"
-            />
+            /> */}
           </div>
         </div>
 
@@ -115,8 +118,17 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
               title="Khóa học đang học"
               courses={enrollCourse}
               layout="list"
+              isProgress= {isProgress}
             />
-            <div className="flex gap-4 items-center justify-center pt-4">
+            
+            {enrollCourse.length > 3 && (<>
+            <div className="flex justify-center">
+              <Link href={"/profile/course"} className="text-[#fe7171]">Xem thêm</Link>
+            </div>
+            
+            </>)}
+            
+            {/* <div className="flex gap-4 items-center justify-center pt-4">
               <Facebook
                 href=""
                 className="w-8 h-8 hover:text-red-500 cursor-pointer rounded"
@@ -125,7 +137,7 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
                 href=""
                 className="w-8 h-8 hover:text-red-500 cursor-pointer rounded"
               />
-            </div>
+            </div> */}
           </div>
         )}
       </div>

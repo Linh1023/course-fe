@@ -9,7 +9,7 @@ import { useDataTable } from "@/hooks/use-data-table";
 import { UsersTableFloatingBar } from "./users-table-floating-bar";
 import { UsersTableToolbarActions } from "./users-table-toolbar-actions";
 import { getColumns } from "./users-table-column";
-
+import { useSearchParams } from "next/navigation";
 
 interface UsersTableProps {
   userPromise: Promise<UserPageResponse>;
@@ -17,9 +17,16 @@ interface UsersTableProps {
 
 export function UsersTable({ userPromise }: UsersTableProps) {
   const { result, totalPages } = React.use(userPromise);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const searchParams = useSearchParams();
+
+  React.useEffect(() => {
+    console.log("URL params changed, stop loading >>> ", searchParams.toString());
+    setIsLoading(false);
+  }, [searchParams, userPromise]);
 
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo(() => getColumns(), []);
+  const columns = React.useMemo(() => getColumns(setIsLoading), [setIsLoading]);
 
   const filterFields: DataTableFilterField<User>[] = [
     {
@@ -69,10 +76,12 @@ export function UsersTable({ userPromise }: UsersTableProps) {
     <TableInstanceProvider table={table}>
       <DataTable
         table={table}
-        floatingBar={<UsersTableFloatingBar table={table} />}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        floatingBar={<UsersTableFloatingBar table={table} setIsLoading={setIsLoading} />}
       >
-        <DataTableAdvancedToolbar filterFields={filterFields}>
-          <UsersTableToolbarActions table={table} />
+        <DataTableAdvancedToolbar filterFields={filterFields} setIsLoading={setIsLoading} isLoading={isLoading}>
+          <UsersTableToolbarActions table={table} setIsLoading={setIsLoading} />
         </DataTableAdvancedToolbar>
       </DataTable>
     </TableInstanceProvider>

@@ -18,9 +18,14 @@ interface CoursesTableProps {
 export function CoursesTable({ categoryPromise, coursePromise }: CoursesTableProps) {
   const { result: listCategory } = React.use(categoryPromise)
   const { result: data, totalPages } = React.use(coursePromise)
+  const [isLoading, setIsLoading] = React.useState(false)
 
+  React.useEffect(() => {
+    setIsLoading(false)
+
+  }, [data, totalPages])
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo(() => getColumns({ listCategory }), [])
+  const columns = React.useMemo(() => getColumns({ listCategory, setIsLoading }), [setIsLoading])
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -68,11 +73,12 @@ export function CoursesTable({ categoryPromise, coursePromise }: CoursesTablePro
   return (
     <TableInstanceProvider table={table}>
       <DataTable
+        isLoading={isLoading}
         table={table}
-        floatingBar={<CoursesTableFloatingBar table={table} />}
+        floatingBar={<CoursesTableFloatingBar table={table} setIsLoading={setIsLoading} />}
       >
-        <DataTableAdvancedToolbar filterFields={filterFields}>
-          <CoursesTableToolbarActions table={table} listCategory={listCategory} />
+        <DataTableAdvancedToolbar filterFields={filterFields} setIsLoading={setIsLoading}>
+          <CoursesTableToolbarActions table={table} listCategory={listCategory} setIsLoading={setIsLoading} />
         </DataTableAdvancedToolbar>
       </DataTable>
     </TableInstanceProvider>

@@ -12,17 +12,19 @@ import { TrashIcon, X } from "lucide-react"
 import { toast } from "sonner"
 import { DeleteCoursesDialog } from "./delete-course-dialog"
 
-interface CategoriesTableFloatingBarProps {
+interface CoursesTableFloatingBarProps {
   table: Table<Course>
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export function CoursesTableFloatingBar({ table }: CategoriesTableFloatingBarProps) {
+export function CoursesTableFloatingBar({ table, setIsLoading }: CoursesTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
   const [isOpen, setIsOpen] = React.useState(false)
   return (
     <div className="fixed inset-x-0 bottom-4 z-50 mx-auto w-fit px-4">
       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
         <DeleteCoursesDialog
+          setIsLoading={setIsLoading}
           open={isOpen}
           onOpenChange={setIsOpen}
           courses={table

@@ -36,9 +36,10 @@ import { FetchServerPutApi } from "@/actions/server/fetch_server_api"
 interface UpdateCategorySheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
   category: Category
+  setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export function UpdateCategorySheet({ category, ...props }: UpdateCategorySheetProps) {
+export function UpdateCategorySheet({ category, setIsLoading, ...props }: UpdateCategorySheetProps) {
   const router = useRouter()
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
   const form = useForm<UpdateCategorySchema>({
@@ -69,6 +70,7 @@ export function UpdateCategorySheet({ category, ...props }: UpdateCategorySheetP
       if (updateCategoryResponse.status == 200) {
         toast.success("Cập nhật thành công!")
         props.onOpenChange?.(false)
+        setIsLoading?.(true)
       }
       else {
         toast.error("Cập nhật thất bại, vui lòng thử lại!")
