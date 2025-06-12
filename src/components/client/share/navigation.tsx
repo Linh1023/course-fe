@@ -173,7 +173,6 @@ const Navigation = () => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 
     if (e.key === "Enter") {
-     startLoadingSpiner();
 
       updateUrlKeyword();
     }
@@ -434,7 +433,7 @@ const Navigation = () => {
                               />
                               <div className="ml-[10px] flex flex-col justify-center ">
                                 <span>{currentAccount.name}</span>
-                                <span>{currentAccount.email}</span>
+                                <span className="truncate">{currentAccount.email}</span>
                               </div>
                             </div>
                           </AccordionTrigger>
