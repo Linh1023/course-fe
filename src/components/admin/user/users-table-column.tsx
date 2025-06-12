@@ -19,8 +19,7 @@ import { Ellipsis } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link";
 
-
-export function getColumns(): ColumnDef<User>[] {
+export function getColumns(setIsLoading: React.Dispatch<React.SetStateAction<boolean>>): ColumnDef<User>[] {
   return [
     {
       id: "select",
@@ -55,7 +54,6 @@ export function getColumns(): ColumnDef<User>[] {
         const user = row.original;
         return (
           <div className="flex items-center space-x-3">
-            
             <div className="flex flex-col">
               <span className="max-w-[15rem] truncate font-medium">
                 {user.name}
@@ -179,13 +177,18 @@ export function getColumns(): ColumnDef<User>[] {
               open={showUpdateUserSheet}
               onOpenChange={setShowUpdateUserSheet}
               user={row.original}
+              setIsLoading={setIsLoading}
             />
             <DeleteUsersDialog
               open={showDeleteUserDialog}
               onOpenChange={setShowDeleteUserDialog}
               users={[row.original]}
               showTrigger={false}
-              onSuccess={() => row.toggleSelected(false)}
+              onSuccess={() => {
+                row.toggleSelected(false)
+                setIsLoading(true)
+              }}
+              setIsLoading={setIsLoading}
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

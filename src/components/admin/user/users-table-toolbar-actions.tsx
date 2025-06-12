@@ -8,10 +8,12 @@ import { toast } from "sonner"
 
 interface UsersTableToolbarActionsProps {
   table: Table<User>
+  setIsLoading: (v: boolean) => void
 }
 
 export function UsersTableToolbarActions({
   table,
+  setIsLoading,
 }: UsersTableToolbarActionsProps) {
   return (
     <div className="flex items-center gap-2">
@@ -25,10 +27,12 @@ export function UsersTableToolbarActions({
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} người dùng thành công!`
             )
             table.toggleAllRowsSelected(false)
+            setIsLoading(true)
           }}
+          setIsLoading={setIsLoading}
         />
       ) : null}
-      <CreateUserDialog/>
+      <CreateUserDialog setIsLoading={setIsLoading} />
     </div>
   )
 }

@@ -17,26 +17,30 @@ import { TrashIcon } from "lucide-react"
 import { LoaderIcon } from "@/components/share/loading-icon"
 import API from "@/api/api"
 import { FetchServerDeleteApi } from "@/actions/server/fetch_server_api"
+import { toast } from "sonner"
 
 interface DeleteUsersDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
   users: Row<User>["original"][]
   showTrigger?: boolean
   onSuccess?: () => void
+  setIsLoading: (v: boolean) => void
 }
 
 export function DeleteUsersDialog({
   users,
   showTrigger = true,
   onSuccess,
+  setIsLoading,
   ...props
 }: DeleteUsersDialogProps) {
-  const [isDeletePending, startDeleteTransition] = React.useTransition()
+  const [isDeletePending, setIsDeletePending] = React.useState(false);
+
   return (
     <Dialog {...props}>
       {showTrigger ? (
         <DialogTrigger asChild>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" disabled={isDeletePending}>
             <TrashIcon className="mr-2 size-4" aria-hidden="true" />
             Delete ({users.length})
           </Button>
@@ -54,21 +58,28 @@ export function DeleteUsersDialog({
         </DialogHeader>
         <DialogFooter className="gap-2 sm:space-x-0">
           <DialogClose asChild>
-            <Button variant="outline">Hủy</Button>
+            <Button variant="outline" disabled={isDeletePending}>Hủy</Button>
           </DialogClose>
           <Button
             aria-label="Delete selected rows"
             variant="destructive"
-            onClick={() => {
-              startDeleteTransition(async () => {
+            onClick={async () => {
+              setIsDeletePending(true);
+              try {
                 await Promise.all(
                   users.map((user) =>
                     FetchServerDeleteApi(API.ACCOUNT.DELETE(user.id), "/admin/user")
                   )
-                )
-                props.onOpenChange?.(false)
-                onSuccess?.()
-              })
+                );
+                props.onOpenChange?.(false);
+                setIsLoading(true);
+                onSuccess?.();
+              } catch (error) {
+                console.error("Delete users error:", error);
+                toast.error("Xóa người dùng thất bại, vui lòng thử lại!");
+              } finally {
+                setIsDeletePending(false);
+              }
             }}
             disabled={isDeletePending}
           >
