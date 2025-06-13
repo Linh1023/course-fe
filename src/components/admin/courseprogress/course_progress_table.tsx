@@ -91,7 +91,7 @@ export function CourseProgressTable(props: Props) {
 
         <DataTableAdvancedToolbar
           setIsLoading={setIsLoading}
-          isLoading={isLoading}
+      
           filterFields={filterFields}>
 
         </DataTableAdvancedToolbar>

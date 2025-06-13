@@ -69,7 +69,7 @@ interface DateRangePickerProps
   triggerClassName?: string
 
     setIsLoading?:(v : boolean) => void
-    isLoading?:boolean
+ 
 }
 
 export function DateRangePicker({
@@ -81,7 +81,7 @@ export function DateRangePicker({
   triggerClassName,
   className,
   setIsLoading,
-  isLoading,
+
   ...props
 }: DateRangePickerProps) {
   const [fromDate, setFromDate] = useQueryState(
@@ -101,7 +101,7 @@ export function DateRangePicker({
       <Popover>
         <PopoverTrigger asChild>
           <Button
-            disabled={isLoading}
+          
             variant={triggerVariant}
             size={triggerSize}
             className={cn(

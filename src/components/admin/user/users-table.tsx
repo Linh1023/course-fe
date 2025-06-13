@@ -80,7 +80,7 @@ export function UsersTable({ userPromise }: UsersTableProps) {
         setIsLoading={setIsLoading}
         floatingBar={<UsersTableFloatingBar table={table} setIsLoading={setIsLoading} />}
       >
-        <DataTableAdvancedToolbar filterFields={filterFields} setIsLoading={setIsLoading} isLoading={isLoading}>
+        <DataTableAdvancedToolbar filterFields={filterFields} setIsLoading={setIsLoading} >
           <UsersTableToolbarActions table={table} setIsLoading={setIsLoading} />
         </DataTableAdvancedToolbar>
       </DataTable>

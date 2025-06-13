@@ -13,6 +13,7 @@ import { useTableInstanceContext } from "../table-instance-provider"
 import { DataTableFilterOption } from "@/types/ui/data-table"
 import { TrashIcon } from "lucide-react"
 import { DataTableAdvancedFacetedFilter } from "./data-table-advanced-faceted-filter"
+import { updateQueryStringManually } from "@/utils/handle_query"
 
 interface DataTableFilterItemProps<TData> {
   selectedOption: DataTableFilterOption<TData>
@@ -21,15 +22,19 @@ interface DataTableFilterItemProps<TData> {
   >
   defaultOpen: boolean
   setIsLoading?: (v: boolean) => void
-  isLoading?: boolean
+  // isLoading?: boolean
+  setQuerySearch?: (query: string) => void
+  querySearch?: string
 }
 
 export function DataTableFilterItem<TData>({
   selectedOption,
   setSelectedOptions,
   defaultOpen,
-  isLoading,
-  setIsLoading
+  // isLoading,
+  setQuerySearch,
+  setIsLoading,
+  querySearch
 }: DataTableFilterItemProps<TData>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -51,12 +56,11 @@ export function DataTableFilterItem<TData>({
 
 
   React.useEffect(() => {
-    console.log("debounceValue >>> ", debounceValue)
-    if (debounceValue != "") {
-      if (setIsLoading) {
-        setIsLoading(true)
-      }
+
+    if (setIsLoading && debounceValue != "" && !setQuerySearch && querySearch === undefined) {
+      setIsLoading(true)
     }
+
 
     if (selectedOption.options.length > 0) {
       // key=value1.value2.value3
@@ -69,12 +73,26 @@ export function DataTableFilterItem<TData>({
         searchParams
       )
 
+      if (setQuerySearch && querySearch != undefined && setIsLoading) {
+        // console.log("querySearch data table filter >>> ", querySearch)
+        const newQuerySearch = updateQueryStringManually(querySearch, selectedOption.value.toString(), filterValues.join("."))
+        if (newQuerySearch != querySearch) {
+          setIsLoading(true)
+          setQuerySearch(newQuerySearch)
+        }
 
-      router.push(`${pathname}?${newSearchParams}`, {
-        scroll: false,
-      })
+
+      } else {
+        console.log("--------------------------------")
+        router.replace(`${pathname}?${newSearchParams}`, {
+          scroll: false,
+        })
+      }
+
+
     } else {
       // key=value
+
       const newSearchParams = createQueryString(
         {
           [selectedOption.value]: debounceValue,
@@ -84,10 +102,22 @@ export function DataTableFilterItem<TData>({
       )
 
 
+      if (setQuerySearch && querySearch != undefined && setIsLoading) {
+        // console.log("querySearch data table filter >>> ", querySearch)
+        const newQuerySearch = updateQueryStringManually(querySearch, selectedOption.value.toString(), debounceValue)
+        if (newQuerySearch != querySearch) {
+          setIsLoading(true)
+          setQuerySearch(newQuerySearch)
+        }
 
-      router.push(`${pathname}?${newSearchParams}`, {
-        scroll: false,
-      })
+
+      }
+      else {
+        console.log("--------------------------------")
+        router.replace(`${pathname}?${newSearchParams}`, {
+          scroll: false,
+        })
+      }
     }
 
 
@@ -143,7 +173,7 @@ export function DataTableFilterItem<TData>({
             variant="ghost"
             size="icon"
             className="size-7 text-muted-foreground"
-            disabled={isLoading}
+
             onClick={() => {
 
               if (setIsLoading) {
@@ -162,10 +192,16 @@ export function DataTableFilterItem<TData>({
                 searchParams
               )
 
-              console.log("deleted >>> ", `${pathname}?${newSearchParams}`)
-              router.replace(`${pathname}?${newSearchParams}`, {
-                scroll: false,
-              })
+              if (setQuerySearch && querySearch != undefined) {
+                const newQuerySearch = updateQueryStringManually(querySearch, selectedOption.value.toString())
+                setQuerySearch(newQuerySearch)
+              } else {
+                console.log("--------------------------------")
+                router.replace(`${pathname}?${newSearchParams}`, {
+                  scroll: false,
+                })
+
+              }
 
             }}
           >
