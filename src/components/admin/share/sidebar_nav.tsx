@@ -50,7 +50,7 @@ export const SidebarNav = () => {
     },
     {
       title: "Bài nộp",
-      url: "/admin/submission",
+      url: "/admin/submission?page=1&perPage=10",
       icon: Inbox,
     },
     {

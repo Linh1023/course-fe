@@ -9,30 +9,60 @@ import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table
 import { getSubmissionColumns } from "./submission_table_column"
 import { SubmissionTableFloatingBar } from "./submission_table_floating_bar"
 import { SubmissionTableToolbarActions } from "./submission_table_toolbar_actions"
-import { useParams, useSearchParams } from "next/navigation"
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation"
 import { DateRangePicker } from "../share/data-table/advance/date-range-picker"
+import API from "@/api/api"
+import { FetchServerGetApi } from "@/actions/server/fetch_server_api"
+import { useDebounce } from "@/hooks/use-debounce"
 
-interface Props {
-  submissionsPromise: Promise<SubmissionPageResponse>
-}
+
+// interface Props {
+//   submissionsPromise: Promise<SubmissionPageResponse>
+// }
+
+export function SubmissionTable() {
 
 
-export function SubmissionTable(props: Props) {
 
-  const { submissionsPromise } = props
-
-  const { result, totalPages } = React.use(submissionsPromise)
   const [isLoading, setIsLoading] = React.useState(false)
-  const pa = useSearchParams()
+  const searchParams = useSearchParams()
+  const pathName = usePathname()
+  const [dataResult, setDataResult] = React.useState<SubmissionAdminResponse[]>([])
+  const [totalPages, setTotalPages] = React.useState(1)
+  const router = useRouter()
+
+
+
+  const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
+  const debouncedQuery = useDebounce(querySearch, 1000);
+  // Mỗi lần fetch tăng id
+  const requestIdRef = React.useRef(0);
 
   React.useEffect(() => {
-    // const timeout = setTimeout(() => {
-    console.log("URL params changed, stop loading >>> ", pa.toString())
-    setIsLoading(false)
-    // }, 500)
+    // Tránh fetch lần đầu nếu bạn không muốn
 
-    // return () => clearTimeout(timeout)
-  }, [pa, submissionsPromise])
+    const currentRequestId = ++requestIdRef.current;
+    setIsLoading(true);
+
+    const fetchData = async () => {
+
+      const submissions = await FetchServerGetApi(API.SUBMISSON.SUBMISSION + `?${debouncedQuery}`);
+
+      if (requestIdRef.current === currentRequestId ||  (currentRequestId ===1 &&  requestIdRef.current ===2)) {
+        if (submissions?.status === 200) {
+          setDataResult(submissions.result);
+          setTotalPages(submissions.totalPages);
+        }
+        console.log("replace >>> ",`${pathName}?${debouncedQuery}`)
+        router.replace(`${pathName}?${debouncedQuery}`)
+        setIsLoading(false);
+      }
+    }
+
+    fetchData();
+
+  }, [debouncedQuery]);
+
 
 
 
@@ -87,11 +117,13 @@ export function SubmissionTable(props: Props) {
 
 
   const { table } = useDataTable({
-    data: result, // dữ liệu đổ vào table
+    data: dataResult, // dữ liệu đổ vào table
     columns, // cái này là từng dòng dữ liệu của bảng kể cả header
     pageCount: totalPages, // tổng số trang
     filterFields, // bộ lọc
     defaultPerPage: 10, // tổng số phần tử trên 1 trang
+    setQuerySearch: setQuerySearch,
+    querySearch: querySearch
   })
 
   const [isOpen, setIsOpen] = React.useState(false)
@@ -104,7 +136,6 @@ export function SubmissionTable(props: Props) {
 
       <DateRangePicker
         setIsLoading={setIsLoading}
-        isLoading={isLoading}
         triggerSize="sm"
         triggerClassName="ml-auto w-56 sm:w-60 mr-1"
         className="dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
@@ -127,7 +158,8 @@ export function SubmissionTable(props: Props) {
 
           <DataTableAdvancedToolbar filterFields={filterFields}
             setIsLoading={setIsLoading}
-            isLoading={isLoading}
+            setQuerySearch={setQuerySearch}
+            querySearch={querySearch}
           >
 
             {/* SubmissionTableToolbarActions cái này là button nằm ở phía bên trái của filter dùng để xóa và tạo mới */}

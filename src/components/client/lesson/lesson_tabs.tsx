@@ -10,28 +10,41 @@ import { Check } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 import CommentSection from "../share/comment-section"
+import { usePathname } from "next/navigation"
+import { useSubmittedClientContext } from "@/context/submitted_client_context"
 interface Props {
     lessonResponse: LessonClientDetailResponse
-    commmentResponse:CommentClientResponse
+    commmentResponse: CommentClientResponse
+
 }
 
 const LessonTabs = (props: Props) => {
-    const { lessonResponse,commmentResponse } = props
+    const { lessonResponse, commmentResponse } = props
     const [file, setFile] = useState<File | null>(null);
     const bottomRef = useRef<HTMLDivElement>(null)
     const [isEmptyInputSubmiss, setIsEmptyInputSubmiss] = useState(false)
     const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext()
     const [isSubmitted, setIsSubmitted] = useState(false)
 
+
+    const pathName = usePathname()
+    const parts = pathName.split('/');
+    const currentLessonId = parts[2];
+
+    const { submitted, setSubmitted } = useSubmittedClientContext()
+
+
     const handleScroll = () => {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
 
     useEffect(() => {
-    
-        if (lessonResponse.submissionUrl != null)
-        {
+
+        if (lessonResponse.submissionUrl != null) {
             setIsSubmitted(true)
+            setSubmitted(prev =>
+                prev.includes(currentLessonId) ? prev : [...prev, currentLessonId]
+            );
         }
     }, [])
 
@@ -48,6 +61,11 @@ const LessonTabs = (props: Props) => {
             if (res && res.status === 200) {
                 toast.success("Nộp bài thành công")
                 setIsSubmitted(true)
+
+                setSubmitted(prev =>
+                    prev.includes(currentLessonId) ? prev : [...prev, currentLessonId]
+                );
+
             } else {
                 toast.error("Lỗi")
             }
@@ -119,7 +137,7 @@ const LessonTabs = (props: Props) => {
 
                 <TabsContent value="comment" className=" bg-[#f1f5f9] p-4 rounded-md">
                     <span className="text-[16px] font-bold">Comment</span>
-                    <CommentSection comments={commmentResponse} lessonId={lessonResponse.id}/>
+                    <CommentSection comments={commmentResponse} lessonId={lessonResponse.id} />
                 </TabsContent>
 
                 {/* <TabsContent value="assignment" className=" bg-[#f1f5f9] p-4 rounded-md">
@@ -147,10 +165,10 @@ const LessonTabs = (props: Props) => {
                         placeholder="Nộp bài tập" className="mt-[20px] h-[80px]" type="file"
                         accept=".pdf,.doc,.docx"
                         onChange={(e) => { handleFileChange(e); }}
-                        disabled={isSubmitted === true}
+                        disabled={isSubmitted === true || submitted.includes(currentLessonId)}
 
                     />
-                    { isSubmitted&& (
+                    {(isSubmitted || submitted.includes(currentLessonId)) && (
                         <>
                             <span className="text-green-600 font-bold flex items-center"> <Check className="mr-[10px]" /> Đã nộp bài tập</span>
                         </>
@@ -162,7 +180,7 @@ const LessonTabs = (props: Props) => {
                         </>
                     )}
 
-                    {isSubmitted === false && (
+                    {isSubmitted === false && !submitted.includes(currentLessonId) && (
                         <>
 
                             <div className="flex  justify-center">
