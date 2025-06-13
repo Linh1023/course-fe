@@ -98,7 +98,7 @@ export function SubmissionClientTable(props: Props) {
 
         <DataTableAdvancedToolbar
           filterFields={filterFields}
-            isLoading={isLoading}
+         
           setIsLoading={setIsLoading}>
 
         </DataTableAdvancedToolbar>
