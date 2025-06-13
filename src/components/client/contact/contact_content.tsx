@@ -48,12 +48,11 @@ const MyContact = () => {
           <div className="group">
             <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 h-56 flex flex-col">
               <div className="bg-red-500 w-12 h-12 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform flex-shrink-0">
-        <Phone className="text-white" size={24} />
-      </div>
+                <Phone className="text-white" size={24} />
+              </div>
               <h3 className="text-xl font-bold text-gray-800 mb-4">Điện Thoại</h3>
               <div className="space-y-2 flex-1">
                 <p className="text-gray-600 hover:text-red-500 transition-colors cursor-pointer">0865 275 183</p>
-
               </div>
             </div>
           </div>
@@ -61,8 +60,8 @@ const MyContact = () => {
           <div className="group">
             <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 h-56 flex flex-col">
               <div className="bg-red-500 w-12 h-12 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform flex-shrink-0">
-        <Mail className="text-white" size={24} />
-      </div>
+                <Mail className="text-white" size={24} />
+              </div>
               <h3 className="text-xl font-bold text-gray-800 mb-4">Email</h3>
               <div className="flex-1">
                 <p className="text-gray-600 hover:text-red-500 transition-colors cursor-pointer">
@@ -75,8 +74,8 @@ const MyContact = () => {
           <div className="group">
             <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 h-56 flex flex-col">
                <div className="bg-red-500 w-12 h-12 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform flex-shrink-0">
-        <MapPin className="text-white" size={24} />
-      </div>
+                <MapPin className="text-white" size={24} />
+              </div>
               <h3 className="text-xl font-bold text-gray-800 mb-4">Địa Chỉ</h3>
               <div className="flex-1">
                 <p className="text-gray-600">
@@ -104,7 +103,6 @@ const MyContact = () => {
                   className="w-48 h-48 mx-auto object-contain border-4 border-white rounded-2xl shadow-lg group-hover:scale-105 transition-transform"
                 />
                 <p className="mt-4 text-gray-600">Quét mã QR để liên hệ qua Facebook <a href="https://www.facebook.com/tran.cuong.737360"  className="text-blue-600 underline hover:text-blue-800"  target="_blank">tran.cuong.737360</a></p> 
-                
               </div>
             </div>
 
@@ -134,16 +132,6 @@ const MyContact = () => {
           <form className="max-w-4xl mx-auto space-y-8" onSubmit={onSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700 block">Email *</label>
-                <input
-                  type="email"
-                  placeholder="your.email@example.com"
-                  required
-                  name="email"
-                  className="w-full bg-gray-50 border-2 border-gray-200 p-4 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 text-gray-800"
-                />
-              </div>
-              <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700 block">Họ và Tên *</label>
                 <input
                   placeholder="Họ và tên của bạn"
@@ -153,6 +141,28 @@ const MyContact = () => {
                   name="name"
                 />
               </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 block">Email *</label>
+                <input
+                  type="email"
+                  placeholder="your.email@example.com"
+                  required
+                  name="email"
+                  className="w-full bg-gray-50 border-2 border-gray-200 p-4 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 text-gray-800"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700 block">Số Điện Thoại</label>
+              <input
+                type="tel"
+                placeholder="Số điện thoại của bạn"
+                required
+                name="phone"
+                className="w-full bg-gray-50 border-2 border-gray-200 p-4 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 text-gray-800"
+              />
+              <p className="text-xs text-gray-500">Giúp chúng tôi liên hệ nhanh hơn</p>
             </div>
 
             <div className="space-y-2">

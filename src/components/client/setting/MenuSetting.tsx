@@ -75,11 +75,11 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
       title: 'Đổi mật khẩu',
       onClick: () => setIsPasswordModalOpen(true),
     },
-    {
-      id: 'email-contact',
-      title: 'Email liên hệ',
-      onClick: onContactEmail,
-    },
+    // {
+    //   id: 'email-contact',
+    //   title: 'Email liên hệ',
+    //   onClick: onContactEmail,
+    // },
   ];
 
   const toggleSidebar = () => {
