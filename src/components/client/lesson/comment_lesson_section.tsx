@@ -9,7 +9,7 @@ import { useCurrentAccountContext } from "@/context/current_account_context";
 import { formatTimeShort } from "@/utils/format_time";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CommentLessonItem } from "./comment-item";
+import { CommentLessonItem } from "./comment_lesson_item";
 import { FetchClientGetApi } from "@/actions/client/fetch_client_api";
 import { FetchServerPostApi } from "@/actions/server/fetch_server_api";
 import { LoaderIcon } from "@/components/share/loading-icon";

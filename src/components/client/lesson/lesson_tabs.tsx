@@ -9,10 +9,10 @@ import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu"
 import { Check } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
-import CommentSection from "../share/comment-section"
+import CommentSection from "./comment_lesson_section"
 import { usePathname } from "next/navigation"
 import { useSubmittedClientContext } from "@/context/submitted_client_context"
-import CommentLessonSection from "../share/comment-section"
+import CommentLessonSection from "./comment_lesson_section"
 interface Props {
     lessonResponse: LessonClientDetailResponse
 
