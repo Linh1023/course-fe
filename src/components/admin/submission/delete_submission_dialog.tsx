@@ -32,6 +32,7 @@ interface DeleteSubmissionsDialogProps
   setIsOpen: (v: boolean) => void, // cái này để Dialog nó set bật tắt
   showTrigger?: boolean
       setIsLoading: (v: boolean) => void,
+     
 }
 
 export function DeleteSubmissionsDialog(props: DeleteSubmissionsDialogProps) {

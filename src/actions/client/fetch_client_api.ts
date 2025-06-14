@@ -259,7 +259,6 @@ export const FetchClientGetApiSignalNoToken = async (api: string, signal: AbortS
             method: "GET", // Đúng phương thức
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json", // Đặt Content-Type là JSON
             },
             signal,
         });

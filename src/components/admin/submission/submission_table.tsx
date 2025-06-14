@@ -41,54 +41,57 @@ export function SubmissionTable() {
   React.useEffect(() => {
     setIsLoading(true);
 
-    const fetchData = async () => {
-      // Huỷ request cũ nếu còn
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      const abortController = new AbortController();
-      abortControllerRef.current = abortController;
-      const { signal } = abortController;
-
-      try {
-        const submissions = await FetchClientGetApiSignalNoToken(
-          `/api/proxy/search?q=${debouncedQuery}&api=${API.SUBMISSON.SUBMISSION}`,
-          signal
-        );
-
-        if (submissions?.status === 200) {
-          setDataResult(submissions.result);
-          setTotalPages(submissions.totalPages);
-
-          // ✅ Chỉ chạy nếu không bị huỷ
-          console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
-          router.replace(`${pathName}?${debouncedQuery}`);
-        }
-
-      } catch (err: any) {
-        if (err.name === 'AbortError') {
-          // Yêu cầu bị huỷ, không làm gì cả
-          return;
-        } else {
-          console.error('Lỗi khi fetch:', err);
-        }
-      } finally {
-        // ✅ Luôn setIsLoading(false) nếu không bị huỷ
-        if (!signal.aborted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
     fetchData();
   }, [debouncedQuery]);
+
+
+  const fetchData = async () => {
+    // Huỷ request cũ nếu còn
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    const { signal } = abortController;
+
+    try {
+      const submissions = await FetchClientGetApiSignalNoToken(
+        `/api/proxy/search?${debouncedQuery}&api=${API.SUBMISSON.SUBMISSION}`,
+        signal
+      );
+
+      console.log("submissions >>> ", submissions)
+
+      if (submissions?.status === 200) {
+        setDataResult(submissions.result);
+        setTotalPages(submissions.totalPages);
+
+        //  Chỉ chạy nếu không bị huỷ
+        console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
+        router.replace(`${pathName}?${debouncedQuery}`);
+      }
+
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        // Yêu cầu bị huỷ, không làm gì cả
+        return;
+      } else {
+        console.error('Lỗi khi fetch:', err);
+      }
+    } finally {
+      // ✅ Luôn setIsLoading(false) nếu không bị huỷ
+      if (!signal.aborted) {
+        setIsLoading(false);
+      }
+    }
+  };
 
 
 
 
   // cái này là từng dòng dữ liệu của bảng kể cả header
-  const columns = React.useMemo(() => getSubmissionColumns(setIsLoading), [setIsLoading])
+  const columns = React.useMemo(() => getSubmissionColumns(setIsLoading, fetchData), [setIsLoading, fetchData])
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -174,6 +177,7 @@ export function SubmissionTable() {
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             setIsLoading={setIsLoading}
+               fetchData={fetchData}
           />}
         >
 
@@ -189,6 +193,7 @@ export function SubmissionTable() {
               setIsOpen={setIsOpen}
               table={table}
               setIsLoading={setIsLoading}
+              fetchData={fetchData}
             />
 
           </DataTableAdvancedToolbar>
