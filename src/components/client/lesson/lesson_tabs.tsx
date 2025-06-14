@@ -9,17 +9,17 @@ import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu"
 import { Check } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
-import CommentSection from "../share/comment-section"
+import CommentSection from "./comment_lesson_section"
 import { usePathname } from "next/navigation"
 import { useSubmittedClientContext } from "@/context/submitted_client_context"
+import CommentLessonSection from "./comment_lesson_section"
 interface Props {
     lessonResponse: LessonClientDetailResponse
-    commmentResponse: CommentClientResponse
 
 }
 
 const LessonTabs = (props: Props) => {
-    const { lessonResponse, commmentResponse } = props
+    const { lessonResponse } = props
     const [file, setFile] = useState<File | null>(null);
     const bottomRef = useRef<HTMLDivElement>(null)
     const [isEmptyInputSubmiss, setIsEmptyInputSubmiss] = useState(false)
@@ -136,8 +136,7 @@ const LessonTabs = (props: Props) => {
                 </TabsContent>
 
                 <TabsContent value="comment" className=" bg-[#f1f5f9] p-4 rounded-md">
-                    <span className="text-[16px] font-bold">Comment</span>
-                    <CommentSection comments={commmentResponse} lessonId={lessonResponse.id} />
+                    <CommentLessonSection lessonId={lessonResponse.id} />
                 </TabsContent>
 
                 {/* <TabsContent value="assignment" className=" bg-[#f1f5f9] p-4 rounded-md">
