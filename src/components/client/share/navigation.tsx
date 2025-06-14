@@ -96,7 +96,7 @@ const Navigation = () => {
       try {
         const res = await FetchServerGetApiNoToken(
           API.COURSE.COURSE_FILTER +
-          `?keyword=${encodeURIComponent(keyword.trim())}&page=0&size=4`
+          `?keyword=${encodeURIComponent(keyword.trim())}&page=1&size=4`
         );
 
         if (res && res.status === 200) {

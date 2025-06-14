@@ -14,6 +14,7 @@ import { DateRangePicker } from "../share/data-table/advance/date-range-picker"
 import API from "@/api/api"
 import { FetchServerGetApi } from "@/actions/server/fetch_server_api"
 import { useDebounce } from "@/hooks/use-debounce"
+import { FetchClientGetApiNoToken, FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api"
 
 
 // interface Props {
@@ -30,37 +31,57 @@ export function SubmissionTable() {
   const [dataResult, setDataResult] = React.useState<SubmissionAdminResponse[]>([])
   const [totalPages, setTotalPages] = React.useState(1)
   const router = useRouter()
+  const abortControllerRef = React.useRef<AbortController | null>(null); // Use ref to keep track of the controller
 
 
 
   const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
-  const debouncedQuery = useDebounce(querySearch, 1000);
-  // Mỗi lần fetch tăng id
-  const requestIdRef = React.useRef(0);
+  const debouncedQuery = useDebounce(querySearch, 500);
 
   React.useEffect(() => {
-    // Tránh fetch lần đầu nếu bạn không muốn
-
-    const currentRequestId = ++requestIdRef.current;
     setIsLoading(true);
 
     const fetchData = async () => {
+      // Huỷ request cũ nếu còn
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
 
-      const submissions = await FetchServerGetApi(API.SUBMISSON.SUBMISSION + `?${debouncedQuery}`);
+      const abortController = new AbortController();
+      abortControllerRef.current = abortController;
+      const { signal } = abortController;
 
-      if (requestIdRef.current === currentRequestId ||  (currentRequestId ===1 &&  requestIdRef.current ===2)) {
+      try {
+        const submissions = await FetchClientGetApiSignalNoToken(
+          `/api/proxy/search?q=${debouncedQuery}&api=${API.SUBMISSON.SUBMISSION}`,
+          signal
+        );
+
         if (submissions?.status === 200) {
           setDataResult(submissions.result);
           setTotalPages(submissions.totalPages);
+
+          // ✅ Chỉ chạy nếu không bị huỷ
+          console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
+          router.replace(`${pathName}?${debouncedQuery}`);
         }
-        console.log("replace >>> ",`${pathName}?${debouncedQuery}`)
-        router.replace(`${pathName}?${debouncedQuery}`)
-        setIsLoading(false);
+
+      } catch (err: any) {
+        if (err.name === 'AbortError') {
+          // Yêu cầu bị huỷ, không làm gì cả
+          return;
+        } else {
+          console.error('Lỗi khi fetch:', err);
+        }
+      } finally {
+        // ✅ Luôn setIsLoading(false) nếu không bị huỷ
+        if (!signal.aborted) {
+          setIsLoading(false);
+        }
       }
-    }
+    };
 
     fetchData();
-
   }, [debouncedQuery]);
 
 
