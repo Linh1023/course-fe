@@ -1,10 +1,5 @@
 "use client";
 
-import {
-  FetchServerGetApi,
-  FetchServerPostApi,
-  FetchServerPutApi,
-} from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,107 +9,130 @@ import { useCurrentAccountContext } from "@/context/current_account_context";
 import { formatTimeShort } from "@/utils/format_time";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CommentItem } from "./comment-item";
+import { CommentLessonItem } from "./comment-item";
+import { FetchClientGetApi } from "@/actions/client/fetch_client_api";
+import { FetchServerPostApi } from "@/actions/server/fetch_server_api";
+import { LoaderIcon } from "@/components/share/loading-icon";
 
 interface Props {
-  comments: CommentClientResponse;
   lessonId: string;
 }
-const CommentSection = ({ comments: initialComments, lessonId }: Props) => {
-  const [comments, setComments] = useState<CommentClient[]>(
-    initialComments.result || []
-  );
-  const [pageIndex, setPageIndex] = useState(0);
-  const [totalPages, setTotalPages] = useState(initialComments.totalPages || 1);
-  const [loadingMore, setLoadingMore] = useState(false);
+const CommentLessonSection = ({ lessonId }: Props) => {
+  const [comments, setComments] = useState<CommentClient[]>([]);
   const currentAccount: CurrentAccountResponse | null =
     useCurrentAccountContext().currentAccount;
-  const [replies, setReplies] = useState<CommentClient[]>([]);
-  const [showReplies, setShowReplies] = useState(false);
-  const [showReplyInput, setShowReplyInput] = useState(false);
+  const [page, setpage] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const fetchComments = async (page: number, append = false) => {
+  // hàm lấy thêm data nếu còn nhiều comment > 10
+  const fetchComments = async (page: number, append?: boolean) => {
     setLoadingMore(true);
-    const data = await FetchServerGetApi(
-      `${API.COMMENT.PUBLIC_LESSON_COMMENT}?lessonId=${lessonId}&pageIndex=${page}`
+    const data: CommentClientResponse = await FetchClientGetApi(
+      `${API.COMMENT.COMMENT_LESSON}?lessonId=${lessonId}&page=${page}`
     );
-    console.log(
-      `${API.COMMENT.PUBLIC_LESSON_COMMENT}?lessonId=${lessonId}&pageIndex=${page}`
-    );
-    setComments((prev) => (append ? [...prev, ...data.result] : data.result));
-    setTotalPages(data.totalPages);
-    setLoadingMore(false);
+    if (data.status == 200) {
+      setComments((prev) =>
+        append ? [...prev, ...data.result] : data?.result
+      );
+      setTotalItems(data.totalItems);
+      setLoadingMore(false);
+    }
   };
 
-  
-
+  //hàm xử lý thêm comment mới
   const handleSubmitNewComment = async () => {
     if (!replyContent.trim()) return;
     setSubmitting(true);
     const res = await FetchServerPostApi(API.COMMENT.COMMENT, {
       lessonId,
-      
       content: replyContent,
     });
-    console.log(res)
     if (res.status == 200) {
       setReplyContent("");
-      setComments((prev) => [...prev, res.result]);
+      // setComments((prev) => [...prev, res.result]);
+      setComments([]);
+      fetchComments(0);
     } else {
       console.error("Failed to submit reply:");
     }
     setSubmitting(false);
   };
 
+  //hàm xử lý enter khi rep
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // optional: chặn xuống dòng (nếu dùng textarea thì mới cần)
+      e.preventDefault();
       handleSubmitNewComment();
     }
   };
   useEffect(() => {
-    fetchComments(pageIndex, false);
-  }, [pageIndex]);
-
+    if (comments.length == 0) {
+      fetchComments(0);
+    }
+  }, []);
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
         Bình luận
       </h2>
-      <div className="space-y-4 mw-[500px]">
-        {comments?.map((comment) => (
-          <Card
-            key={comment.id}
-            className="border-0 shadow-none bg-transparent"
-          >
-            <CardContent className="p-0">
-              <CommentItem
-                comment={comment}
-                lessonId={lessonId}
-                currentAccount={currentAccount ?? undefined}
-              />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-      {pageIndex + 1 < totalPages && (
-        <div className="flex justify-center mt-4">
+
+      {(page + 1) * 10 < totalItems && (
+        <div className="flex  mt-4">
           <Button
             variant="link"
-            className="text-blue-600 hover:underline"
-            onClick={() => fetchComments(pageIndex + 1, true)}
+            className="text-blue-600 hover:underline pl-0"
+            onClick={async () => {
+              await fetchComments(page + 1, true);
+              setpage(page + 1);
+            }}
             disabled={loadingMore}
           >
             {loadingMore ? (
-              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              <LoaderIcon
+                className="mr-1.5 size-9 animate-spin"
+                aria-hidden="true"
+              ></LoaderIcon>
             ) : (
-              "Xem thêm bình luận"
+              `Xem ${totalItems - (page + 1) * 10} bình luận cũ hơn`
             )}
           </Button>
         </div>
       )}
+      <div className="space-y-4 mw-[500px]">
+        {loadingMore && comments?.length <= 0 ? (
+          <div className="w-full flex justify-center">
+            <LoaderIcon
+              className="mr-1.5 size-9 animate-spin"
+              aria-hidden="true"
+            ></LoaderIcon>
+          </div>
+        ) : (
+          comments
+            ?.slice() // Create a shallow copy to avoid mutating the original array
+            .reverse()
+            .map((comment: CommentClient) => (
+              <Card
+                key={"comment-card-" + comment.id}
+                className="border-0 shadow-none bg-transparent"
+              >
+                <CardContent
+                  className="p-0"
+                  key={"comment-card-content-" + comment.id}
+                >
+                  <CommentLessonItem
+                    key={"comment-item-" + comment.id}
+                    comment={comment}
+                    lessonId={lessonId}
+                    currentAccount={currentAccount ?? undefined}
+                  />
+                </CardContent>
+              </Card>
+            ))
+        )}
+      </div>
       <div className="mt-2 relative bg-white dark:bg-black">
         <Textarea
           value={replyContent}
@@ -141,4 +159,4 @@ const CommentSection = ({ comments: initialComments, lessonId }: Props) => {
   );
 };
 
-export default CommentSection;
+export default CommentLessonSection;
