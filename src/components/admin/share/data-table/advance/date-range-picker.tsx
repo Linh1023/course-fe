@@ -12,6 +12,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { CalendarDays } from "lucide-react"
+import { updateQueryStringManually } from "@/utils/handle_query"
+import { useTableInstanceContext } from "../table-instance-provider"
 
 const parseAsDate = createParser({
   parse(queryValue) {
@@ -68,9 +70,11 @@ interface DateRangePickerProps
    */
   triggerClassName?: string
 
-    setIsLoading?:(v : boolean) => void
-    
- 
+  setIsLoading?: (v: boolean) => void
+  setQuerySearch?: (v: string) => void,
+  querySearch?: string
+
+
 }
 
 export function DateRangePicker({
@@ -81,18 +85,27 @@ export function DateRangePicker({
   triggerSize = "default",
   triggerClassName,
   className,
+  setQuerySearch,
+  querySearch,
   setIsLoading,
 
   ...props
 }: DateRangePickerProps) {
-  const [fromDate, setFromDate] = useQueryState(
-    "from",
-    parseAsDate.withOptions({ shallow: false, history: "push" })
-  )
-  const [toDate, setToDate] = useQueryState(
-    "to",
-    parseAsDate.withOptions({ shallow: false, history: "push" })
-  )
+
+  const [fromDate, setFromDate] = React.useState<Date | null>(null)
+  const [toDate, setToDate] = React.useState<Date | null>(null)
+
+
+  const { tableInstance: table } = useTableInstanceContext()
+
+  // const [fromDate, setFromDate] = useQueryState(
+  //   "from",
+  //   parseAsDate.withOptions({ shallow: false, history: "push" })
+  // )
+  // const [toDate, setToDate] = useQueryState(
+  //   "to",
+  //   parseAsDate.withOptions({ shallow: false, history: "push" })
+  // )
 
   const from = fromDate ?? undefined
   const to = toDate ?? undefined
@@ -102,7 +115,7 @@ export function DateRangePicker({
       <Popover>
         <PopoverTrigger asChild>
           <Button
-          
+
             variant={triggerVariant}
             size={triggerSize}
             className={cn(
@@ -138,10 +151,20 @@ export function DateRangePicker({
               if (setIsLoading) {
                 setIsLoading(true)
               }
+              if (setQuerySearch && querySearch != undefined) {
+                const fromStr = value?.from ? parseAsDate.serialize(value.from) : undefined
+                const toStr = value?.to ? parseAsDate.serialize(value.to) : undefined
+
+                const newQuerySearch1 = updateQueryStringManually(querySearch, "from", fromStr)
+                const newQuerySearch2 = updateQueryStringManually(newQuerySearch1, "to", toStr)
+                const newQuerySearch = updateQueryStringManually(newQuerySearch2, "page", "1")
+                setQuerySearch(newQuerySearch)
+              }
               // eslint-disable-next-line @typescript-eslint/no-floating-promises
               setFromDate(value?.from ?? null)
               // eslint-disable-next-line @typescript-eslint/no-floating-promises
               setToDate(value?.to ?? null)
+              table.setPageIndex(0)
             }}
             numberOfMonths={2}
           />
