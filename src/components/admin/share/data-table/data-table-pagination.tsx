@@ -10,16 +10,22 @@ import {
 import { useTableInstanceContext } from "./table-instance-provider"
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react"
 import { useEffect, useState } from "react"
+import { updateQueryStringManually } from "@/utils/handle_query"
+import { set } from "date-fns"
 
 
 interface DataTablePaginationProps {
   pageSizeOptions?: number[]
   setIsLoading?: (v: boolean) => void
+  setQuerySearch?: (v: string) => void,
+  querySearch?: string
 }
 
 export function DataTablePagination({
   pageSizeOptions = [10, 20, 30, 40, 50],
-  setIsLoading
+  setIsLoading,
+  setQuerySearch,
+  querySearch
 }: DataTablePaginationProps) {
   const searchParams = useSearchParams()
 
@@ -41,8 +47,14 @@ export function DataTablePagination({
   }
 
   useEffect(() => {
+
     const currentPage = table.getState().pagination.pageIndex + 1;
     setPage(currentPage);
+    if (querySearch != undefined && setQuerySearch) {
+      const newQuerySearch = updateQueryStringManually(querySearch, "page", currentPage.toString())
+      setQuerySearch(newQuerySearch)
+      console.log("newQuerySearch >>> ", newQuerySearch)
+    }
   }, [table.getState().pagination.pageIndex]);
 
   return (
@@ -57,9 +69,14 @@ export function DataTablePagination({
           <Select
             value={`${perPage}`}
             onValueChange={(value) => {
+
               setPerPage(value)
               table.setPageIndex(0);
               table.setPageSize(Number(value));
+              if (querySearch != undefined && setQuerySearch) {
+                const newQuerySearch = updateQueryStringManually(querySearch, "perPage", value.toString())
+                setQuerySearch(newQuerySearch)
+              }
               handleLoading()
             }}
           >
@@ -87,7 +104,7 @@ export function DataTablePagination({
             variant="outline"
             className=" size-8 p-0 lg:flex"
             onClick={() => {
-              setPage(0)
+              // setPage(0)
               table.setPageIndex(0);
               handleLoading()
             }}
@@ -128,7 +145,7 @@ export function DataTablePagination({
             size="icon"
             className=" size-8 lg:flex"
             onClick={() => {
-              setPage(table.getPageCount() - 1)
+              // setPage(table.getPageCount() - 1)
               table.setPageIndex(table.getPageCount() - 1);
               handleLoading()
             }}

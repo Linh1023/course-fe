@@ -182,9 +182,9 @@ export function useDataTable<TData, TValue>({
 
   React.useEffect(() => {
     if (setQuerySearch && querySearch != undefined) {
-      const newQuerySearch = updateQueryStringManually(querySearch, "page", (pageIndex + 1).toString())
-      const newQuerySearch1 = updateQueryStringManually(newQuerySearch, "pageSize", (pageSize).toString())
-      setQuerySearch(newQuerySearch1)
+      // const newQuerySearch = updateQueryStringManually(querySearch, "page", (pageIndex + 1).toString())
+      // const newQuerySearch1 = updateQueryStringManually(newQuerySearch, "pageSize", (pageSize).toString())
+      // setQuerySearch(newQuerySearch1)
     } else {
       router.push(
         `${pathname}?${createQueryString(
@@ -205,32 +205,6 @@ export function useDataTable<TData, TValue>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex, pageSize])
 
-  React.useEffect(() => {
-    if (setQuerySearch && querySearch != undefined) {
-      const newQuerySearch = updateQueryStringManually(querySearch, "page", (pageIndex + 1).toString())
-      const newQuerySearch1 = updateQueryStringManually(newQuerySearch, "perPage", (pageSize).toString())
-      setQuerySearch(newQuerySearch1)
-    } else {
-      router.push(
-        `${pathname}?${createQueryString(
-          {
-            page: pageIndex + 1,
-            perPage: pageSize,
-          },
-          searchParams
-        )}`,
-        {
-          scroll: false,
-        }
-      )
-    }
-
-
-
-
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageSize, pageIndex])
 
 
 

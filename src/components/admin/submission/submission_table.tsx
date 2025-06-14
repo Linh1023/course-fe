@@ -40,7 +40,7 @@ export function SubmissionTable() {
 
   React.useEffect(() => {
     setIsLoading(true);
-
+    console.log(" run useEffect ");
     fetchData();
   }, [debouncedQuery]);
 
@@ -158,29 +158,35 @@ export function SubmissionTable() {
     <>
 
 
-      <DateRangePicker
-        setIsLoading={setIsLoading}
-        triggerSize="sm"
-        triggerClassName="ml-auto w-56 sm:w-60 mr-1"
-        className="dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
-        align="end"
-      />
+
 
       <TableInstanceProvider table={table}>
+
+        <DateRangePicker
+          setIsLoading={setIsLoading}
+          setQuerySearch={setQuerySearch}
+          querySearch={querySearch}
+          triggerSize="sm"
+          triggerClassName="ml-auto w-56 sm:w-60 mr-1"
+          className="dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
+          align="end"
+        />
 
         <DataTable
           table={table}
           isLoading={isLoading}
           setIsLoading={setIsLoading}
+          setQuerySearch={setQuerySearch}
+          querySearch={querySearch}
           // SubmissionTableFloatingBar cái này là cái button popup lên ở phía dưới màn hình khi mình chọn 1 dòng dữ liệu để xóa
           floatingBar={<SubmissionTableFloatingBar table={table}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             setIsLoading={setIsLoading}
-               fetchData={fetchData}
+            fetchData={fetchData}
           />}
         >
-
+          {/* bộ lọc nè */}
           <DataTableAdvancedToolbar filterFields={filterFields}
             setIsLoading={setIsLoading}
             setQuerySearch={setQuerySearch}

@@ -14,7 +14,7 @@ import { DataTableFilterOption } from "@/types/ui/data-table"
 import { TrashIcon } from "lucide-react"
 import { DataTableAdvancedFacetedFilter } from "./data-table-advanced-faceted-filter"
 import { updateQueryStringManually } from "@/utils/handle_query"
-
+import { flexRender, type Table as TanstackTable } from "@tanstack/react-table"
 interface DataTableFilterItemProps<TData> {
   selectedOption: DataTableFilterOption<TData>
   setSelectedOptions: React.Dispatch<
@@ -25,6 +25,7 @@ interface DataTableFilterItemProps<TData> {
   // isLoading?: boolean
   setQuerySearch?: (query: string) => void
   querySearch?: string
+  
 }
 
 export function DataTableFilterItem<TData>({
@@ -75,10 +76,12 @@ export function DataTableFilterItem<TData>({
 
       if (setQuerySearch && querySearch != undefined && setIsLoading) {
         // console.log("querySearch data table filter >>> ", querySearch)
-        const newQuerySearch = updateQueryStringManually(querySearch, selectedOption.value.toString(), filterValues.join("."))
+        const newQuerySearchTemporary = updateQueryStringManually(querySearch, selectedOption.value.toString(), filterValues.join("."))
+        const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
         if (newQuerySearch != querySearch) {
           setIsLoading(true)
           setQuerySearch(newQuerySearch)
+            table.setPageIndex(0);
         }
 
 
@@ -104,10 +107,13 @@ export function DataTableFilterItem<TData>({
 
       if (setQuerySearch && querySearch != undefined && setIsLoading) {
         // console.log("querySearch data table filter >>> ", querySearch)
-        const newQuerySearch = updateQueryStringManually(querySearch, selectedOption.value.toString(), debounceValue)
+        const newQuerySearchTemporary = updateQueryStringManually(querySearch, selectedOption.value.toString(), debounceValue)
+        const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
+
         if (newQuerySearch != querySearch) {
           setIsLoading(true)
           setQuerySearch(newQuerySearch)
+          table.setPageIndex(0);
         }
 
 
@@ -193,8 +199,10 @@ export function DataTableFilterItem<TData>({
               )
 
               if (setQuerySearch && querySearch != undefined) {
-                const newQuerySearch = updateQueryStringManually(querySearch, selectedOption.value.toString())
+                const newQuerySearchTemporary = updateQueryStringManually(querySearch, selectedOption.value.toString())
+                const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
                 setQuerySearch(newQuerySearch)
+                  table.setPageIndex(0);
               } else {
                 console.log("--------------------------------")
                 router.replace(`${pathname}?${newSearchParams}`, {
