@@ -19,11 +19,12 @@ interface SubmissionTableToolbarActionsProps {
   isOpen: boolean, // giá trị để biết để Dialog bật tắt
   setIsOpen: (v: boolean) => void, // cái này để Dialog nó set bật tắt
   setIsLoading: (v: boolean) => void,
+  fetchData: () => void,
 }
 
 // SubmissionTableToolbarActions cái này là button nằm ở phía bên trái của filter dùng để xóa và tạo mới
 export function SubmissionTableToolbarActions(props: SubmissionTableToolbarActionsProps) {
-  const { table, isOpen, setIsOpen,  setIsLoading } = props
+  const { table, isOpen, setIsOpen,  setIsLoading, fetchData } = props
 
   return (
     <div className="flex items-center gap-2">
@@ -34,11 +35,12 @@ export function SubmissionTableToolbarActions(props: SubmissionTableToolbarActio
             submissions={table
               .getFilteredSelectedRowModel()
               .rows.map((row) => row.original)}
-            hanldeDeletedSuccess={() => table.toggleAllRowsSelected(false)}
+            hanldeDeletedSuccess={() =>  {table.toggleAllRowsSelected(false); fetchData()}}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             showTrigger={true}
              setIsLoading ={setIsLoading}
+        
           />
         </>
       )}

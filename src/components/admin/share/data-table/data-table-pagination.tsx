@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select"
 import { useTableInstanceContext } from "./table-instance-provider"
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 
 interface DataTablePaginationProps {
@@ -24,13 +24,15 @@ export function DataTablePagination({
   const searchParams = useSearchParams()
 
   const { tableInstance: table } = useTableInstanceContext()
+  const [perPage, setPerPage] = useState(() => searchParams.get("perPage") ?? 10); // hoặc giá trị mặc định ban đầ
+  const [page, setPage] = useState(() => searchParams.get("page") ?? 1); // hoặc giá trị mặc định ban đầu
 
-  const page = searchParams.get("page") ?? 1
-  const perPage = searchParams.get("perPage") ?? 10
+  // const page = searchParams.get("page") ?? 1
+  // const perPage = searchParams.get("perPage") ?? 10
   useEffect(() => {
     const pageIndex = Number(searchParams.get("page") ?? 1) - 1
     table.setPageIndex(pageIndex)
-  }, [searchParams])
+  }, [])
 
   const handleLoading = () => {
     if (setIsLoading) {
@@ -38,6 +40,10 @@ export function DataTablePagination({
     }
   }
 
+  useEffect(() => {
+    const currentPage = table.getState().pagination.pageIndex + 1;
+    setPage(currentPage);
+  }, [table.getState().pagination.pageIndex]);
 
   return (
     <div className="flex w-full flex-col-reverse items-center justify-between gap-4 overflow-auto p-1 sm:flex-row sm:gap-8">
@@ -51,6 +57,7 @@ export function DataTablePagination({
           <Select
             value={`${perPage}`}
             onValueChange={(value) => {
+              setPerPage(value)
               table.setPageIndex(0);
               table.setPageSize(Number(value));
               handleLoading()
@@ -80,6 +87,7 @@ export function DataTablePagination({
             variant="outline"
             className=" size-8 p-0 lg:flex"
             onClick={() => {
+              setPage(0)
               table.setPageIndex(0);
               handleLoading()
             }}
@@ -92,8 +100,11 @@ export function DataTablePagination({
             variant="outline"
             size="icon"
             className="size-8"
-            onClick={() => {table.previousPage();
-              handleLoading()} }
+            onClick={() => {
+              table.previousPage();
+
+              handleLoading()
+            }}
             disabled={!table.getCanPreviousPage()}
           >
             <ChevronLeft className="size-4" aria-hidden="true" />
@@ -103,8 +114,10 @@ export function DataTablePagination({
             variant="outline"
             size="icon"
             className="size-8"
-            onClick={() => {table.nextPage();
-              handleLoading()}}
+            onClick={() => {
+              table.nextPage();
+              handleLoading()
+            }}
             disabled={!table.getCanNextPage()}
           >
             <ChevronRight className="size-4" aria-hidden="true" />
@@ -114,8 +127,11 @@ export function DataTablePagination({
             variant="outline"
             size="icon"
             className=" size-8 lg:flex"
-            onClick={() => {table.setPageIndex(table.getPageCount() - 1);
-               handleLoading()} }
+            onClick={() => {
+              setPage(table.getPageCount() - 1)
+              table.setPageIndex(table.getPageCount() - 1);
+              handleLoading()
+            }}
             disabled={!table.getCanNextPage()}
           >
             <ChevronsRight className="size-4" aria-hidden="true" />

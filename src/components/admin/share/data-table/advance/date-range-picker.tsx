@@ -69,6 +69,7 @@ interface DateRangePickerProps
   triggerClassName?: string
 
     setIsLoading?:(v : boolean) => void
+    
  
 }
 
