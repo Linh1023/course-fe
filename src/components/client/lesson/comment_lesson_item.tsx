@@ -198,7 +198,7 @@ export const CommentLessonItem = ({
               onClick={handleViewReply}
               disabled={loadingReplies}
             >
-              {loadingReplies ? (
+              {loadingReplies ? ( 
                 <div className="w-full flex justify-center">
                   <LoaderIcon
                     className="mr-1.5 size-9 animate-spin"
