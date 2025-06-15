@@ -84,8 +84,7 @@ export const CommentLessonItem = ({
     });
     if (res.status == 200) {
       setReplyContent("");
-      setReplies([]);
-      fetchReplies(0, false);
+      await fetchReplies(0, false);
       // setReplies((prev) => [...prev, res.result]);
       // comment.replyCount++;
       // if (!showReplies && comment.replyCount > 0) {
@@ -275,7 +274,7 @@ export const CommentLessonItem = ({
               <Button
                 size="sm"
                 onClick={handleSubmitReply}
-                className="absolute 1 right-1 h-8 px-3 text-sm"
+                className="absolute right-1 h-8 px-3 text-sm top-1"
                 disabled={submitting || !replyContent.trim()}
               >
                 {submitting ? (
