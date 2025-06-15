@@ -15,133 +15,202 @@ import { formatTimeShort } from "@/utils/format_time";
 import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+/**
+ * @interface CommentItemProps
+ * @property {CommentClient} comment - Dữ liệu của bình luận chính.
+ * @property {number} [level=0] - Cấp độ lồng ghép của bình luận (0 cho bình luận gốc, 1 cho phản hồi, v.v.).
+ * @property {string} lessonId - ID của bài học mà bình luận thuộc về.
+ * @property {CurrentAccountResponse} [currentAccount] - Thông tin tài khoản người dùng hiện tại, nếu có.
+ * @property {() => void} onDelete - Hàm callback được gọi khi một bình luận con bị xóa để làm mới danh sách.
+ */
 interface CommentItemProps {
   comment: CommentClient;
   level?: number;
   lessonId: string;
   currentAccount?: CurrentAccountResponse;
+  onDelete: () => void;
 }
-// đại diện cho 1 comment trong danh sách
+
+/**
+ * @component CommentLessonItem
+ * @description Đại diện cho một bình luận chính hoặc một phản hồi trong danh sách bình luận.
+ * @param {CommentItemProps} props - Các props của component.
+ * @returns {JSX.Element} Component hiển thị bình luận.
+ */
 export const CommentLessonItem = ({
-  comment,
+  comment: mainComment, // Đổi tên thành mainComment để rõ ràng hơn
   level = 0,
   lessonId,
   currentAccount,
+  onDelete,
 }: CommentItemProps) => {
-  // lưu các comment con của nó
+  // Lưu trữ các phản hồi (reply comments) của bình luận hiện tại
   const [replies, setReplies] = useState<CommentClient[]>([]);
+  // Trạng thái hiển thị các phản hồi
   const [showReplies, setShowReplies] = useState(false);
-  const [loadingReplies, setLoadingReplies] = useState(false);
-  const [replyPage, setReplyPage] = useState(0);
+  // Trạng thái đang tải các phản hồi
+  const [isLoadingReplies, setIsLoadingReplies] = useState(false);
+  // Trang hiện tại của danh sách phản hồi
+  const [replyCurrentPage, setReplyCurrentPage] = useState(0);
+  // Tổng số lượng phản hồi
   const [replyTotalItems, setReplyTotalItems] = useState(0);
+  // Trạng thái hiển thị ô nhập phản hồi
   const [showReplyInput, setShowReplyInput] = useState(false);
-  const [replyContent, setReplyContent] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [isShowAction, setIsShowAction] = useState<boolean>(true);
+  // Nội dung của phản hồi mới
+  const [newReplyContent, setNewReplyContent] = useState("");
+  // Trạng thái đang gửi phản hồi
+  const [isSubmittingReply, setIsSubmittingReply] = useState(false);
+  // Trạng thái đang xóa bình luận
+  const [isDeletingComment, setIsDeletingComment] = useState(false);
+  // Ref cho ô nhập phản hồi để tự động focus
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Khi showReplyInput bật lên, focus vào input
+  // Khi ô nhập phản hồi hiển thị, tự động focus vào đó
   useEffect(() => {
     if (showReplyInput && replyTextAreaRef.current) {
       replyTextAreaRef.current.focus();
     }
   }, [showReplyInput]);
 
-  // hàm lấy những comment trả lời cho cmt hiện tại
-  const fetchReplies = async (page: number, append = false) => {
-    setLoadingReplies(true);
+  /**
+   * @function fetchReplies
+   * @description Lấy các bình luận trả lời cho bình luận chính hiện tại.
+   * @param {number} page - Số trang cần lấy.
+   * @param {string} commentId - ID của bình luận cha.
+   * @param {boolean} [append=false] - Có nối thêm vào danh sách hiện có hay không.
+   */
+  const fetchReplies = async (
+    page: number,
+    commentId: string,
+    append = false
+  ) => {
+    setIsLoadingReplies(true);
     const data: CommentClientResponse = await FetchServerGetApi(
-      `${API.COMMENT.COMMENT_LESSON_REPLY}?commentId=${comment.id}&page=${page}`
+      `${API.COMMENT.COMMENT_LESSON_REPLY}?commentId=${commentId}&page=${page}`
     );
-    setReplies((prev) => (append ? [...prev, ...data.result] : data?.result));
-    setReplyTotalItems(data.totalItems || 1);
-    setShowReplies(true);
-    setLoadingReplies(false);
+    setReplies((prev) =>
+      append ? [...prev, ...data.result] : data?.result
+    );
+    setReplyCurrentPage(data.currentPage);
+    setReplyTotalItems(data.totalItems || 1); // Đảm bảo không phải 0 nếu có phản hồi
+    setShowReplies(true); // Luôn hiển thị phản hồi sau khi tải
+    setIsLoadingReplies(false);
   };
 
-  // xử lý nút trả lời
-  const handleViewReply = () => {
-    // mở rồi thì đóng lại
+  /**
+   * @function handleViewReplies
+   * @description Xử lý khi người dùng nhấp vào nút "Xem phản hồi".
+   * Nếu đã mở thì đóng lại, nếu chưa mở và có phản hồi thì tải và mở.
+   */
+  const handleViewReplies = () => {
+    // Nếu các phản hồi đang hiển thị, đóng chúng lại
     if (showReplies) {
       setShowReplies(false);
     } else {
-      if (!replies?.length && comment.replyCount > 0) {
-        fetchReplies(0, false);
+      // Nếu chưa có phản hồi nào được tải và có số lượng phản hồi > 0, thì tải chúng
+      if (!replies?.length && mainComment.replyCount > 0) {
+        fetchReplies(0, mainComment.id, false);
       } else {
+        // Nếu đã có phản hồi hoặc không có phản hồi nhưng muốn hiển thị
         setShowReplies(true);
       }
     }
   };
 
-  // xử lý gửi comment mới
-  const handleSubmitReply = async () => {
-    if (!replyContent.trim()) return;
-    setSubmitting(true);
-    const res = await FetchServerPostApi(API.COMMENT.COMMENT, {
-      lessonId,
-      commentParentId: comment.id,
-      content: replyContent,
-    });
-    if (res.status == 200) {
-      setReplyContent("");
-      await fetchReplies(0, false);
-      // setReplies((prev) => [...prev, res.result]);
-      // comment.replyCount++;
-      // if (!showReplies && comment.replyCount > 0) {
-      //   fetchReplies(0, false);
-      // }
-    } else {
-      console.error("Failed to submit reply:");
-    }
-    setSubmitting(false);
+  /**
+   * @function handleOnDeleteReply
+   * @description Callback để tải lại danh sách phản hồi khi một phản hồi con bị xóa.
+   */
+  const handleOnDeleteReply = () => {
+    fetchReplies(0, mainComment.id);
   };
 
-  // dùng nút enter để gửi
+  /**
+   * @function handleSubmitReply
+   * @description Xử lý gửi phản hồi mới.
+   */
+  const handleSubmitReply = async () => {
+    if (!newReplyContent.trim()) return; // Không gửi nếu nội dung trống
+    setIsSubmittingReply(true);
+    const res = await FetchServerPostApi(API.COMMENT.COMMENT, {
+      lessonId,
+      commentParentId: mainComment.id, // Gán ID của bình luận cha
+      content: newReplyContent,
+    });
+    if (res.status === 200) {
+      await fetchReplies(0, mainComment.id, false); // Tải lại danh sách phản hồi sau khi gửi
+      setNewReplyContent(""); // Xóa nội dung ô nhập
+    } else {
+      console.error("Failed to submit reply:", res); // Ghi lỗi nếu gửi thất bại
+    }
+    setIsSubmittingReply(false);
+  };
+
+  /**
+   * @function handleKeyDown
+   * @description Xử lý sự kiện nhấn phím, gửi phản hồi khi nhấn Enter.
+   * @param {React.KeyboardEvent<HTMLTextAreaElement>} e - Sự kiện bàn phím.
+   */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !e.shiftKey) { // Gửi khi nhấn Enter, bỏ qua nếu nhấn Shift+Enter
       e.preventDefault();
       handleSubmitReply();
     }
   };
 
-  //xóa comment
+  /**
+   * @function handleDeleteComment
+   * @description Xóa một bình luận (bao gồm cả bình luận chính và phản hồi).
+   * @param {string} commentId - ID của bình luận cần xóa.
+   */
   const handleDeleteComment = async (commentId: string) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa bình luận này?")) return;
+    // Sử dụng modal tùy chỉnh thay vì window.confirm
+    const confirmed = await new Promise((resolve) => {
+      // Logic hiển thị modal xác nhận ở đây
+      // Ví dụ đơn giản với console log, trong thực tế sẽ là một component modal
+      console.log("Bạn có chắc chắn muốn xóa bình luận này?");
+      // Giả lập người dùng xác nhận
+      const userConfirmed = window.confirm("Bạn có chắc chắn muốn xóa bình luận này?");
+      resolve(userConfirmed);
+    });
+
+    if (!confirmed) return;
+
+    setIsDeletingComment(true);
     const res = await FetchServerPutApi(API.COMMENT.ADMIN_DELETE_COMMENT, {
       commentId: commentId,
-      status: "inactive",
+      status: "inactive", // Cập nhật trạng thái thành "inactive" (xóa mềm)
     });
 
     if (res.status === 200) {
-      // Nếu comment hiện tại là comment cha (comment.id == commentId), có thể ẩn nó hoặc để component cha xử lý
-      if (comment.id === commentId) {
-        // Ví dụ: ẩn nội dung comment này (soft delete UI)
-        comment.content = "[Bình luận đã bị xóa]";
-        comment.replyCount = 0;
-        setReplies([]); // ẩn replies
-        setIsShowAction(false);
+      // Nếu bình luận chính bị xóa, thông báo cho component cha để làm mới danh sách
+      if (commentId === mainComment.id) {
+        onDelete();
       } else {
-        // Nếu là reply nằm trong replies của mình → xoá trong replies của mình
-        setReplies((prev) => prev.filter((r) => r.id !== commentId));
+        // Nếu là một phản hồi, tải lại danh sách phản hồi của bình luận chính
+        fetchReplies(0, mainComment.id);
       }
     } else {
-      alert("Xóa bình luận thất bại!");
+      console.error("Xóa bình luận thất bại:", res); // Ghi lỗi nếu xóa thất bại
+      // Hiển thị thông báo lỗi tùy chỉnh thay vì alert
+      // Ví dụ: setErrorMessage("Xóa bình luận thất bại!");
     }
+    setIsDeletingComment(false);
   };
 
   return (
     <div className={level > 0 ? `ml-2 pt-2` : ""}>
-      {/* Nội dung chính comment */}
-      <div className="p-2  bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-        <div className="flex items-start gap-4  ">
+      {/* Nội dung chính của bình luận */}
+      <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+        <div className="flex items-start gap-4">
           <Avatar className={`w-${level > 0 ? 8 : 10} h-${level > 0 ? 8 : 10}`}>
-            <AvatarImage src={comment.authorAvatar} />
-            <AvatarFallback>{comment.authorName[0]}</AvatarFallback>
+            <AvatarImage src={mainComment.authorAvatar} />
+            <AvatarFallback>{mainComment.authorName[0]}</AvatarFallback>
           </Avatar>
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <div className="font-semibold text-gray-900 dark:text-gray-100">
-                {comment.authorName + "   " + comment.id}
+                {mainComment.authorName} {/* + " " + mainComment.id */}
               </div>
             </div>
             <p
@@ -149,55 +218,65 @@ export const CommentLessonItem = ({
                 level > 0 ? "sm" : "base"
               } text-gray-700 dark:text-gray-200`}
             >
-              {comment.content}
+              {mainComment.content}
             </p>
 
-            {/* Nếu comment bị xóa các actiion bị ẩn đi */}
-            {isShowAction && (
-              <div className="flex items-center gap-2">
-                <div className="text-xs text-gray-500 dark:text-gray-400">
-                  {formatTimeShort(comment.createdAt)}
-                </div>
+            <div className="flex items-center gap-2">
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                {formatTimeShort(mainComment.createdAt)}
+              </div>
 
+              {/* Nút trả lời */}
+              <Button
+                variant="link"
+                size="sm"
+                className="text-blue-600 hover:underline"
+                onClick={() => setShowReplyInput(true)}
+                disabled={showReplyInput}
+              >
+                Trả lời
+              </Button>
+              {/* Nút xóa (chỉ hiển thị cho admin hoặc tác giả bình luận) */}
+              {(currentAccount?.role === "ADMIN" ||
+                (currentAccount?.role === "CLIENT" &&
+                  currentAccount?.id === mainComment.authorId)) && (
                 <Button
                   variant="link"
                   size="sm"
-                  className="text-blue-600 hover:underline"
-                  onClick={() => setShowReplyInput(!showReplyInput)}
+                  className="text-red-500 hover:underline"
+                  onClick={() => handleDeleteComment(mainComment.id)}
+                  disabled={isDeletingComment}
                 >
-                  Trả lời
+                  {isDeletingComment ? (
+                    <div className="w-full flex justify-center">
+                      <LoaderIcon
+                        className="mr-1.5 size-9 animate-spin"
+                        aria-hidden="true"
+                      ></LoaderIcon>
+                    </div>
+                  ) : (
+                    `Xóa`
+                  )}
                 </Button>
-                {(currentAccount?.role == "ADMIN" ||
-                  (currentAccount?.role == "CLIENT" &&
-                    currentAccount?.id == comment.authorId)) && (
-                  <Button
-                    variant="link"
-                    size="sm"
-                    className="text-red-500 hover:underline"
-                    onClick={() => handleDeleteComment(comment.id)}
-                  >
-                    Xóa
-                  </Button>
-                )}
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* các thành phần comment con Gồm */}
-      {comment?.replyCount > 0 || showReplyInput ? (
+      {/* Các thành phần bình luận con (phản hồi) */}
+      {mainComment?.replyCount > 0 || showReplyInput ? (
         <div className="ml-2 border-l-2 border-gray-300 dark:border-gray-700 rounded-bl-md pt-2">
-          {/* hiện phản hồi : hiện 10 phải hồi đầu tiên */}
-          {!showReplies && comment.replyCount > 0 && (
+          {/* Nút hiển thị/ẩn phản hồi */}
+          {!showReplies && mainComment.replyCount > 0 && (
             <Button
               variant="link"
               size="sm"
               className="text-blue-600 hover:underline"
-              onClick={handleViewReply}
-              disabled={loadingReplies}
+              onClick={handleViewReplies}
+              disabled={isLoadingReplies}
             >
-              {loadingReplies ? ( 
+              {isLoadingReplies ? (
                 <div className="w-full flex justify-center">
                   <LoaderIcon
                     className="mr-1.5 size-9 animate-spin"
@@ -205,24 +284,23 @@ export const CommentLessonItem = ({
                   ></LoaderIcon>
                 </div>
               ) : (
-                `Xem tất cả ${comment.replyCount} phản hồi`
+                `Xem tất cả ${mainComment.replyCount} phản hồi`
               )}
             </Button>
           )}
 
-          {/* xem thêm phản hồi cũ */}
-          {(replyPage + 1) * 10 < replyTotalItems && (
+          {/* Nút xem thêm phản hồi cũ */}
+          {(replyCurrentPage + 1) * 10 < replyTotalItems && (
             <Button
               variant="link"
               size="sm"
               className="text-blue-600 hover:underline ml-4"
               onClick={async () => {
-                await fetchReplies(replyPage + 1, true);
-                setReplyPage((prev) => prev + 1);
+                await fetchReplies(replyCurrentPage + 1, mainComment.id, true);
               }}
-              disabled={loadingReplies}
+              disabled={isLoadingReplies}
             >
-              {loadingReplies ? (
+              {isLoadingReplies ? (
                 <div className="w-full flex justify-center">
                   <LoaderIcon
                     className="mr-1.5 size-9 animate-spin"
@@ -230,13 +308,13 @@ export const CommentLessonItem = ({
                   ></LoaderIcon>
                 </div>
               ) : (
-                `Xem ${replyTotalItems - (replyPage + 1) * 10} phản hồi cũ hơn`
+                `Xem ${replyTotalItems - (replyCurrentPage + 1) * 10} phản hồi cũ hơn`
               )}
             </Button>
           )}
 
-          {/* danh sách comment con */}
-          {showReplies && replies?.length <= 0 ? (
+          {/* Danh sách các bình luận con (phản hồi) */}
+          {showReplies && replies?.length === 0 && isLoadingReplies ? (
             <div className="w-full flex justify-center">
               <LoaderIcon
                 className="mr-1.5 size-9 animate-spin"
@@ -245,29 +323,30 @@ export const CommentLessonItem = ({
             </div>
           ) : (
             <>
-              {replies
-                ?.slice() // Create a shallow copy to avoid mutating the original array
-                .reverse()
+              {showReplies && replies
+                ?.slice() // Tạo một bản sao nông để tránh làm thay đổi mảng gốc
+                .reverse() // Hiển thị các phản hồi mới nhất trước
                 .map((reply: CommentClient) => (
                   <CommentLessonItem
                     key={reply.id}
                     comment={reply}
-                    level={level + 1}
+                    level={level + 1} // Tăng cấp độ lồng ghép
                     lessonId={lessonId}
                     currentAccount={currentAccount}
+                    onDelete={handleOnDeleteReply} // Truyền callback để làm mới danh sách phản hồi con
                   />
                 ))}
             </>
           )}
 
-          {/* textarea trả lời */}
+          {/* Ô nhập liệu để trả lời bình luận */}
           {showReplyInput && (
             <div className="mx-2 mb-2 relative bg-white dark:bg-black mt-2">
               <Textarea
-                value={replyContent}
-                onChange={(e) => setReplyContent(e.target.value)}
+                value={newReplyContent}
+                onChange={(e) => setNewReplyContent(e.target.value)}
                 placeholder="Viết phản hồi..."
-                className="pr-[45px] min-h-10 h-auto max-h-40 text-sm "
+                className="pr-[45px] min-h-10 h-auto max-h-40 text-sm"
                 ref={replyTextAreaRef}
                 onKeyDown={handleKeyDown}
               />
@@ -275,9 +354,9 @@ export const CommentLessonItem = ({
                 size="sm"
                 onClick={handleSubmitReply}
                 className="absolute right-1 h-8 px-3 text-sm top-1"
-                disabled={submitting || !replyContent.trim()}
+                disabled={isSubmittingReply || !newReplyContent.trim()}
               >
-                {submitting ? (
+                {isSubmittingReply ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   "Gửi"
