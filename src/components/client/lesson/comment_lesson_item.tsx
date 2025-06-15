@@ -274,7 +274,7 @@ export const CommentLessonItem = ({
               <Button
                 size="sm"
                 onClick={handleSubmitReply}
-                className="absolute 1 right-1 h-8 px-3 text-sm"
+                className="absolute right-1 h-8 px-3 text-sm top-1"
                 disabled={submitting || !replyContent.trim()}
               >
                 {submitting ? (
