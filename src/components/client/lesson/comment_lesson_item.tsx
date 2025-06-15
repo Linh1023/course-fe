@@ -84,8 +84,7 @@ export const CommentLessonItem = ({
     });
     if (res.status == 200) {
       setReplyContent("");
-      setReplies([]);
-      fetchReplies(0, false);
+      await fetchReplies(0, false);
       // setReplies((prev) => [...prev, res.result]);
       // comment.replyCount++;
       // if (!showReplies && comment.replyCount > 0) {

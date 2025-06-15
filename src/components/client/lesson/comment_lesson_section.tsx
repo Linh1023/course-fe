@@ -53,8 +53,7 @@ const CommentLessonSection = ({ lessonId }: Props) => {
     if (res.status == 200) {
       setReplyContent("");
       // setComments((prev) => [...prev, res.result]);
-      setComments([]);
-      fetchComments(0);
+      await fetchComments(0);
     } else {
       console.error("Failed to submit reply:");
     }
