@@ -9,6 +9,8 @@ import { toast } from "sonner"
 
 interface CESTableToolbarActionsProps {
   table: Table<CourseEnrollmentAdmin>
+  setIsLoading: (isLoading: boolean) => void
+  fetchData: () => void
 }
 
 export function CESTableToolbarActions({

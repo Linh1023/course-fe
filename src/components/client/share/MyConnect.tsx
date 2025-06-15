@@ -6,7 +6,6 @@ import ZaloDialog from "./zalo_dialog";
 
 const MyConnect = () => {
 
-  const [isShowZaloDialog, setIsShowZaloDialog] = useState(false);
 
   return (
     <>
@@ -24,10 +23,8 @@ const MyConnect = () => {
             </div>
           </a>
 
-
-        
+          <a href="https://zalo.me/0865275183" target="_blank" >
             <div className=" p-2 rounded-full bg-gray-100 shadow-md flex gap-4 items-center justify-center cursor-pointer"
-            onClick={() => {setIsShowZaloDialog(true)}}
             >
 
               {/* <Facebook
@@ -41,13 +38,9 @@ const MyConnect = () => {
                 <text x="50" y="48" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="bold" textAnchor="middle" fill="#0084FF">Zalo</text>
               </svg>
             </div>
-
+          </a>
         </div>
       </section>
-      <ZaloDialog
-        isShowZaloDialog={isShowZaloDialog}
-        setIsShowZaloDialog={setIsShowZaloDialog}
-      ></ZaloDialog>
     </>
 
 

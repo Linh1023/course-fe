@@ -23,8 +23,9 @@ import Link from "next/link"
 interface getColumnsProps {
   listCategory: Category[]
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+   fetchData: () => Promise<void>
 }
-export function getColumns({ listCategory, setIsLoading }: getColumnsProps): ColumnDef<Course>[] {
+export function getColumns({ listCategory, setIsLoading,fetchData }: getColumnsProps): ColumnDef<Course>[] {
   return [
     {
       id: "select",
@@ -150,6 +151,7 @@ export function getColumns({ listCategory, setIsLoading }: getColumnsProps): Col
               onOpenChange={setShowUpdateCourseSheet}
               listCategory={listCategory}
               course={row.original}
+              fetchData = {fetchData}
             />
             <DeleteCoursesDialog
               setIsLoading={setIsLoading}
@@ -158,6 +160,7 @@ export function getColumns({ listCategory, setIsLoading }: getColumnsProps): Col
               courses={[row.original]}
               showTrigger={false}
               onSuccess={() => {
+                fetchData()
                 toast.success(
                   `Đã xóa khóa học "${row.original.name}" thành công!`
                 )
@@ -178,7 +181,7 @@ export function getColumns({ listCategory, setIsLoading }: getColumnsProps): Col
                 align="end"
                 className="w-40 overflow-visible dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/40"
               >
-                <Link href={`/admin/course/${row.original.id}`}>
+                <Link href={`/admin/course/${row.original.id}?page=1&perPage=10`}>
                   <DropdownMenuItem >
                     Xem chương
                   </DropdownMenuItem>

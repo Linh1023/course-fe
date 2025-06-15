@@ -30,9 +30,9 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
    */
   floatingBar?: React.ReactNode | null
   isLoading?: boolean
-  setIsLoading?: (v: boolean) => void,
-  setQuerySearch?: (v: string) => void,
-  querySearch?: string
+  setIsLoading: (v: boolean) => void,
+  setQuerySearch: (v: string) => void,
+  querySearch: string
 
 }
 

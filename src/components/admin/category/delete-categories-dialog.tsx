@@ -70,7 +70,7 @@ export function DeleteCategoriesDialog({
                 // thực hiện xóa danh mục
                 const res = await Promise.all(
                   categories.map((category) =>
-                    FetchServerDeleteApi(`${API.CATEGORY.ROOT}/${category.id}`, "/admin/category")
+                    FetchServerDeleteApi(`${API.CATEGORY.ROOT}/${category.id}`)
                   ))
                 if (res.some((r) => r.status !== 200)) {
                   toast.error("Xóa danh mục thất bại, vui lòng thử lại sau")

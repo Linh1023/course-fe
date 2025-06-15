@@ -8,9 +8,4 @@ interface CommentAdmin{
   content: string;
   replyCount: number;
 };
-interface CommentAdminResponse {
-  result: CommentAdmin[];
-  totalPages: number;
-  totalItems: number;
-  currentPage: number;
-}
+

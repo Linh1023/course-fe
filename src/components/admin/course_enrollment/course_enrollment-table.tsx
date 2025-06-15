@@ -9,16 +9,83 @@ import { CESTableToolbarActions } from "./course_enrollment-table-toolbar-action
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableFilterField } from "@/types/ui/data-table"
 import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table-advance-toolbar"
-interface CESTableProps {
-  courseEnrollmentPromise: Promise<CourseEnrollmentResponse>
-}
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useDebounce } from "@/hooks/use-debounce"
+import { FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api"
+import API from "@/api/api"
+
+// CourseEnrollmentAdmin
+
+export function CourseEnrollmentTable() {
 
 
-export function CourseEnrollmentTable({ courseEnrollmentPromise }: CESTableProps) {
-  const { result, totalPages } = React.use(courseEnrollmentPromise)
+  const [isLoading, setIsLoading] = React.useState(false)
+  const searchParams = useSearchParams()
+  const pathName = usePathname()
+  const [dataResult, setDataResult] = React.useState<CourseEnrollmentAdmin[]>([])
+  const [totalPages, setTotalPages] = React.useState(1)
+  const router = useRouter()
+  const abortControllerRef = React.useRef<AbortController | null>(null); // Use ref to keep track of the controller
+
+
+
+  const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
+  const debouncedQuery = useDebounce(querySearch, 500);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+
+    fetchData();
+  }, [debouncedQuery]);
+
+
+  const fetchData = async () => {
+    // Huỷ request cũ nếu còn
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    const { signal } = abortController;
+
+    try {
+      const submissions = await FetchClientGetApiSignalNoToken(
+        `/api/proxy/search?${debouncedQuery}&api=${API.COURSE_ENROLLMENT.ADMIN_LIST_COURSE_ENROLLMENT}`,
+        signal
+      );
+
+
+      if (submissions?.status === 200) {
+        setDataResult(submissions.result);
+        setTotalPages(submissions.totalPages);
+
+        //  Chỉ chạy nếu không bị huỷ
+        console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
+        router.replace(`${pathName}?${debouncedQuery}`, {
+          scroll: false,
+        });
+      }
+
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        // Yêu cầu bị huỷ, không làm gì cả
+        return;
+      } else {
+        console.error('Lỗi khi fetch:', err);
+      }
+    } finally {
+      // ✅ Luôn setIsLoading(false) nếu không bị huỷ
+      if (!signal.aborted) {
+        setIsLoading(false);
+      }
+    }
+  };
+
+
 
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo(() => getColumns(), [])
+  const columns = React.useMemo(() => getColumns(setIsLoading, fetchData), [setIsLoading, fetchData])
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -55,22 +122,37 @@ export function CourseEnrollmentTable({ courseEnrollmentPromise }: CESTableProps
 
   // TODO: Replace with actual data fetching logic
   const { table } = useDataTable({
-    data: result,
+    data: dataResult,
     columns,
     pageCount: totalPages,
     // optional props
     filterFields,
     defaultPerPage: 10,
+
   })
-  
+
   return (
     <TableInstanceProvider table={table}>
       <DataTable
         table={table}
-        floatingBar={<CESTableFloatingBar table={table} />}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        setQuerySearch={setQuerySearch}
+        querySearch={querySearch}
+        floatingBar={<CESTableFloatingBar table={table}
+          setIsLoading={setIsLoading}
+          fetchData={fetchData}
+        />}
       >
-        <DataTableAdvancedToolbar filterFields={filterFields}>
-          <CESTableToolbarActions table={table} />
+        <DataTableAdvancedToolbar filterFields={filterFields}
+          setIsLoading={setIsLoading}
+          setQuerySearch={setQuerySearch}
+          querySearch={querySearch}
+        >
+          <CESTableToolbarActions table={table}
+            setIsLoading={setIsLoading}
+            fetchData={fetchData}
+          />
         </DataTableAdvancedToolbar>
       </DataTable>
     </TableInstanceProvider>

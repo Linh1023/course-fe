@@ -9,10 +9,12 @@ import { toast } from "sonner"
 interface UsersTableToolbarActionsProps {
   table: Table<User>
   setIsLoading: (v: boolean) => void
+  fetchData:() => void 
 }
 
 export function UsersTableToolbarActions({
   table,
+  fetchData,
   setIsLoading,
 }: UsersTableToolbarActionsProps) {
   return (
@@ -23,6 +25,7 @@ export function UsersTableToolbarActions({
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           onSuccess={() => {
+            fetchData()
             toast.success(
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} người dùng thành công!`
             )
@@ -32,7 +35,9 @@ export function UsersTableToolbarActions({
           setIsLoading={setIsLoading}
         />
       ) : null}
-      <CreateUserDialog setIsLoading={setIsLoading} />
+      <CreateUserDialog setIsLoading={setIsLoading} 
+      fetchData = {fetchData}
+      />
     </div>
   )
 }

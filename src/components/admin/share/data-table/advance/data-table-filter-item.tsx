@@ -21,18 +21,16 @@ interface DataTableFilterItemProps<TData> {
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
   defaultOpen: boolean
-  setIsLoading?: (v: boolean) => void
-  // isLoading?: boolean
-  setQuerySearch?: (query: string) => void
-  querySearch?: string
-  
+  setIsLoading: (v: boolean) => void
+  setQuerySearch: (query: string) => void
+  querySearch: string
+
 }
 
 export function DataTableFilterItem<TData>({
   selectedOption,
   setSelectedOptions,
   defaultOpen,
-  // isLoading,
   setQuerySearch,
   setIsLoading,
   querySearch
@@ -58,10 +56,6 @@ export function DataTableFilterItem<TData>({
 
   React.useEffect(() => {
 
-    if (setIsLoading && debounceValue != "" && !setQuerySearch && querySearch === undefined) {
-      setIsLoading(true)
-    }
-
 
     if (selectedOption.options.length > 0) {
       // key=value1.value2.value3
@@ -74,23 +68,17 @@ export function DataTableFilterItem<TData>({
         searchParams
       )
 
-      if (setQuerySearch && querySearch != undefined && setIsLoading) {
-        // console.log("querySearch data table filter >>> ", querySearch)
-        const newQuerySearchTemporary = updateQueryStringManually(querySearch, selectedOption.value.toString(), filterValues.join("."))
-        const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
-        if (newQuerySearch != querySearch) {
-          setIsLoading(true)
-          setQuerySearch(newQuerySearch)
-            table.setPageIndex(0);
-        }
-
-
-      } else {
-        console.log("--------------------------------")
-        router.replace(`${pathname}?${newSearchParams}`, {
-          scroll: false,
-        })
+      // console.log("querySearch data table filter >>> ", querySearch)
+      const newQuerySearchTemporary = updateQueryStringManually(querySearch, selectedOption.value.toString(), filterValues.join("."))
+      const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
+      if (newQuerySearch != querySearch) {
+        setIsLoading(true)
+        setQuerySearch(newQuerySearch)
+        table.setPageIndex(0);
       }
+
+
+
 
 
     } else {
@@ -105,25 +93,20 @@ export function DataTableFilterItem<TData>({
       )
 
 
-      if (setQuerySearch && querySearch != undefined && setIsLoading) {
-        // console.log("querySearch data table filter >>> ", querySearch)
-        const newQuerySearchTemporary = updateQueryStringManually(querySearch, selectedOption.value.toString(), debounceValue)
-        const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
 
-        if (newQuerySearch != querySearch) {
-          setIsLoading(true)
-          setQuerySearch(newQuerySearch)
-          table.setPageIndex(0);
-        }
+      // console.log("querySearch data table filter >>> ", querySearch)
+      const newQuerySearchTemporary = updateQueryStringManually(querySearch, selectedOption.value.toString(), debounceValue)
+      const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
 
-
+      if (newQuerySearch != querySearch) {
+        setIsLoading(true)
+        setQuerySearch(newQuerySearch)
+        table.setPageIndex(0);
       }
-      else {
-        console.log("--------------------------------")
-        router.replace(`${pathname}?${newSearchParams}`, {
-          scroll: false,
-        })
-      }
+
+
+
+
     }
 
 
@@ -181,11 +164,6 @@ export function DataTableFilterItem<TData>({
             className="size-7 text-muted-foreground"
 
             onClick={() => {
-
-              if (setIsLoading) {
-                setIsLoading(true)
-              }
-
               setSelectedOptions((prev) =>
                 prev.filter((item) => item.value !== selectedOption.value)
               )
@@ -198,18 +176,15 @@ export function DataTableFilterItem<TData>({
                 searchParams
               )
 
-              if (setQuerySearch && querySearch != undefined) {
-                const newQuerySearchTemporary = updateQueryStringManually(querySearch, selectedOption.value.toString())
-                const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
-                setQuerySearch(newQuerySearch)
-                  table.setPageIndex(0);
-              } else {
-                console.log("--------------------------------")
-                router.replace(`${pathname}?${newSearchParams}`, {
-                  scroll: false,
-                })
 
+              const newQuerySearchTemporary = updateQueryStringManually(querySearch, selectedOption.value.toString())
+              const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
+              if (newQuerySearch != querySearch) {
+                setIsLoading(true)
+                setQuerySearch(newQuerySearch)
+                table.setPageIndex(0);
               }
+
 
             }}
           >

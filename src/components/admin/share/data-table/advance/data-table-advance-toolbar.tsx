@@ -13,9 +13,9 @@ import { flexRender, type Table as TanstackTable } from "@tanstack/react-table"
 interface DataTableAdvancedToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
   filterFields?: DataTableFilterField<TData>[]
-  setIsLoading?: (v: boolean) => void,
-  setQuerySearch?: (query: string) => void,
-  querySearch?: string
+  setIsLoading: (v: boolean) => void,
+  setQuerySearch: (query: string) => void,
+  querySearch: string
 }
 
 export function DataTableAdvancedToolbar<TData>({

@@ -19,7 +19,9 @@ import { Ellipsis } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link";
 
-export function getColumns(setIsLoading: React.Dispatch<React.SetStateAction<boolean>>): ColumnDef<User>[] {
+export function getColumns(
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,  
+  fetchData: () => Promise<void>): ColumnDef<User>[] {
   return [
     {
       id: "select",
@@ -178,6 +180,7 @@ export function getColumns(setIsLoading: React.Dispatch<React.SetStateAction<boo
               onOpenChange={setShowUpdateUserSheet}
               user={row.original}
               setIsLoading={setIsLoading}
+              fetchData = {fetchData}
             />
             <DeleteUsersDialog
               open={showDeleteUserDialog}
@@ -185,6 +188,7 @@ export function getColumns(setIsLoading: React.Dispatch<React.SetStateAction<boo
               users={[row.original]}
               showTrigger={false}
               onSuccess={() => {
+                fetchData()
                 row.toggleSelected(false)
                 setIsLoading(true)
               }}
@@ -226,7 +230,7 @@ export function getColumns(setIsLoading: React.Dispatch<React.SetStateAction<boo
                   <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <Link href={`/admin/user/${user.id}?page=1`} className="text-blue-600">
+                <Link href={`/admin/user/${user.id}?page=1&perPage=10`} className="text-blue-600">
                   <DropdownMenuItem>
                     Xem tiến độ
                   </DropdownMenuItem>
