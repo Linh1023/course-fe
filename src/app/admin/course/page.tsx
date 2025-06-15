@@ -5,17 +5,9 @@ import { DataTableSkeleton } from "@/components/admin/share/data-table/data-tabl
 import { ReadonlyURLSearchParams } from "next/navigation"
 import React from "react"
 
-export interface CoursePageProps {
-  searchParams: ReadonlyURLSearchParams
-}
 
-const CoursePage = async ({ searchParams }: CoursePageProps) => {
-  const params = new URLSearchParams(searchParams);
-  if (!params.has("page")) {
-    params.set("page", "1");
-  }
-  const query = params.toString();
-  const coursePromise = FetchServerGetApi(API.COURSE.ROOT + `?${query}`, "/admin/course");
+const CoursePage = async () => {
+  
   const categoryPromise = FetchServerGetApi(API.CATEGORY.ROOT + `?status=active`, "/admin/course");
   return (
     <div className="flex flex-col gap-4">
@@ -27,7 +19,7 @@ const CoursePage = async ({ searchParams }: CoursePageProps) => {
         cellWidths={["5rem", "35rem", "12rem", "5rem", "5rem"]}
         shrinkZero
       />} >
-        <CoursesTable coursePromise={coursePromise} categoryPromise={categoryPromise} />
+        <CoursesTable categoryPromise={categoryPromise} />
       </React.Suspense>
     </div>
   )

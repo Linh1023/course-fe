@@ -69,7 +69,7 @@ export function DeleteLessonsDialog({
               startDeleteTransition(async () => {
                 const res = await Promise.all(
                   lessons.map((lesson) =>
-                    FetchServerDeleteApi(`${API.LESSON.ROOT}/${lesson.id}`, "/admin/course")
+                    FetchServerDeleteApi(`${API.LESSON.ROOT}/${lesson.id}`)
                   ))
                 if (res.some((r) => r.status !== 200)) {
                   toast.error("Xóa bài học thất bại, vui lòng thử lại sau")

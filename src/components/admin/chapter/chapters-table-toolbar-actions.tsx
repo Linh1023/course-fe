@@ -11,10 +11,13 @@ interface ChaptersTableToolbarActionsProps {
   table: Table<Chapter>
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   courseId: string
+  fetchData: () => void
+
 }
 
+
 export function ChaptersTableToolbarActions({
-  table, courseId, setIsLoading
+  table, courseId, setIsLoading, fetchData
 }: ChaptersTableToolbarActionsProps) {
 
   return (
@@ -26,6 +29,7 @@ export function ChaptersTableToolbarActions({
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           onSuccess={() => {
+            fetchData()
             toast.success(
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} chương thành công!`
             )
@@ -34,7 +38,10 @@ export function ChaptersTableToolbarActions({
           }
         />
       ) : null}
-      <CreateChapterDialog setIsLoading={setIsLoading} courseId={courseId} />
+      <CreateChapterDialog setIsLoading={setIsLoading} courseId={courseId} 
+      fetchData = {fetchData}
+      
+      />
       {/**
        * Other actions can be added here.
        * For example, import, view, etc.

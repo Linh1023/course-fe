@@ -9,22 +9,82 @@ import { CategoriesTableToolbarActions } from "./categories-table-toolbar-action
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableFilterField } from "@/types/ui/data-table"
 import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table-advance-toolbar"
-interface CategoriesTableProps {
-  categoryPromise: Promise<CategoryPageResponse>
-}
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useDebounce } from "@/hooks/use-debounce"
+import { FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api"
+import API from "@/api/api"
 
 
-export function CategoriesTable({ categoryPromise }: CategoriesTableProps) {
-  const { result, totalPages } = React.use(categoryPromise)
+export function CategoriesTable() {
+
+
+
   const [isLoading, setIsLoading] = React.useState(false)
+  const searchParams = useSearchParams()
+  const pathName = usePathname()
+  const [dataResult, setDataResult] = React.useState<Category[]>([])
+  const [totalPages, setTotalPages] = React.useState(1)
+  const router = useRouter()
+  const abortControllerRef = React.useRef<AbortController | null>(null); // Use ref to keep track of the controller
+
+  const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
+  const debouncedQuery = useDebounce(querySearch, 500);
 
   React.useEffect(() => {
-    setIsLoading(false)
+    setIsLoading(true);
 
-  }, [result, totalPages])
+    fetchData();
+  }, [debouncedQuery]);
+
+
+  const fetchData = async () => {
+    // Huỷ request cũ nếu còn
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    const { signal } = abortController;
+
+    try {
+      const submissions = await FetchClientGetApiSignalNoToken(
+        `/api/proxy/search?${debouncedQuery}&api=${API.CATEGORY.ROOT}`,
+        signal
+      );
+
+
+      if (submissions?.status === 200) {
+        setDataResult(submissions.result);
+        setTotalPages(submissions.totalPages);
+
+        //  Chỉ chạy nếu không bị huỷ
+        console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
+        router.replace(`${pathName}?${debouncedQuery}`, {
+          scroll: false,
+        });
+      }
+
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        // Yêu cầu bị huỷ, không làm gì cả
+        return;
+      } else {
+        console.error('Lỗi khi fetch:', err);
+      }
+    } finally {
+      // ✅ Luôn setIsLoading(false) nếu không bị huỷ
+      if (!signal.aborted) {
+        setIsLoading(false);
+      }
+    }
+  };
+
+
+
 
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo(() => getColumns({ setIsLoading }), [setIsLoading])
+  const columns = React.useMemo(() => getColumns({ setIsLoading, fetchData }), [setIsLoading, fetchData])
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -60,12 +120,13 @@ export function CategoriesTable({ categoryPromise }: CategoriesTableProps) {
   ]
 
   const { table } = useDataTable({
-    data: result || [],
+    data: dataResult,
     columns,
     pageCount: totalPages || 1,
     // optional props
     filterFields,
     defaultPerPage: 10,
+
   })
 
   return (
@@ -73,10 +134,23 @@ export function CategoriesTable({ categoryPromise }: CategoriesTableProps) {
       <DataTable
         table={table}
         isLoading={isLoading}
-        floatingBar={<CategoriesTableFloatingBar table={table} setIsLoading={setIsLoading} />}
+        setIsLoading={setIsLoading}
+        setQuerySearch={setQuerySearch}
+        querySearch={querySearch}
+        floatingBar={<CategoriesTableFloatingBar table={table}
+          setIsLoading={setIsLoading}
+          fetchData={fetchData}
+        />}
       >
-        <DataTableAdvancedToolbar filterFields={filterFields} setIsLoading={setIsLoading}>
-          <CategoriesTableToolbarActions table={table} setIsLoading={setIsLoading} />
+        <DataTableAdvancedToolbar filterFields={filterFields}
+          setIsLoading={setIsLoading}
+          setQuerySearch={setQuerySearch}
+          querySearch={querySearch}
+        >
+          <CategoriesTableToolbarActions table={table} 
+          fetchData={fetchData}
+          setIsLoading={setIsLoading} 
+          />
         </DataTableAdvancedToolbar>
       </DataTable>
     </TableInstanceProvider>

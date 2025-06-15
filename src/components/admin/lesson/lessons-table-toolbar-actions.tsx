@@ -11,10 +11,11 @@ interface LessonsTableToolbarActionsProps {
   table: Table<Lesson>
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   chapterId: number
+  fetchData:() =>void
 }
 
 export function LessonsTableToolbarActions({
-  table, chapterId, setIsLoading
+  table, chapterId, setIsLoading, fetchData
 }: LessonsTableToolbarActionsProps) {
 
   return (
@@ -26,6 +27,7 @@ export function LessonsTableToolbarActions({
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           onSuccess={() => {
+            fetchData()
             toast.success(
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} bài học thành công!`
             )
@@ -34,7 +36,9 @@ export function LessonsTableToolbarActions({
           }
         />
       ) : null}
-      <CreateLessonDialog setIsLoading={setIsLoading} chapterId={chapterId} />
+      <CreateLessonDialog setIsLoading={setIsLoading} chapterId={chapterId} 
+      fetchData={fetchData}
+      />
       {/**
        * Other actions can be added here.
        * For example, import, view, etc.

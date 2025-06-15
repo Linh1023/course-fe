@@ -14,16 +14,9 @@ import { DateRangePicker } from "../share/data-table/advance/date-range-picker"
 import API from "@/api/api"
 import { FetchServerGetApi } from "@/actions/server/fetch_server_api"
 import { useDebounce } from "@/hooks/use-debounce"
-import { FetchClientGetApiNoToken, FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api"
-
-
-// interface Props {
-//   submissionsPromise: Promise<SubmissionPageResponse>
-// }
+import {  FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api"
 
 export function SubmissionTable() {
-
-
 
   const [isLoading, setIsLoading] = React.useState(false)
   const searchParams = useSearchParams()
@@ -40,7 +33,7 @@ export function SubmissionTable() {
 
   React.useEffect(() => {
     setIsLoading(true);
-    console.log(" run useEffect ");
+   
     fetchData();
   }, [debouncedQuery]);
 
@@ -61,7 +54,6 @@ export function SubmissionTable() {
         signal
       );
 
-      console.log("submissions >>> ", submissions)
 
       if (submissions?.status === 200) {
         setDataResult(submissions.result);
@@ -69,7 +61,9 @@ export function SubmissionTable() {
 
         //  Chỉ chạy nếu không bị huỷ
         console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
-        router.replace(`${pathName}?${debouncedQuery}`);
+        router.replace(`${pathName}?${debouncedQuery}`, {
+          scroll: false,
+        });
       }
 
     } catch (err: any) {
@@ -139,26 +133,19 @@ export function SubmissionTable() {
     }
   ]
 
-
   const { table } = useDataTable({
     data: dataResult, // dữ liệu đổ vào table
     columns, // cái này là từng dòng dữ liệu của bảng kể cả header
     pageCount: totalPages, // tổng số trang
     filterFields, // bộ lọc
     defaultPerPage: 10, // tổng số phần tử trên 1 trang
-    setQuerySearch: setQuerySearch,
-    querySearch: querySearch
   })
 
   const [isOpen, setIsOpen] = React.useState(false)
 
 
-
   return (
     <>
-
-
-
 
       <TableInstanceProvider table={table}>
 

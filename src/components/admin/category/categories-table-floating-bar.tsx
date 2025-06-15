@@ -15,9 +15,10 @@ import { toast } from "sonner"
 interface CategoriesTableFloatingBarProps {
   table: Table<Category>
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  fetchData:() =>void
 }
 
-export function CategoriesTableFloatingBar({ table, setIsLoading }: CategoriesTableFloatingBarProps) {
+export function CategoriesTableFloatingBar({ table, setIsLoading, fetchData }: CategoriesTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
   const [isOpen, setIsOpen] = React.useState(false)
   return (
@@ -31,6 +32,7 @@ export function CategoriesTableFloatingBar({ table, setIsLoading }: CategoriesTa
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           onSuccess={() => {
+            fetchData()
             toast.success(
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} danh mục thành công!`
             )

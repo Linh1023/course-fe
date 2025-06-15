@@ -68,7 +68,7 @@ export function DeleteUsersDialog({
               try {
                 await Promise.all(
                   users.map((user) =>
-                    FetchServerDeleteApi(API.ACCOUNT.DELETE(user.id), "/admin/user")
+                    FetchServerDeleteApi(API.ACCOUNT.DELETE(user.id))
                   )
                 );
                 props.onOpenChange?.(false);
