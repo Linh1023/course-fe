@@ -110,7 +110,8 @@ const Search = () => {
     console.log("Keyword >>> ", keyword)
     const category = params.get("category") ?? "";
     setSelectedCategory(category);
-
+    const sort = params.get("sort") ?? ""
+    setSortType(sort)
     fetchData();
   }, [querySearch]);
 

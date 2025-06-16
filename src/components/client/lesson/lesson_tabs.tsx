@@ -13,6 +13,7 @@ import CommentSection from "./comment_lesson_section"
 import { usePathname } from "next/navigation"
 import { useSubmittedClientContext } from "@/context/submitted_client_context"
 import CommentLessonSection from "./comment_lesson_section"
+import { LoaderIcon } from "@/components/share/loading-icon"
 interface Props {
     lessonResponse: LessonClientDetailResponse
 
@@ -25,6 +26,7 @@ const LessonTabs = (props: Props) => {
     const [isEmptyInputSubmiss, setIsEmptyInputSubmiss] = useState(false)
     const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext()
     const [isSubmitted, setIsSubmitted] = useState(false)
+    const [isLoadingSubmitted, setIsLoadingSubmitted] = useState(false)
 
 
     const pathName = usePathname()
@@ -51,7 +53,7 @@ const LessonTabs = (props: Props) => {
 
     const handleSubmission = async () => {
         if (file) {
-            startLoadingSpiner()
+            setIsLoadingSubmitted(true)
             const req: SubmissionClientRequest = {
                 lessonId: lessonResponse.id,
                 submissionUrl: "https://url"
@@ -70,7 +72,7 @@ const LessonTabs = (props: Props) => {
                 toast.error("Lỗi")
             }
 
-            stopLoadingSpiner()
+            setIsLoadingSubmitted(false)
         } else {
             setIsEmptyInputSubmiss(true)
         }
@@ -180,15 +182,25 @@ const LessonTabs = (props: Props) => {
                     )}
 
                     {isSubmitted === false && !submitted.includes(currentLessonId) && (
-                        <>
 
-                            <div className="flex  justify-center">
-                                <Button className="mt-[20px] bg-[#fe4444] hover:bg-[#f87171]"
-                                    onClick={() => { handleSubmission() }}
+                        <div className="flex  justify-center">
 
-                                >Nộp bài</Button>
-                            </div>
-                        </>
+                            <Button className="mt-[20px] bg-[#fe4444] hover:bg-[#f87171]"
+                                onClick={() => { handleSubmission() }}
+                            >
+                                {isLoadingSubmitted && (
+                                    <LoaderIcon
+                                        className="mr-1.5 size-4 animate-spin"
+                                        aria-hidden="true"
+                                    />
+                                )}
+                                Nộp bài
+
+                            </Button>
+
+                        </div>
+
+
                     )}
 
 

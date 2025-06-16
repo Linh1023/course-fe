@@ -196,18 +196,18 @@ const Navigation = () => {
     if (keyword.trim()) {
 
       if (pathName === "/search") {
-        const newQuerySearchTemporary = updateQueryStringManually(querySearch, "keyword", keyword.trim())
-        const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
+        const newQuerySearch = `keyword=${keyword.trim()}&page=1&size=12`
         if (newQuerySearch != querySearch) {
           setIsLoading(true);
           setQuerySearch(newQuerySearch)
         }
       } else {
 
-        const newQuerySearchTemporary = updateQueryStringManually(querySearch, "keyword", keyword.trim())
-        const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
 
-        setQuerySearch(newQuerySearch)
+        const newQuerySearch = `keyword=${keyword.trim()}&page=1&size=12`
+        if (newQuerySearch != querySearch) {
+          setQuerySearch(newQuerySearch)
+        }
         params.set("keyword", keyword.trim());
         params.set("page", "1");
         startLoadingSpiner();
