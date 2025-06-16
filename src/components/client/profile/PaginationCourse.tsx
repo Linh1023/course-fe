@@ -27,7 +27,7 @@ export default function PaginationCourse({
       <PaginationContent>
         <PaginationItem>
           <PaginationLink
-            href="#"
+
             aria-label="Go to previous page"
             size="icon"
             onClick={() => setPage((prev) => Math.max(1, prev - 1))}
@@ -40,7 +40,8 @@ export default function PaginationCourse({
         {pages.map((page) => (
           <PaginationItem key={page}>
             <PaginationLink
-              href="#"
+              type="button"
+              className=" cursor-pointer"
               isActive={page === currentPage}
               onClick={() => setPage(page)}
             >

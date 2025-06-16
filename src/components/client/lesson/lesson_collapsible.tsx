@@ -8,6 +8,7 @@ import {
 import { ChevronDown, Video } from "lucide-react"
 import LessonCollapsibleItem from "./lesson_collapsible_item"
 import { useState } from "react"
+import Link from "next/link"
 interface Props {
     chapterSidebarResponse: ChapterSidebarResponse
     clickedLessons: string[]
@@ -82,7 +83,8 @@ const LessonCollapsible = (props: Props) => {
                     <CollapsibleContent>
                         <div className="p-3 bg-gray-50/50 space-y-2">
                             {chapterSidebarResponse?.lessons?.map((lesson, index) => (
-                                <div
+                                <Link
+                                    href={`/lesson/${lesson.id}`}
                                     key={lesson.id || index}
                                     className="
                             transform transition-all duration-200 ease-in-out
@@ -96,7 +98,7 @@ const LessonCollapsible = (props: Props) => {
                                         lessonSidebarResponse={lesson}
                                         clickedLessons={clickedLessons}
                                     />
-                                </div>
+                                </Link>
                             ))}
 
                             {/* Empty state */}

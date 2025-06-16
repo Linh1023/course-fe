@@ -24,6 +24,7 @@ const Search = () => {
   const [sortType, setSortType] = useState<string>(() => searchParams.get("sort") ?? "");
   const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(() => parseInt(searchParams.get("page") || "1") ?? 1);
+  const [nameSearch, setnameSearch] = useState<string>("")
 
   // const [isLoading, setIsLoading] = useState(false)
   const pathName = usePathname()
@@ -32,9 +33,9 @@ const Search = () => {
   // const [querySearch, setQuerySearch] = useState(() => searchParams.toString());
   const { querySearch, setQuerySearch, isLoading, setIsLoading } = useQuerySearchClientContext()
 
-  useEffect(() => {
-    setQuerySearch(searchParams.get("keyword") ?? "");
-  }, [])
+  // useEffect(() => {
+  //   setQuerySearch(searchParams.get("keyword") ?? "");
+  // }, [])
 
 
   const handleSortChange = (sort: string) => {
@@ -106,6 +107,10 @@ const Search = () => {
 
   useEffect(() => {
     setIsLoading(true);
+    const params = new URLSearchParams(querySearch);
+    const keyword = params.get("keyword") ?? "";
+    setnameSearch(keyword);
+    console.log("Keyword >>> ", keyword)
 
     fetchData();
   }, [querySearch]);
@@ -218,7 +223,7 @@ const Search = () => {
           ) : research.length === 0 ? (
             <>
               <h2 className="text-xl font-semibold text-gray-800">
-                {`Kết quả tìm kiếm ${searchParams.get("keyword") != null ? `'${searchParams.get("keyword")}'` : ""}`}
+                {`Kết quả tìm kiếm ${nameSearch != "" ? `'${nameSearch}'` : ""}`}
               </h2>
               <div className="flex justify-center items-center h-[200px] text-gray-500 text-sm italic">
                 Không có khóa học nào phù hợp với tìm kiếm của bạn.
@@ -228,7 +233,7 @@ const Search = () => {
 
           ) : (
             <CourseList
-              title={`Kết quả tìm kiếm ${searchParams.get("keyword") != null ? `'${searchParams.get("keyword")}'` : ""}`}
+              title={`Kết quả tìm kiếm ${nameSearch != "" ? `'${nameSearch}'` : ""}`}
               courses={research}
               layout="grid"
             />

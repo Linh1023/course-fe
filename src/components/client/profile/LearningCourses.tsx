@@ -2,24 +2,25 @@
 "use client";
 
 import * as React from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import SearchHeader from "./SearchHeader";
 import PaginationCourse from "./PaginationCourse";
 import { MyCourseResponse, Course } from "@/types/response/account/my_course";
 import CoursesGrid from "./CourseGrid";
 import { LoaderIcon } from "@/components/share/loading-icon";
+import { FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api";
+import API from "@/api/api";
+import { updateQueryStringManually } from "@/utils/handle_query";
 
-interface LearningCoursesProps {
-  coursePromise: Promise<MyCourseResponse>;
-}
 
-export default function LearningCourses({ coursePromise }: LearningCoursesProps) {
+export default function LearningCourses() {
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const [courses, setCourses] = React.useState<Course[]>([]);
   const [totalPages, setTotalPages] = React.useState(1);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [isSearching, setIsSearching] = React.useState(false);
+
 
   const initialName = searchParams.get("name") || "";
   const initialPage = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
@@ -27,56 +28,100 @@ export default function LearningCourses({ coursePromise }: LearningCoursesProps)
   const [name, setName] = React.useState(initialName);
   const [page, setPage] = React.useState(initialPage);
 
-  // Biến để theo dõi query trước đó
-  const [prevQuery, setPrevQuery] = React.useState<string>("");
+  const pathName = usePathname()
+  const abortControllerRef = React.useRef<AbortController | null>(null); // Use ref to keep track of the controller
+
+
+
+  const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
+
 
   React.useEffect(() => {
-    const query = new URLSearchParams(searchParams).toString();
+    setIsLoading(true);
 
-    // Chỉ tải lại nếu query thay đổi
-    if (query !== prevQuery) {
-      const loadCourses = async () => {
-        setIsLoading(true);
-        try {
-          const { result, totalPages } = await coursePromise;
-          setCourses(result);
-          setTotalPages(totalPages);
-          setPrevQuery(query); // Cập nhật query trước đó
-        } catch (error) {
-          console.error("Error loading courses:", error);
-        } finally {
-          setIsLoading(false);
-          setIsSearching(false);
-        }
-      };
+    fetchData();
+  }, [querySearch]);
 
-      loadCourses();
+
+  const fetchData = async () => {
+    // Huỷ request cũ nếu còn
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
     }
-  }, [coursePromise, searchParams]);
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    const { signal } = abortController;
+
+    try {
+      const submissions = await FetchClientGetApiSignalNoToken(
+        `/api/proxy/search?${querySearch}&api=${API.ACCOUNT.MY_COURSE}`,
+        signal
+      );
+
+      if (submissions?.status === 200) {
+        setCourses(submissions.result);
+        setTotalPages(submissions.totalPages);
+
+        //  Chỉ chạy nếu không bị huỷ
+        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+        router.replace(`${pathName}?${querySearch}`, {
+          scroll: false,
+        });
+      }
+
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        // Yêu cầu bị huỷ, không làm gì cả
+        return;
+      } else {
+        console.error('Lỗi khi fetch:', err);
+      }
+    } finally {
+      // ✅ Luôn setIsLoading(false) nếu không bị huỷ
+      if (!signal.aborted) {
+        setIsLoading(false);
+      }
+    }
+  };
+
+
 
   React.useEffect(() => {
-    const params = new URLSearchParams();
-    if (name) params.set("name", name);
-    params.set("page", page.toString());
-    router.push(`/profile/course?${params.toString()}`, { scroll: false });
-  }, [name, page, router]);
 
-  const hasNoCourses = !isLoading && !isSearching && courses.length === 0;
+    const newQuerySearch = updateQueryStringManually(querySearch, "page", page.toString());
+    if (newQuerySearch != querySearch) {
+      setIsLoading(true);
+      setQuerySearch(newQuerySearch)
+    }
+  }, [page]);
+
+  React.useEffect(() => {
+    const newQuerySearchTemporary = updateQueryStringManually(querySearch, "name", name)
+    const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
+    if (newQuerySearch != querySearch) {
+      setIsLoading(true);
+      setQuerySearch(newQuerySearch);
+    }
+  }, [name]);
+
+
+  const hasNoCourses = !isLoading && courses.length === 0;
 
   return (
     <div className="grid gap-4">
-      <SearchHeader 
-        name={name} 
-        setName={setName} 
+      <SearchHeader
+        name={name}
+        setName={setName}
         setPage={setPage}
-        setIsSearching={setIsSearching}
+
       />
 
-      {(isLoading || isSearching) ? (
+      {(isLoading) ? (
         <div className="flex items-center justify-center py-8">
           <LoaderIcon className="mr-1.5 size-9 animate-spin" aria-hidden="true" />
           <span className="text-sm text-gray-600">
-            {isSearching ? "Đang tìm kiếm..." : "Đang tải khóa học..."}
+            {isLoading ? "Đang tìm kiếm..." : "Đang tải khóa học..."}
           </span>
         </div>
       ) : hasNoCourses ? (
