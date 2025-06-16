@@ -53,6 +53,7 @@ const Search = () => {
     }
     params.set("page", "1");
     router.push(`/search?${params.toString()}`);
+    
   };
 
   useEffect(() => {
