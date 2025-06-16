@@ -30,13 +30,12 @@ export function CourseEnrollmentTable() {
 
 
   const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
-  const debouncedQuery = useDebounce(querySearch, 500);
 
   React.useEffect(() => {
     setIsLoading(true);
 
     fetchData();
-  }, [debouncedQuery]);
+  }, [querySearch]);
 
 
   const fetchData = async () => {
@@ -51,7 +50,7 @@ export function CourseEnrollmentTable() {
 
     try {
       const submissions = await FetchClientGetApiSignalNoToken(
-        `/api/proxy/search?${debouncedQuery}&api=${API.COURSE_ENROLLMENT.ADMIN_LIST_COURSE_ENROLLMENT}`,
+        `/api/proxy/search?${querySearch}&api=${API.COURSE_ENROLLMENT.ADMIN_LIST_COURSE_ENROLLMENT}`,
         signal
       );
 
@@ -61,8 +60,8 @@ export function CourseEnrollmentTable() {
         setTotalPages(submissions.totalPages);
 
         //  Chỉ chạy nếu không bị huỷ
-        console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
-        router.replace(`${pathName}?${debouncedQuery}`, {
+        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+        router.replace(`${pathName}?${querySearch}`, {
           scroll: false,
         });
       }

@@ -31,14 +31,13 @@ export function CommentsTable() {
 
 
 
-  const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
-  const debouncedQuery = useDebounce(querySearch, 500);
+  const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString())
 
   React.useEffect(() => {
     setIsLoading(true);
 
     fetchData();
-  }, [debouncedQuery]);
+  }, [querySearch]);
 
 
   const fetchData = async () => {
@@ -53,7 +52,7 @@ export function CommentsTable() {
 
     try {
       const submissions = await FetchClientGetApiSignalNoToken(
-        `/api/proxy/search?${debouncedQuery}&api=${API.COMMENT.ADMIN_LIST_COMMENT}`,
+        `/api/proxy/search?${querySearch}&api=${API.COMMENT.ADMIN_LIST_COMMENT}`,
         signal
       );
 
@@ -63,8 +62,8 @@ export function CommentsTable() {
         setTotalPages(submissions.totalPages);
 
         //  Chỉ chạy nếu không bị huỷ
-        console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
-        router.replace(`${pathName}?${debouncedQuery}`, {
+        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+        router.replace(`${pathName}?${querySearch}`, {
           scroll: false,
         });
       }

@@ -29,13 +29,13 @@ export function SubmissionTable() {
 
 
   const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
-  const debouncedQuery = useDebounce(querySearch, 500);
+
 
   React.useEffect(() => {
     setIsLoading(true);
    
     fetchData();
-  }, [debouncedQuery]);
+  }, [querySearch]);
 
 
   const fetchData = async () => {
@@ -50,7 +50,7 @@ export function SubmissionTable() {
 
     try {
       const submissions = await FetchClientGetApiSignalNoToken(
-        `/api/proxy/search?${debouncedQuery}&api=${API.SUBMISSON.SUBMISSION}`,
+        `/api/proxy/search?${querySearch}&api=${API.SUBMISSON.SUBMISSION}`,
         signal
       );
 
@@ -60,8 +60,8 @@ export function SubmissionTable() {
         setTotalPages(submissions.totalPages);
 
         //  Chỉ chạy nếu không bị huỷ
-        console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
-        router.replace(`${pathName}?${debouncedQuery}`, {
+        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+        router.replace(`${pathName}?${querySearch}`, {
           scroll: false,
         });
       }
