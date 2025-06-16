@@ -30,13 +30,12 @@ export function SubmissionClientTable() {
   const abortControllerRef = React.useRef<AbortController | null>(null); // Use ref to keep track of the controller
 
   const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
-  const debouncedQuery = useDebounce(querySearch, 500);
 
   React.useEffect(() => {
     setIsLoading(true);
 
     fetchData();
-  }, [debouncedQuery]);
+  }, [querySearch]);
 
 
 
@@ -52,7 +51,7 @@ export function SubmissionClientTable() {
 
     try {
       const submissions = await FetchClientGetApiSignalNoToken(
-        `/api/proxy/search?${debouncedQuery}&api=${API.SUBMISSON.SUBMISSION_CLIENT_FILTER}`,
+        `/api/proxy/search?${querySearch}&api=${API.SUBMISSON.SUBMISSION_CLIENT_FILTER}`,
         signal
       );
 
@@ -62,8 +61,8 @@ export function SubmissionClientTable() {
         setTotalPages(submissions.totalPages);
 
         //  Chỉ chạy nếu không bị huỷ
-        console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
-        router.replace(`${pathName}?${debouncedQuery}`, {
+        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+        router.replace(`${pathName}?${querySearch}`, {
           scroll: false,
         });
       }

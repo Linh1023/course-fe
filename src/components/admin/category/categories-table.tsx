@@ -28,13 +28,13 @@ export function CategoriesTable() {
   const abortControllerRef = React.useRef<AbortController | null>(null); // Use ref to keep track of the controller
 
   const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
-  const debouncedQuery = useDebounce(querySearch, 500);
+
 
   React.useEffect(() => {
     setIsLoading(true);
 
     fetchData();
-  }, [debouncedQuery]);
+  }, [querySearch]);
 
 
   const fetchData = async () => {
@@ -49,7 +49,7 @@ export function CategoriesTable() {
 
     try {
       const submissions = await FetchClientGetApiSignalNoToken(
-        `/api/proxy/search?${debouncedQuery}&api=${API.CATEGORY.ROOT}`,
+        `/api/proxy/search?${querySearch}&api=${API.CATEGORY.ROOT}`,
         signal
       );
 
@@ -59,8 +59,8 @@ export function CategoriesTable() {
         setTotalPages(submissions.totalPages);
 
         //  Chỉ chạy nếu không bị huỷ
-        console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
-        router.replace(`${pathName}?${debouncedQuery}`, {
+        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+        router.replace(`${pathName}?${querySearch}`, {
           scroll: false,
         });
       }
