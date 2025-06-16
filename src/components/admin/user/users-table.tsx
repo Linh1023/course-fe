@@ -26,13 +26,13 @@ export function UsersTable() {
   const abortControllerRef = React.useRef<AbortController | null>(null); // Use ref to keep track of the controller
 
   const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
-  const debouncedQuery = useDebounce(querySearch, 500);
+
 
 
   React.useEffect(() => {
     setIsLoading(true);
     fetchData();
-  }, [debouncedQuery]);
+  }, [querySearch]);
 
 
 
@@ -48,7 +48,7 @@ export function UsersTable() {
 
     try {
       const submissions = await FetchClientGetApiSignalNoToken(
-        `/api/proxy/search?${debouncedQuery}&api=${API.ACCOUNT.ROOT}`,
+        `/api/proxy/search?${querySearch}&api=${API.ACCOUNT.ROOT}`,
         signal
       );
 
@@ -58,8 +58,8 @@ export function UsersTable() {
         setTotalPages(submissions.totalPages); 
 
         //  Chỉ chạy nếu không bị huỷ
-        console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
-        router.replace(`${pathName}?${debouncedQuery}`, {
+        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+        router.replace(`${pathName}?${querySearch}`, {
           scroll: false,
         });
       }

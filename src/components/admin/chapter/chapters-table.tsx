@@ -31,13 +31,13 @@ export function ChaptersTable({ courseId }: ChaptersTableProps) {
 
 
   const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
-  const debouncedQuery = useDebounce(querySearch, 500);
+
 
   React.useEffect(() => {
     setIsLoading(true);
 
     fetchData();
-  }, [debouncedQuery]);
+  }, [querySearch]);
 
 
   const fetchData = async () => {
@@ -52,7 +52,7 @@ export function ChaptersTable({ courseId }: ChaptersTableProps) {
 
     try {
       const submissions = await FetchClientGetApiSignalNoToken(
-        `/api/proxy/search?${debouncedQuery}&api=${API.CHAPTER.ROOT}/${courseId}`,
+        `/api/proxy/search?${querySearch}&api=${API.CHAPTER.ROOT}/${courseId}`,
         signal
       );
 
@@ -62,8 +62,8 @@ export function ChaptersTable({ courseId }: ChaptersTableProps) {
         setTotalPages(submissions.totalPages);
 
         //  Chỉ chạy nếu không bị huỷ
-        console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
-        router.replace(`${pathName}?${debouncedQuery}`, {
+        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+        router.replace(`${pathName}?${querySearch}`, {
           scroll: false,
         });
       }

@@ -32,13 +32,13 @@ export function CourseProgressTable(props:Props) {
 
 
   const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
-  const debouncedQuery = useDebounce(querySearch, 500);
+
 
   React.useEffect(() => {
     setIsLoading(true);
 
     fetchData();
-  }, [debouncedQuery]);
+  }, [querySearch]);
 
 
   const fetchData = async () => {
@@ -53,7 +53,7 @@ export function CourseProgressTable(props:Props) {
 
     try {
       const submissions = await FetchClientGetApiSignalNoToken(
-        `/api/proxy/search?${debouncedQuery}&api=${API.ACCOUNT.COURSE_PROGRESS}/${id}`,
+        `/api/proxy/search?${querySearch}&api=${API.ACCOUNT.COURSE_PROGRESS}/${id}`,
         signal
       );
 
@@ -63,8 +63,8 @@ export function CourseProgressTable(props:Props) {
         setTotalPages(submissions.totalPages);
 
         //  Chỉ chạy nếu không bị huỷ
-        console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
-        router.replace(`${pathName}?${debouncedQuery}`, {
+        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+        router.replace(`${pathName}?${querySearch}`, {
           scroll: false,
         });
       }
