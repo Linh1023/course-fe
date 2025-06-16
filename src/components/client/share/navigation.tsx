@@ -207,13 +207,13 @@ const Navigation = () => {
         const newQuerySearchTemporary = updateQueryStringManually(querySearch, "keyword", keyword.trim())
         const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
 
-          setQuerySearch(newQuerySearch)
-          params.set("keyword", keyword.trim());
-          params.set("page", "1");
-          startLoadingSpiner();
-          console.log("hihi", `/search?${params.toString()}`)
-          router.push(`/search?${params.toString()}`);
-        
+        setQuerySearch(newQuerySearch)
+        params.set("keyword", keyword.trim());
+        params.set("page", "1");
+        startLoadingSpiner();
+        console.log("hihi", `/search?${params.toString()}`)
+        router.push(`/search?${params.toString()}`);
+
 
       }
       setShowSuggestions(false); // Ẩn hẳn
@@ -262,6 +262,13 @@ const Navigation = () => {
                           href={`/search?category=${category.id}&page=1&size=12`}
                           key={index}
                           className="rounded-md p-3 transition-colors hover:bg-muted/70"
+                          onClick={() => {
+                            const newQuerySearch = `category=${category.id}&page=1&size=12`
+                            if (newQuerySearch != querySearch) {
+                              setQuerySearch(newQuerySearch);
+                            }
+
+                          }}
                         >
                           <div key={category.id}>
                             <p className="mb-1 font-semibold text-foreground">
@@ -689,6 +696,13 @@ const Navigation = () => {
                               href={`/search?category=${category.id}&page=1&size=12`}
                               key={index}
                               className="rounded-md p-3 transition-colors hover:bg-muted/70"
+                              onClick={() => {
+                                const newQuerySearch = `category=${category.id}&page=1&size=12`
+                                if (newQuerySearch != querySearch) {
+                                  setQuerySearch(newQuerySearch);
+                                }
+
+                              }}
                             >
 
                               <p className="mb-1 font-semibold text-foreground">
