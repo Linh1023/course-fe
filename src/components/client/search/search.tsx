@@ -33,11 +33,6 @@ const Search = () => {
   // const [querySearch, setQuerySearch] = useState(() => searchParams.toString());
   const { querySearch, setQuerySearch, isLoading, setIsLoading } = useQuerySearchClientContext()
 
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    const category = params.get("category") ?? "";
-    setSelectedCategory(category);
-  }, [searchParams])
 
 
   const handleSortChange = (sort: string) => {
@@ -113,6 +108,8 @@ const Search = () => {
     const keyword = params.get("keyword") ?? "";
     setnameSearch(keyword);
     console.log("Keyword >>> ", keyword)
+    const category = params.get("category") ?? "";
+    setSelectedCategory(category);
 
     fetchData();
   }, [querySearch]);
