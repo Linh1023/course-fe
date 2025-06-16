@@ -10,7 +10,7 @@ const MyContact = () => {
     setResult("Đang gửi...");
 
     const formData = new FormData(event.target as HTMLFormElement);
-    formData.append("access_key", "24878b1c-886f-4633-814e-479125a1e3d9");
+    formData.append("access_key", "33e54409-dbb0-4a64-9527-e05b6238edab");
 
     const response = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
