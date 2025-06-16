@@ -204,11 +204,17 @@ const Navigation = () => {
         }
       } else {
 
-        params.set("keyword", keyword.trim());
-        params.set("page", "1");
-        startLoadingSpiner();
-        console.log("hihi", `/search?${params.toString()}`)
-        router.push(`/search?${params.toString()}`);
+        const newQuerySearchTemporary = updateQueryStringManually(querySearch, "keyword", keyword.trim())
+        const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
+
+          setQuerySearch(newQuerySearch)
+          params.set("keyword", keyword.trim());
+          params.set("page", "1");
+          startLoadingSpiner();
+          console.log("hihi", `/search?${params.toString()}`)
+          router.push(`/search?${params.toString()}`);
+        
+
       }
       setShowSuggestions(false); // Ẩn hẳn
       setSuggestions([]); // Ẩn gợi ý
@@ -226,10 +232,14 @@ const Navigation = () => {
                 className=" rounded-[100px] h-[50px] w-[50px]"
                 alt="Logo"
               />
-              <span className="text-lg font-semibold tracking-tighter">
+              {/* <span className="text-lg font-semibold tracking-tighter">
                 Khóa học
-              </span>
+              </span> */}
             </Link>
+
+
+
+
 
 
 
@@ -305,9 +315,10 @@ const Navigation = () => {
                     ) : suggestions.length > 0 ? (
                       <>
                         {suggestions.slice(0, 4).map((course) => (
-                          <div
+                          <Link
                             key={course.id}
-                            className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100 cursor-default"
+                            href={`/course/${course.id}`}
+                            className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
                           >
                             <img
                               src={course.imageUrl}
@@ -317,7 +328,7 @@ const Navigation = () => {
                             <span className="font-bold text-sm w-4/5 truncate">
                               {course.name}
                             </span>
-                          </div>
+                          </Link>
                         ))}
                         {page > 1 && (
                           <div
@@ -391,7 +402,7 @@ const Navigation = () => {
                         </Link>
                         <Link href={"/setting"}>
                           <div className="dropdown-item-custom">
-                            <Settings className="mr-[15px]" /> Cài đặt
+                            <Settings className="mr-[15px]" /> Cài đặt và bảo mật
                           </div>
                         </Link>
 
@@ -410,32 +421,96 @@ const Navigation = () => {
             </div>
 
             <Sheet>
-              <SheetTrigger asChild className="lg:hidden">
-                <div className="flex  items-center" >
-                  {currentAccount === null && (<>
-                    <Link href={"/login"} className="mr-[10px]">
-                      <Button className="bg-[#FE4444] hover:bg-[#F87171]">
-                        {" "}
-                        Đăng nhập{" "}
-                      </Button>
-                    </Link>
-                  </>)}
+              <div className="flex justify-end  items-center lg:hidden">
 
-                  <div className="flex  items-center">
-                    {currentAccount != null && (<>
-                      <img
-                        src={currentAccount.avatarUrl}
-                        className=" rounded-[100px] h-[45px] w-[45px] mr-[10px]"
-                        alt="Avatar"
-                      />
+                <div className="relative max-w-xl mx-auto search-reponsive mr-[10px] ml-[10px]">
+                  <div className="flex items-center border rounded-md px-2 shadow-sm">
+                    <Search
+                      className="mr-2 text-gray-500"
+                      onClick={updateUrlKeyword}
+                    />
+                    <Input
+                      type="text"
+                      placeholder="Tìm kiếm khóa học..."
+                      value={keyword}
+                      onChange={(e) => setKeyword(e.target.value)}
+                      className="w-full border-none focus:ring-0"
+                      onKeyDown={handleKeyDown}
+                    />
+                  </div>
+
+                  {showSuggestions && keyword.trim() && (
+                    <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-md  z-50 max-h-60 overflow-y-auto border">
+                      {isSearching ? (
+                        <div className="flex items-center gap-2 px-4 py-2 text-sm text-gray-500">
+                          <LoaderIcon className="animate-spin size-4" />
+                          Đang tìm kiếm...
+                        </div>
+                      ) : suggestions.length > 0 ? (
+                        <>
+                          {suggestions.slice(0, 4).map((course) => (
+                            <Link
+                              href={`/course/${course.id}`}
+                              key={course.id}
+                              className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100  cursor-pointer"
+                            >
+                              <img
+                                src={course.imageUrl}
+                                alt={course.name}
+                                className="w-10 h-10 rounded object-cover"
+                              />
+                              <span className="font-bold text-sm w-4/5 truncate">
+                                {course.name}
+                              </span>
+                            </Link>
+                          ))}
+                          {page > 1 && (
+                            <div
+                              className="px-4 py-2 text-sm text-red-500 hover:underline cursor-pointer"
+                              onClick={updateUrlKeyword}
+                            >
+                              Xem thêm...
+                            </div>
+                          )}
+                        </>
+                      ) : hasSearched ? (
+                        <div className="px-4 py-2 text-sm text-gray-500 italic">
+                          Không có kết quả tìm kiếm
+                        </div>
+                      ) : null}
+                    </div>
+                  )}
+                </div>
+
+
+                <SheetTrigger asChild >
+                  <div className="flex  items-center" >
+                    {currentAccount === null && (<>
+                      <Link href={"/login"} className="mr-[10px]">
+                        <Button className="bg-[#FE4444] hover:bg-[#F87171]">
+                          {" "}
+                          Đăng nhập{" "}
+                        </Button>
+                      </Link>
                     </>)}
 
-                    <Button variant="outline" >
-                      <MenuIcon className="h-4 w-4" />
-                    </Button>
+                    <div className="flex  items-center">
+                      {currentAccount != null && (<>
+                        <img
+                          src={currentAccount.avatarUrl}
+                          className=" rounded-[100px] h-[45px] w-[45px] mr-[10px]"
+                          alt="Avatar"
+                        />
+                      </>)}
+
+                      <Button variant="outline" >
+                        <MenuIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </SheetTrigger>
+                </SheetTrigger>
+              </div>
+
               <SheetContent side="top" className="max-h-screen overflow-auto">
                 <SheetHeader>
                   <SheetTitle>
@@ -514,7 +589,7 @@ const Navigation = () => {
                                 <div className="flex">
                                   <Settings className="mr-[15px]" />
                                   <p className="mb-1 font-semibold text-foreground">
-                                    Cài đặt
+                                    Cài đặt và bảo mật
                                   </p>
                                 </div>
                               </Link>
@@ -539,7 +614,7 @@ const Navigation = () => {
                   )}
 
                   <div className="flex flex-col gap-6">
-                    <div className="relative  mx-auto w-full">
+                    {/* <div className="relative  mx-auto w-full">
                       <div className="flex items-center border rounded-md px-2 shadow-sm w-full">
                         <Search
                           className="mr-2 text-gray-500"
@@ -595,7 +670,7 @@ const Navigation = () => {
                           ) : null}
                         </div>
                       )}
-                    </div>
+                    </div> */}
 
                     <Link href="/" className="font-medium">
                       Trang chủ
