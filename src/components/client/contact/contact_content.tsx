@@ -4,12 +4,23 @@ import { Phone, Mail, MapPin, Send, CheckCircle } from "lucide-react";
 
 const MyContact = () => {
   const [result, setResult] = useState("");
+  const [formError, setFormError] = useState("");
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setFormError("");
     setResult("Đang gửi...");
 
     const formData = new FormData(event.target as HTMLFormElement);
+    const email = formData.get("email") as string;
+    const phone = formData.get("phone") as string;
+
+    if (!email && !phone) {
+      setFormError("Vui lòng nhập email hoặc số điện thoại");
+      setResult("");
+      return;
+    }
+
     formData.append("access_key", "33e54409-dbb0-4a64-9527-e05b6238edab");
 
     const response = await fetch("https://api.web3forms.com/submit", {
@@ -73,7 +84,7 @@ const MyContact = () => {
 
           <div className="group">
             <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 h-56 flex flex-col">
-               <div className="bg-red-500 w-12 h-12 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform flex-shrink-0">
+              <div className="bg-red-500 w-12 h-12 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform flex-shrink-0">
                 <MapPin className="text-white" size={24} />
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-4">Địa Chỉ</h3>
@@ -102,7 +113,7 @@ const MyContact = () => {
                   alt="QR Facebook"
                   className="w-48 h-48 mx-auto object-contain border-4 border-white rounded-2xl shadow-lg group-hover:scale-105 transition-transform"
                 />
-                <p className="mt-4 text-gray-600">Quét mã QR để liên hệ qua Facebook <a href="https://www.facebook.com/tran.cuong.737360"  className="text-blue-600 underline hover:text-blue-800"  target="_blank">tran.cuong.737360</a></p> 
+                <p className="mt-4 text-gray-600">Quét mã QR để liên hệ qua Facebook <a href="https://www.facebook.com/tran.cuong.737360" className="text-blue-600 underline hover:text-blue-800" target="_blank">tran.cuong.737360</a></p>
               </div>
             </div>
 
@@ -124,7 +135,7 @@ const MyContact = () => {
 
         {/* Contact Form */}
         <div className="bg-white rounded-3xl shadow-xl p-12 border border-gray-100">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">Gửi Tin Nhắn Cho Chúng Tôi</h2>
             <p className="text-gray-600 text-lg">Điền thông tin và chúng tôi sẽ phản hồi trong thời gian sớm nhất</p>
           </div>
@@ -135,20 +146,19 @@ const MyContact = () => {
                 <label className="text-sm font-semibold text-gray-700 block">Họ và Tên *</label>
                 <input
                   placeholder="Họ và tên của bạn"
-                  className="w-full bg-gray-50 border-2 border-gray-200 p-4 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 text-gray-800"
+                  className="w-full bg-gray-50 border-2 border-gray-200 p-3 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 text-gray-800"
                   type="text"
                   required
                   name="name"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700 block">Email *</label>
+                <label className="text-sm font-semibold text-gray-700 block">Email</label>
                 <input
                   type="email"
                   placeholder="your.email@example.com"
-                  required
                   name="email"
-                  className="w-full bg-gray-50 border-2 border-gray-200 p-4 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 text-gray-800"
+                  className="w-full bg-gray-50 border-2 border-gray-200 p-3 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 text-gray-800"
                 />
               </div>
             </div>
@@ -158,11 +168,10 @@ const MyContact = () => {
               <input
                 type="tel"
                 placeholder="Số điện thoại của bạn"
-                required
                 name="phone"
-                className="w-full bg-gray-50 border-2 border-gray-200 p-4 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 text-gray-800"
+                className="w-full bg-gray-50 border-2 border-gray-200 p-3 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 text-gray-800"
               />
-              <p className="text-xs text-gray-500">Giúp chúng tôi liên hệ nhanh hơn</p>
+              <p className="text-xs text-gray-500">Vui lòng nhập email hoặc số điện thoại</p>
             </div>
 
             <div className="space-y-2">
@@ -172,28 +181,33 @@ const MyContact = () => {
                 placeholder="Hãy chia sẻ với chúng tôi những gì bạn muốn..."
                 required
                 name="message"
-                className="w-full bg-gray-50 border-2 border-gray-200 p-4 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 resize-none text-gray-800"
+                className="w-full bg-gray-50 border-2 border-gray-200 p-3 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 resize-none text-gray-800"
               />
             </div>
 
             <div className="text-center">
               <button
                 type="submit"
-                className="bg-red-500 hover:bg-red-600 text-white px-12 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center gap-3 mx-auto"
+                className="bg-red-500 hover:bg-red-600 text-white px-12 py-3 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center gap-3 mx-auto"
               >
                 <Send size={20} />
                 Gửi Tin Nhắn
               </button>
             </div>
 
+            {formError && (
+              <div className="text-center p-4 rounded-xl bg-red-100 text-red-800 border border-red-200">
+                <span className="font-medium">{formError}</span>
+              </div>
+            )}
+
             {result && (
-              <div className={`text-center p-4 rounded-xl ${
-                result.includes('thành công') 
-                  ? 'bg-green-100 text-green-800 border border-green-200' 
-                  : result.includes('Đang gửi') 
+              <div className={`text-center p-4 rounded-xl ${result.includes('thành công')
+                ? 'bg-green-100 text-green-800 border border-green-200'
+                : result.includes('Đang gửi')
                   ? 'bg-blue-100 text-blue-800 border border-blue-200'
                   : 'bg-red-100 text-red-800 border border-red-200'
-              }`}>
+                }`}>
                 <div className="flex items-center justify-center gap-2">
                   {result.includes('thành công') && <CheckCircle size={20} />}
                   <span className="font-medium">{result}</span>
