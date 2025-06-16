@@ -22,9 +22,10 @@ import { toast } from "sonner"
 
 interface getColumnsProps {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+   fetchData: () => Promise<void>
 }
 
-export function getColumns({ setIsLoading }: getColumnsProps): ColumnDef<Category>[] {
+export function getColumns({ setIsLoading, fetchData }: getColumnsProps): ColumnDef<Category>[] {
   return [
     {
       id: "select",
@@ -116,6 +117,7 @@ export function getColumns({ setIsLoading }: getColumnsProps): ColumnDef<Categor
               setIsLoading={setIsLoading}
               onOpenChange={setShowUpdateCategorySheet}
               category={row.original}
+              fetchData= {fetchData}
             />
             <DeleteCategoriesDialog
               setIsLoading={setIsLoading}
@@ -124,6 +126,7 @@ export function getColumns({ setIsLoading }: getColumnsProps): ColumnDef<Categor
               categories={[row.original]}
               showTrigger={false}
               onSuccess={() => {
+                fetchData()
                 toast.success(
                   `Đã xóa danh mục "${row.original.name}" thành công!`
                 )

@@ -15,9 +15,10 @@ import { DeleteLessonsDialog } from "./delete-lesson-dialog"
 interface LessonsTableFloatingBarProps {
   table: Table<Lesson>
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  fetchData :() =>void
 }
 
-export function LessonsTableFloatingBar({ table, setIsLoading }: LessonsTableFloatingBarProps) {
+export function LessonsTableFloatingBar({ table, setIsLoading, fetchData }: LessonsTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
   const [isOpen, setIsOpen] = React.useState(false)
   return (
@@ -31,6 +32,7 @@ export function LessonsTableFloatingBar({ table, setIsLoading }: LessonsTableFlo
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           onSuccess={() => {
+            fetchData()
             toast.success(
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} bài học thành công!`
             )

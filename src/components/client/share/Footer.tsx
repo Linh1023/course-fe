@@ -7,7 +7,7 @@ import ZaloDialog from "./zalo_dialog"
 
 const Footer = () => {
   const usePathName = usePathname()
-  const [isShowZaloDialog, setIsShowZaloDialog] = useState(false);
+
   if (usePathName.includes("lesson"))
     return (
       <>
@@ -23,15 +23,18 @@ const Footer = () => {
           <div className="flex flex-col gap-4 min-w-[180px]">
             <div className="text-2xl font-semibold">Mạng xã hội</div>
             <div className="flex gap-4">
+              
               <a href="https://www.facebook.com/tran.cuong.737360" target="_blank">
                 <Facebook className="w-6 h-6 hover:text-red-500 cursor-pointer" />
               </a>
 
-              <span className="font-bold text-[19px] cursor-pointer hover:text-red-500" 
-              onClick={() => {setIsShowZaloDialog(true)}}
-              >
-                Zalo
-              </span>
+              <a href="https://zalo.me/0865275183" target="_blank">
+              
+                <span className="font-bold text-[19px] cursor-pointer hover:text-red-500"
+                >
+                  Zalo
+                </span>
+              </a>
 
             </div>
           </div>
@@ -51,22 +54,10 @@ const Footer = () => {
             <p>Học viên có thể truy cập mọi lúc, mọi nơi với nội dung được cập nhật liên tục.</p>
             <p>Nếu có bất kỳ thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ chúng tôi để được hỗ trợ kịp thời.</p>
           </div>
-
-          {/* Links */}
-          {/* <div className="flex flex-col  gap-1 text-sm min-w-[150px]">
-          <h4 className="font-semibold text-2xl mb-2">Links</h4>
-          <p>Khóa học</p>
-          <p>Khóa học</p>
-          <p>YourLogo</p>
-          <p>YourLogo</p>
-        </div> */}
         </div>
       </footer>
-      <ZaloDialog
-        isShowZaloDialog={isShowZaloDialog}
-        setIsShowZaloDialog={setIsShowZaloDialog}
-      />
-    
+
+
     </>
 
   )

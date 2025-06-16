@@ -25,27 +25,27 @@ export const SidebarNav = () => {
   const items = [
     {
       title: "Trang chủ",
-      url: "/admin",
+      url: "/admin?page=1&perPage=10",
       icon: Home,
     },
     {
       title: "Danh mục",
-      url: "/admin/category",
+      url: "/admin/category?page=1&perPage=10",
       icon: List,
     },
     {
       title: "Bình luận",
-      url: "/admin/comment",
+      url: "/admin/comment?page=1&perPage=10",
       icon: MessageCircle,
     },
     {
       title: "Khóa học",
-      url: "/admin/course",
+      url: "/admin/course?page=1&perPage=10",
       icon: BookOpen,
     },
     {
       title: "Đăng ký khóa học",
-      url: "/admin/course_enrollment",
+      url: "/admin/course_enrollment?page=1&perPage=10",
       icon: ClipboardList,
     },
     {
@@ -55,7 +55,7 @@ export const SidebarNav = () => {
     },
     {
       title: "Người dùng",
-      url: "/admin/user",
+      url: "/admin/user?page=1&perPage=10",
       icon: Users,
     },
   ];

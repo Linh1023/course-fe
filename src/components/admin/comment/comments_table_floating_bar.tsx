@@ -14,9 +14,11 @@ import { DeleteCommentsDialog } from "./delete_comments_dialog"
 
 interface CommentsTableFloatingBarProps {
   table: Table<CommentAdmin>
+  setIsLoading: (v: boolean) => void
+  fetchData: () => void
 }
 
-export function CommentsTableFloatingBar({ table }: CommentsTableFloatingBarProps) {
+export function CommentsTableFloatingBar({ table, setIsLoading, fetchData }: CommentsTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
   const [isOpen, setIsOpen] = React.useState(false)
   return (
@@ -29,6 +31,8 @@ export function CommentsTableFloatingBar({ table }: CommentsTableFloatingBarProp
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           onSuccess={() => {
+            setIsLoading(true)
+            fetchData()
             toast.success(
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} bình luận thành công!`
             )

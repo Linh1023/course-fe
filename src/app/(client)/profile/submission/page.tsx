@@ -22,26 +22,15 @@ const SubmissionPage = async (props: SubmissionPageProps) => {
     const submissionsPromise = FetchServerGetApi(API.SUBMISSON.SUBMISSION_CLIENT_FILTER + `?${query}`, "/profile/submission");
 
     return (
-        <>  
+        <>
             <h1 className="p-4 md:p-0 md:mb-2 md:pb-2 text-lg font-semibold text-gray-900 md:mt-[18px] border-b border-gray-200">Bài tập của tôi</h1>
             <div className="flex flex-col gap-4">
 
-                <React.Suspense fallback={<DataTableSkeleton
-                    columnCount={3}
-                    cellWidths={["5rem", "40rem", "12rem"]}
-                    shrinkZero
-                />} >
-                    {/* Khoang tg */}
-                    <DateRangePicker
-                        triggerSize="sm"
-                        triggerClassName="w-56 sm:w-60 m-1 px-4"
-                        className="dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
-                        align="end"
-                    />
-                    <SubmissionClientTable
-                        submissionsPromise={submissionsPromise} 
-                    />
-                </React.Suspense>
+
+                <SubmissionClientTable
+
+                />
+
             </div>
         </>
     )

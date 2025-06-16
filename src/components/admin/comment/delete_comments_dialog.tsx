@@ -71,8 +71,7 @@ export function DeleteCommentsDialog({
                       {
                         commentId: comment.id, // "1,2,3"
                         status: "inactive",
-                      },
-                      "/admin/comment"
+                      }
                     )
                   )
                 );

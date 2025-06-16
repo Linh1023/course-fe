@@ -23,9 +23,10 @@ import { formatTime } from "@/utils/format_time"
 
 interface getColumnsProps {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+   fetchData: () => Promise<void>
 }
 
-export function getColumns({ setIsLoading }: getColumnsProps): ColumnDef<Lesson>[] {
+export function getColumns({ setIsLoading, fetchData }: getColumnsProps): ColumnDef<Lesson>[] {
   return [
     {
       id: "select",
@@ -146,6 +147,7 @@ export function getColumns({ setIsLoading }: getColumnsProps): ColumnDef<Lesson>
               open={showUpdateLessonSheet}
               onOpenChange={setShowUpdateLessonSheet}
               lesson={row.original}
+              fetchData= {fetchData}
             />
             <DeleteLessonsDialog
               setIsLoading={setIsLoading}
@@ -154,6 +156,7 @@ export function getColumns({ setIsLoading }: getColumnsProps): ColumnDef<Lesson>
               lessons={[row.original]}
               showTrigger={false}
               onSuccess={() => {
+                fetchData()
                 toast.success(
                   `Đã xóa bài học "${row.original.name}" thành công!`
                 )

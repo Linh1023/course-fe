@@ -11,7 +11,3 @@ interface SubmissionClientResponse {
     status:string; // trang thai
 }
 
-interface SubmissionClientPageResponse {
-  result: SubmissionClientResponse[];
-  totalPages: number;
-}

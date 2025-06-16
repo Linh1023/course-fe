@@ -14,15 +14,9 @@ import { DateRangePicker } from "../share/data-table/advance/date-range-picker"
 import API from "@/api/api"
 import { FetchServerGetApi } from "@/actions/server/fetch_server_api"
 import { useDebounce } from "@/hooks/use-debounce"
-
-
-// interface Props {
-//   submissionsPromise: Promise<SubmissionPageResponse>
-// }
+import {  FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api"
 
 export function SubmissionTable() {
-
-
 
   const [isLoading, setIsLoading] = React.useState(false)
   const searchParams = useSearchParams()
@@ -30,44 +24,68 @@ export function SubmissionTable() {
   const [dataResult, setDataResult] = React.useState<SubmissionAdminResponse[]>([])
   const [totalPages, setTotalPages] = React.useState(1)
   const router = useRouter()
+  const abortControllerRef = React.useRef<AbortController | null>(null); // Use ref to keep track of the controller
 
 
 
   const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
-  const debouncedQuery = useDebounce(querySearch, 1000);
-  // Mỗi lần fetch tăng id
-  const requestIdRef = React.useRef(0);
+  const debouncedQuery = useDebounce(querySearch, 500);
 
   React.useEffect(() => {
-    // Tránh fetch lần đầu nếu bạn không muốn
-
-    const currentRequestId = ++requestIdRef.current;
     setIsLoading(true);
+   
+    fetchData();
+  }, [debouncedQuery]);
 
-    const fetchData = async () => {
 
-      const submissions = await FetchServerGetApi(API.SUBMISSON.SUBMISSION + `?${debouncedQuery}`);
+  const fetchData = async () => {
+    // Huỷ request cũ nếu còn
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
 
-      if (requestIdRef.current === currentRequestId ||  (currentRequestId ===1 &&  requestIdRef.current ===2)) {
-        if (submissions?.status === 200) {
-          setDataResult(submissions.result);
-          setTotalPages(submissions.totalPages);
-        }
-        console.log("replace >>> ",`${pathName}?${debouncedQuery}`)
-        router.replace(`${pathName}?${debouncedQuery}`)
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    const { signal } = abortController;
+
+    try {
+      const submissions = await FetchClientGetApiSignalNoToken(
+        `/api/proxy/search?${debouncedQuery}&api=${API.SUBMISSON.SUBMISSION}`,
+        signal
+      );
+
+
+      if (submissions?.status === 200) {
+        setDataResult(submissions.result);
+        setTotalPages(submissions.totalPages);
+
+        //  Chỉ chạy nếu không bị huỷ
+        console.log("fetch >>> ", `${pathName}?${debouncedQuery}`);
+        router.replace(`${pathName}?${debouncedQuery}`, {
+          scroll: false,
+        });
+      }
+
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        // Yêu cầu bị huỷ, không làm gì cả
+        return;
+      } else {
+        console.error('Lỗi khi fetch:', err);
+      }
+    } finally {
+      // ✅ Luôn setIsLoading(false) nếu không bị huỷ
+      if (!signal.aborted) {
         setIsLoading(false);
       }
     }
-
-    fetchData();
-
-  }, [debouncedQuery]);
+  };
 
 
 
 
   // cái này là từng dòng dữ liệu của bảng kể cả header
-  const columns = React.useMemo(() => getSubmissionColumns(setIsLoading), [setIsLoading])
+  const columns = React.useMemo(() => getSubmissionColumns(setIsLoading, fetchData), [setIsLoading, fetchData])
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -115,47 +133,47 @@ export function SubmissionTable() {
     }
   ]
 
-
   const { table } = useDataTable({
     data: dataResult, // dữ liệu đổ vào table
     columns, // cái này là từng dòng dữ liệu của bảng kể cả header
     pageCount: totalPages, // tổng số trang
     filterFields, // bộ lọc
     defaultPerPage: 10, // tổng số phần tử trên 1 trang
-    setQuerySearch: setQuerySearch,
-    querySearch: querySearch
   })
 
   const [isOpen, setIsOpen] = React.useState(false)
 
 
-
   return (
     <>
 
-
-      <DateRangePicker
-        setIsLoading={setIsLoading}
-        triggerSize="sm"
-        triggerClassName="ml-auto w-56 sm:w-60 mr-1"
-        className="dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
-        align="end"
-      />
-
       <TableInstanceProvider table={table}>
+
+        <DateRangePicker
+          setIsLoading={setIsLoading}
+          setQuerySearch={setQuerySearch}
+          querySearch={querySearch}
+          triggerSize="sm"
+          triggerClassName="ml-auto w-56 sm:w-60 mr-1"
+          className="dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
+          align="end"
+        />
 
         <DataTable
           table={table}
           isLoading={isLoading}
           setIsLoading={setIsLoading}
+          setQuerySearch={setQuerySearch}
+          querySearch={querySearch}
           // SubmissionTableFloatingBar cái này là cái button popup lên ở phía dưới màn hình khi mình chọn 1 dòng dữ liệu để xóa
           floatingBar={<SubmissionTableFloatingBar table={table}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             setIsLoading={setIsLoading}
+            fetchData={fetchData}
           />}
         >
-
+          {/* bộ lọc nè */}
           <DataTableAdvancedToolbar filterFields={filterFields}
             setIsLoading={setIsLoading}
             setQuerySearch={setQuerySearch}
@@ -168,6 +186,7 @@ export function SubmissionTable() {
               setIsOpen={setIsOpen}
               table={table}
               setIsLoading={setIsLoading}
+              fetchData={fetchData}
             />
 
           </DataTableAdvancedToolbar>

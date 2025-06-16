@@ -22,7 +22,8 @@ import { Badge } from "@/components/ui/badge"
 import { UpdateSubmissionSheet } from "./update_submission_sheet"
 export function getSubmissionColumns(
 
- setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+ setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+ fetchData: () => Promise<void>
 
 ): ColumnDef<SubmissionAdminResponse>[] {
   return [
@@ -164,6 +165,7 @@ export function getSubmissionColumns(
             <UpdateSubmissionSheet
               showUpdateSubmissionSheet={showUpdateSubmissionSheet}
               setShowUpdateSubmissionSheet={setShowUpdateSubmissionSheet}
+              fetchData = {fetchData}
               submission={row.original}
               setIsLoading = {setIsLoading}
             />

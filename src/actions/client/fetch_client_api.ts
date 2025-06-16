@@ -28,42 +28,42 @@ export const FetchClientDeleteApi = async (api: string) => {
         return data;
 
     } catch (error) {
-         window.location.href = '/login';
+        window.location.href = '/login';
     }
 }
 
 
 export const FetchClientGetApiNoToken = async (api: string) => {
-  try {
-    const res = await fetch(api, {
-      method: "GET", // Đúng phương thức
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json", // Đặt Content-Type là JSON
-      },
-    });
+    try {
+        const res = await fetch(api, {
+            method: "GET", // Đúng phương thức
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json", // Đặt Content-Type là JSON
+            },
+        });
 
-    const data = await res.json();
-    return data;
-  } catch (error) {
-  }
+        const data = await res.json();
+        return data;
+    } catch (error) {
+    }
 }
 
 export const FetchClientPostApiNoToken = async (api: string, bodyData: any) => {
-  try {
-    const res = await fetch(api, {
-      method: "POST", // Đúng phương thức
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json", // Đặt Content-Type là JSON
-      },
-      body: JSON.stringify(bodyData), // Gửi dữ liệu JSON
-    });
+    try {
+        const res = await fetch(api, {
+            method: "POST", // Đúng phương thức
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json", // Đặt Content-Type là JSON
+            },
+            body: JSON.stringify(bodyData), // Gửi dữ liệu JSON
+        });
 
-    const data = await res.json();
-    return data;
-  } catch (error) {
-  }
+        const data = await res.json();
+        return data;
+    } catch (error) {
+    }
 }
 
 
@@ -93,7 +93,7 @@ export const FetchClientGetApi = async (api: string) => {
         return data;
 
     } catch (error) {
-         window.location.href = '/login';
+        window.location.href = '/login';
     }
 }
 
@@ -102,7 +102,7 @@ export const FetchClientGetApi = async (api: string) => {
 // Ham fetch post tu dong
 export const FetchClientPostApi = async (api: string, bodyData: any = null) => {
     try {
-         const refresh_token = await getToken("refresh_token")
+        const refresh_token = await getToken("refresh_token")
         const access_token = await getToken("access_token")
 
         // if (refresh_token === undefined) {
@@ -250,4 +250,22 @@ export const clientDeleteApi = async (api: string) => {
 }
 
 
+export const FetchClientGetApiSignalNoToken = async (api: string, signal: AbortSignal) => {
 
+    // Kiểm tra nếu session-id không có trong cookie
+
+    try {
+        const res = await fetch(api, {
+            method: "GET", // Đúng phương thức
+            headers: {
+                Accept: "application/json, text/plain, */*",
+            },
+            signal,
+        });
+
+        const data = await res.json();
+        return data;
+    } catch (error) {
+    }
+
+}
