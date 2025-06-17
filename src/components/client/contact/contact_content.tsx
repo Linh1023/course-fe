@@ -127,7 +127,7 @@ const MyContact = () => {
                   alt="QR Zalo"
                   className="w-48 h-48 mx-auto object-contain border-4 border-white rounded-2xl shadow-lg group-hover:scale-105 transition-transform"
                 />
-                <p className="mt-4 text-gray-600">Quét mã QR để chat qua Zalo</p>
+                <p className="mt-4 text-gray-600">Quét mã QR để chat qua Zalo <a href="https://zalo.me/0865275183" className="text-blue-600 underline hover:text-blue-800" target="_blank">0865 275 183</a></p>
               </div>
             </div>
           </div>
