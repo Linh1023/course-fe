@@ -6,14 +6,15 @@ import { FetchServerPostApiNoToken } from './fetch_server_api';
 import API from '@/api/api';
 import { setAccessToken, setRefreshToken } from './token_store';
 // action chuyen huong de login google
-export const  LoginGoogleAction = async () => {
+export const  LoginGoogleAction = async (redirectUrl?: string) => {
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
         `client_id=${GOOGLE_CLIENT_ID}` +
         `&redirect_uri=${encodeURIComponent(GOOGLE_REDIRECT_URI!)}` +
         `&response_type=code` +     // Yêu cầu code thay vì token
         `&scope=openid email profile` +
         `&access_type=offline` +
-        `&prompt=consent`;
+        `&prompt=consent` +
+        `&state=${encodeURIComponent(redirectUrl || "/")}`;
 
     redirect(googleAuthUrl);
 }
