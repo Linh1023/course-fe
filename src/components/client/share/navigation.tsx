@@ -427,7 +427,7 @@ const Navigation = () => {
             <Sheet>
               <div className="flex justify-end  items-center lg:hidden">
 
-                <div className="relative max-w-xl mx-auto mr-[10px] ml-[10px] search-reponsive">
+                <div className="relative flex-1 max-w-xl mx-auto mr-[10px] ml-[10px] search-reponsive">
                   <div className="flex items-center border rounded-md px-2 shadow-sm">
                     <Search
                       className="mr-2 text-gray-500"
@@ -438,7 +438,7 @@ const Navigation = () => {
                       placeholder="Tìm kiếm khóa học..."
                       value={keyword}
                       onChange={(e) => setKeyword(e.target.value)}
-                      className="w-full border-none focus:ring-0"
+                      className="border-none focus:ring-0"
                       onKeyDown={handleKeyDown}
                     />
                   </div>
@@ -487,10 +487,12 @@ const Navigation = () => {
                 </div>
 
 
+
                 <SheetTrigger asChild >
                   <div className="flex  items-center" >
                     {currentAccount === null && (<>
                       <Link href={"/login"} className="mr-[10px]">
+
                         <Button className="bg-[#FE4444] hover:bg-[#F87171]">
                           {" "}
                           Đăng nhập{" "}
@@ -498,19 +500,25 @@ const Navigation = () => {
                       </Link>
                     </>)}
 
-                    <div className="flex  items-center">
-                      {currentAccount != null && (<>
-                        <img
-                          src={currentAccount.avatarUrl}
-                          className=" rounded-[100px] h-[45px] w-[45px] mr-[10px]"
-                          alt="Avatar"
-                        />
-                      </>)}
 
-                      <Button variant="outline" >
-                        <MenuIcon className="h-4 w-4" />
-                      </Button>
-                    </div>
+
+                    {/* <div className="flex  items-center"> */}
+                    {currentAccount != null && (<>
+
+                      <img
+                        src={currentAccount.avatarUrl}
+                        className=" rounded-[100px] h-[45px] w-[45px] mr-[10px]"
+                        alt="Avatar"
+                      />
+
+
+
+                    </>)}
+
+                    <Button variant="outline" className="">
+                      <MenuIcon className="h-4 w-4" />
+                    </Button>
+                    {/* </div> */}
                   </div>
                 </SheetTrigger>
               </div>
