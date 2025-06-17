@@ -226,21 +226,18 @@ const Navigation = () => {
       <section className="fixed top-0 left-0 w-full z-50 bg-white shadow-sm py-2 pl-[20px] pr-[20px]">
         <div className="container">
           <nav className="flex items-center justify-between ">
-            <Link href="/" className="flex items-center gap-2 ">
-              <img
-                src="https://res.cloudinary.com/moment-images/logo_demo1_xzxrxd"
-                className=" rounded-[100px] h-[50px] w-[50px]"
-                alt="Logo"
-              />
+            <Link href="/" className="flex items-center gap-2 h-[50px] w-[50px]">
+              <div className=" h-[50px] w-[50px]">
+                <img
+                  src="https://res.cloudinary.com/moment-images/logo_demo1_xzxrxd"
+                  className=" rounded-[100px] h-[50px] w-[50px]"
+                  alt="Logo"
+                />
+              </div>
               {/* <span className="text-lg font-semibold tracking-tighter">
                 Khóa học
               </span> */}
             </Link>
-
-
-
-
-
 
 
             <NavigationMenu className="hidden lg:block">
@@ -430,7 +427,7 @@ const Navigation = () => {
             <Sheet>
               <div className="flex justify-end  items-center lg:hidden">
 
-                <div className="relative max-w-xl mx-auto search-reponsive mr-[10px] ml-[10px]">
+                <div className="relative max-w-xl mx-auto mr-[10px] ml-[10px] search-reponsive">
                   <div className="flex items-center border rounded-md px-2 shadow-sm">
                     <Search
                       className="mr-2 text-gray-500"

@@ -162,7 +162,6 @@
 @media (max-width: 466px) {
 
   .search-reponsive {
-    width: 160px;
     position: static;
   }
   
@@ -174,9 +173,6 @@
     display: none;
   }
 
-  .search-reponsive {
-    width: 130px;
-  }
 
 }
 
