@@ -112,7 +112,7 @@ const DashboardWrapper = () => {
 
     return (
         <>
-            <div className="w-full max-w-9xl mx-auto p-6">
+            <div className="w-full max-w-9xl mx-auto p-6 ">
                 {
                     isLoadingCount ? (<>
                         <div className='w-full flex justify-center' >
@@ -122,7 +122,7 @@ const DashboardWrapper = () => {
                             ></LoaderIcon>
                         </div>
                     </>) : (<>
-                        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {stats.map((stat, index) => (
                                 <div key={index}>
                                     <StatCard
@@ -135,7 +135,7 @@ const DashboardWrapper = () => {
                 }
 
 
-                <div className={`${theme === "dark" ? "bg-black " : "bg-gray-200"} rounded-lg shadow-sm p-6 max-w-xl mt-[20px]`}>
+                <div className={` ${isLoadingStatCourse ? "bg-transparent" : `${theme === "dark" ? "bg-black " : "bg-gray-200"}`}   rounded-lg shadow-sm p-6 max-w-xl mt-[30px] mx-auto`}>
                     {/* Header */}
 
                     {isLoadingStatCourse ? (<>

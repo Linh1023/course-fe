@@ -32,9 +32,34 @@ interface User {
 
 interface UpdateUserSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
   user: User;
+  setIsLoading: (v: boolean) => void;
+  fetchData:()=>void
 }
 
-export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
+// Hàm xử lý thông báo lỗi từ server
+const handleServerErrors = (errors: any[], form: any) => {
+  errors.forEach((error) => {
+    switch (error.code) {
+      case "ACCOUNT_3":
+        form.setError("email", {
+          type: "server",
+          message: "Email này đã được sử dụng, vui lòng chọn email khác"
+        });
+        break;
+      case "ACCOUNT_4":
+        form.setError("username", {
+          type: "server", 
+          message: "Tên tài khoản này đã tồn tại, vui lòng chọn tên khác"
+        });
+        break;
+      default:
+        toast.error(error.message || "Có lỗi xảy ra, vui lòng thử lại!");
+        break;
+    }
+  });
+};
+
+export function UpdateUserSheet({ user,fetchData, setIsLoading, ...props }: UpdateUserSheetProps) {
   const router = useRouter();
   const [isUpdatePending, startUpdateTransition] = React.useTransition();
 
@@ -50,7 +75,7 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
       phone: user.phone || "",
       avatarUrl: user.avatarUrl || "",
       birthday: user.birthday || "",
-      password: user.password || "", // Mặc định rỗng
+      password: user.password || "",
     },
   });
 
@@ -73,15 +98,37 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
   function onSubmit(input: UpdateUserSchema) {
     startUpdateTransition(async () => {
       try {
+        // Clear previous server errors
+        form.clearErrors("email");
+        form.clearErrors("username");
+
         const updateUserResponse = await FetchServerPutApi(
           API.ACCOUNT.UPDATE(user.id),
-          input,
-          "/admin/user"
+          input
         );
+        
         if (updateUserResponse.status === 200) {
+          fetchData()
           toast.success("Cập nhật người dùng thành công!");
           props.onOpenChange?.(false);
-          router.refresh();
+          setIsLoading(true);
+        } else if (updateUserResponse.status === 400 && updateUserResponse.errors) {
+          // Xử lý lỗi validation từ server
+          handleServerErrors(updateUserResponse.errors, form);
+          
+          // Hiển thị toast error tổng quát
+          const errorMessages = updateUserResponse.errors.map((error: any) => {
+            switch (error.code) {
+              case "ACCOUNT_3":
+                return "Email này đã được sử dụng, vui lòng chọn email khác";
+              case "ACCOUNT_4":
+                return "Tên tài khoản này đã được sử dụng, vui lòng chọn tên khác";
+              default:
+                return error.message;
+            }
+          });
+          
+          toast.error(`Lỗi: ${errorMessages.join(", ")}`);
         } else {
           toast.error(
             updateUserResponse.message || "Cập nhật thất bại, vui lòng thử lại!"
@@ -90,6 +137,8 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
       } catch (error) {
         toast.error("Lỗi hệ thống, vui lòng thử lại sau!");
         console.error("Update user error:", error);
+      } finally {
+        startUpdateTransition(() => {}); // Đảm bảo trạng thái loading cục bộ được reset
       }
     });
   }
@@ -125,7 +174,6 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="email"
@@ -138,13 +186,18 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                       type="email"
                       className="resize-none"
                       {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        if (form.formState.errors.email?.type === "server") {
+                          form.clearErrors("email");
+                        }
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="username"
@@ -156,13 +209,18 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                       placeholder="Tên tài khoản"
                       className="resize-none"
                       {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        if (form.formState.errors.username?.type === "server") {
+                          form.clearErrors("username");
+                        }
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="phone"
@@ -181,7 +239,6 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="avatarUrl"
@@ -200,7 +257,6 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="birthday"
@@ -219,7 +275,6 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="sex"
@@ -253,7 +308,6 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="role"
@@ -284,7 +338,6 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="status"
@@ -315,7 +368,6 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
-            
             <FormField
               control={form.control}
               name="password"
@@ -334,7 +386,6 @@ export function UpdateUserSheet({ user, ...props }: UpdateUserSheetProps) {
                 </FormItem>
               )}
             />
-            
             <SheetFooter className="gap-2 pt-2 sm:space-x-0">
               <SheetClose asChild>
                 <Button type="button" variant="outline">

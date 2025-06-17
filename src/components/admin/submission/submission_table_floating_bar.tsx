@@ -23,27 +23,29 @@ interface SubmissionTableFloatingBarProps {
     isOpen: boolean, // giá trị để biết để Dialog bật tắt
   setIsOpen: (v: boolean) => void, // cái này để Dialog nó set bật tắt
     setIsLoading: (v: boolean) => void,
+    fetchData: () => void,
 }
 
 // cái này là cái popup lên ở phía dưới màn hình khi mình chọn 1 dòng dữ liệu để xóa
 export function SubmissionTableFloatingBar(props: SubmissionTableFloatingBarProps) {
 
-  const { table, setIsOpen, isOpen ,  setIsLoading } = props
+  const { table, setIsOpen, isOpen ,  setIsLoading, fetchData } = props
   const rows = table.getFilteredSelectedRowModel().rows // số lượng hàng đã được chọn
 
  
 
   const hanldeDeletedSuccess = () => {
     table.toggleAllRowsSelected(false)
+    fetchData()
     toast.success(
-      `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} danh mục thành công!`
+      `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} thành công!`
     )
 
   }
 
   const handleOpenDeleteDialog = () => {
     setIsOpen(true)
-    console.log("click xoa")
+
   }
 
 

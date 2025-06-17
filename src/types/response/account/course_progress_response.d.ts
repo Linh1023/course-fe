@@ -7,7 +7,3 @@ interface CourseProgressResponse {
     status: string;
 }
 
-interface CourseProgressPageResponse {
-  result: CourseProgressResponse[];
-  totalPages: number;
-}

@@ -1,25 +1,39 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FetchServerGetApiNoToken } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
 import CourseList from "../home/CourseList";
 import { LoaderIcon } from "@/components/share/loading-icon";
 import { useLoadingContext } from "@/context/loading_context";
-import { FetchClientGetApiNoToken } from "@/actions/client/fetch_client_api";
+import { FetchClientGetApiNoToken, FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api";
+import { useDebounce } from "@/hooks/use-debounce";
+import { updateQueryStringManually } from "@/utils/handle_query";
+import { useQuerySearchClientContext } from "@/context/query_search_client_context";
 
 const Search = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [isLoading, setIsLoading] = useState(false);
+  // const router = useRouter();
+  // const searchParams = useSearchParams();
+  // const [isLoading, setIsLoading] = useState(false);
+  const searchParams = useSearchParams()
   const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext();
   const [research, setResearch] = useState<CourseCardResponse[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [sortType, setSortType] = useState<string>("");
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [selectedCategory, setSelectedCategory] = useState<string>(() => searchParams.get("category") ?? "");
+  const [sortType, setSortType] = useState<string>(() => searchParams.get("sort") ?? "");
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(() => parseInt(searchParams.get("page") || "1") ?? 1);
+  const [nameSearch, setnameSearch] = useState<string>("")
+
+  // const [isLoading, setIsLoading] = useState(false)
+  const pathName = usePathname()
+  const router = useRouter()
+  const abortControllerRef = useRef<AbortController | null>(null); // Use ref to keep track of the controller
+  // const [querySearch, setQuerySearch] = useState(() => searchParams.toString());
+  const { querySearch, setQuerySearch, isLoading, setIsLoading } = useQuerySearchClientContext()
+
+
 
   const handleSortChange = (sort: string) => {
     setIsLoading(true);
@@ -28,14 +42,25 @@ const Search = () => {
     const newSort = isSame ? "" : sort;
     setSortType(newSort);
 
-    const params = new URLSearchParams(searchParams.toString());
     if (newSort) {
-      params.set("sort", newSort);
+
+      const newQuerySearchTemporary = updateQueryStringManually(querySearch, "sort", newSort)
+      const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
+      if (newQuerySearch != querySearch) {
+        setIsLoading(true);
+        setQuerySearch(newQuerySearch);
+      }
     } else {
-      params.delete("sort");
+
+      const newQuerySearchTemporary = updateQueryStringManually(querySearch, "sort")
+      const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
+      if (newQuerySearch != querySearch) {
+        setIsLoading(true);
+        setQuerySearch(newQuerySearch)
+      }
     }
-    params.set("page", "1");
-    router.push(`/search?${params.toString()}`);
+
+
 
   };
 
@@ -45,19 +70,29 @@ const Search = () => {
     const newSelected = isAlreadySelected ? "" : id;
     setSelectedCategory(newSelected);
 
-    const params = new URLSearchParams(searchParams.toString());
     if (newSelected) {
-      params.set("category", newSelected);
+      const newQuerySearchTemporary = updateQueryStringManually(querySearch, "category", newSelected)
+      const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
+      if (newQuerySearch != querySearch) {
+        setIsLoading(true);
+        setQuerySearch(newQuerySearch);
+      }
     } else {
-      params.delete("category");
+      const newQuerySearchTemporary = updateQueryStringManually(querySearch, "category")
+      const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
+      if (newQuerySearch != querySearch) {
+        setIsLoading(true);
+        setQuerySearch(newQuerySearch)
+      }
+
     }
-    params.set("page", "1");
-    router.push(`/search?${params.toString()}`);
+
+
   };
 
   useEffect(() => {
     const fetchCategory = async () => {
-      const res = await FetchServerGetApiNoToken( `${API.CATEGORY.ROOT}?status=active`);
+      const res = await FetchClientGetApiNoToken(`${API.CATEGORY.ROOT}?status=active`);
       if (res && res.status === 200) {
         setCategories(res.result);
       }
@@ -65,30 +100,70 @@ const Search = () => {
     fetchCategory();
   }, []);
 
+
+
   useEffect(() => {
-    const sortParam = searchParams.get("sort");
-    const categoryParam = searchParams.get("category");
-    const pageParam = parseInt(searchParams.get("page") || "0", 10);
+    setIsLoading(true);
+    const params = new URLSearchParams(querySearch);
+    const keyword = params.get("keyword") ?? "";
+    setnameSearch(keyword);
+    console.log("Keyword >>> ", keyword)
+    const category = params.get("category") ?? "";
+    setSelectedCategory(category);
+    const sort = params.get("sort") ?? ""
+    setSortType(sort)
+    fetchData();
+  }, [querySearch]);
 
-    setSortType(sortParam || "");
-    setSelectedCategory(categoryParam || "");
-    setCurrentPage(pageParam);
 
-    const fetch = async () => {
-      setIsLoading(true);
-      const res = await FetchClientGetApiNoToken(
-        API.COURSE.COURSE_FILTER + `?${searchParams.toString()}&size=12`
+  const fetchData = async () => {
+    // Huỷ request cũ nếu còn
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    const { signal } = abortController;
+
+    try {
+      const submissions = await FetchClientGetApiSignalNoToken(
+        API.COURSE.COURSE_FILTER + `?${querySearch}&size=12`,
+        signal
       );
-      if (res && res.status === 200) {
-        setResearch(res.result);
-        setTotalPages(res.totalPages);
-      }
-      setIsLoading(false);
-      stopLoadingSpiner()
-    };
 
-    fetch();
-  }, [searchParams]);
+
+      if (submissions?.status === 200) {
+        setResearch(submissions.result);
+        setTotalPages(submissions.totalPages);
+
+        //  Chỉ chạy nếu không bị huỷ
+        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+        router.replace(`${pathName}?${querySearch}`, {
+          scroll: false,
+        });
+      }
+
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        // Yêu cầu bị huỷ, không làm gì cả
+        return;
+      } else {
+        console.error('Lỗi khi fetch:', err);
+      }
+    } finally {
+      // ✅ Luôn setIsLoading(false) nếu không bị huỷ
+      if (!signal.aborted) {
+        setIsLoading(false);
+        stopLoadingSpiner()
+      }
+    }
+  };
+
+
+
+
+
 
   return (
     <div className="p-4 h-full min-h-[55vh] mt-4 mb-8 flex flex-col lg:flex-row gap-6">
@@ -148,7 +223,7 @@ const Search = () => {
           ) : research.length === 0 ? (
             <>
               <h2 className="text-xl font-semibold text-gray-800">
-                {`Kết quả tìm kiếm ${searchParams.get("keyword") != null ? `'${searchParams.get("keyword")}'` : ""}`}
+                {`Kết quả tìm kiếm ${nameSearch != "" ? `'${nameSearch}'` : ""}`}
               </h2>
               <div className="flex justify-center items-center h-[200px] text-gray-500 text-sm italic">
                 Không có khóa học nào phù hợp với tìm kiếm của bạn.
@@ -158,7 +233,7 @@ const Search = () => {
 
           ) : (
             <CourseList
-              title={`Kết quả tìm kiếm ${searchParams.get("keyword") != null ? `'${searchParams.get("keyword")}'` : ""}`}
+              title={`Kết quả tìm kiếm ${nameSearch != "" ? `'${nameSearch}'` : ""}`}
               courses={research}
               layout="grid"
             />
@@ -171,16 +246,15 @@ const Search = () => {
                 key={index + 1}
                 onClick={() => {
 
-                  const params = new URLSearchParams(searchParams.toString());
-                  params.set("page", (index+1).toString());
-
-                  if (searchParams.toString() !== params.toString()) {
+                  setCurrentPage(index + 1)
+                  const newQuerySearch = updateQueryStringManually(querySearch, "page", (index + 1).toString())
+                  if (newQuerySearch != querySearch) {
                     setIsLoading(true);
+                    setQuerySearch(newQuerySearch)
                   }
-                  router.push(`/search?${params.toString()}`);
 
                 }}
-                className={`px-3 py-1 border rounded-md text-sm ${index+1 === currentPage
+                className={`px-3 py-1 border rounded-md text-sm ${index + 1 === currentPage
                   ? "bg-blue-500 text-white border-blue-600"
                   : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                   }`}

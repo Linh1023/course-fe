@@ -8,10 +8,14 @@ import { toast } from "sonner"
 
 interface UsersTableToolbarActionsProps {
   table: Table<User>
+  setIsLoading: (v: boolean) => void
+  fetchData:() => void 
 }
 
 export function UsersTableToolbarActions({
   table,
+  fetchData,
+  setIsLoading,
 }: UsersTableToolbarActionsProps) {
   return (
     <div className="flex items-center gap-2">
@@ -21,14 +25,19 @@ export function UsersTableToolbarActions({
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           onSuccess={() => {
+            fetchData()
             toast.success(
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} người dùng thành công!`
             )
             table.toggleAllRowsSelected(false)
+            setIsLoading(true)
           }}
+          setIsLoading={setIsLoading}
         />
       ) : null}
-      <CreateUserDialog/>
+      <CreateUserDialog setIsLoading={setIsLoading} 
+      fetchData = {fetchData}
+      />
     </div>
   )
 }

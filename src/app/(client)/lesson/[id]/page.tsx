@@ -14,20 +14,12 @@ const LessonPage = async (props: any) => {
   } else {
     redirect("/")
   }
-  const commentResponse: CommentClientResponse = await FetchServerGetApi(
-    API.COMMENT.PUBLIC_LESSON_COMMENT + `?lessonId=${params.id}`
-  );
-
-  if (commentResponse && commentResponse.status != 200) {
-    redirect("/");
-  }
 
   return (
     <>
       {/* <div className="fixed top-68 left-0 h-full w-full z-30"> */}
       <LessonWrapper
         lessonResponse={lessonResponse!}
-        commentResponse={commentResponse}
       />
       {/* </div> */}
     </>

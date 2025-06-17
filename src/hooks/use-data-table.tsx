@@ -21,6 +21,7 @@ import { z } from "zod"
 import { createQueryString } from "@/lib/utils"
 import { useDebounce } from "./use-debounce"
 import { DataTableFilterField } from "@/types/ui/data-table"
+import { updateQueryStringManually } from "@/utils/handle_query"
 
 interface UseDataTableProps<TData, TValue> {
   /**
@@ -88,7 +89,7 @@ interface UseDataTableProps<TData, TValue> {
    * ];
    * ```
    */
-  filterFields?: DataTableFilterField<TData>[]
+  filterFields?: DataTableFilterField<TData>[],
 }
 
 const schema = z.object({
@@ -104,6 +105,7 @@ export function useDataTable<TData, TValue>({
   defaultPerPage = 10,
   defaultSort,
   filterFields = [],
+
 }: UseDataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -175,22 +177,27 @@ export function useDataTable<TData, TValue>({
     [pageIndex, pageSize]
   )
 
-  React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString(
-        {
-          page: pageIndex + 1,
-          perPage: pageSize,
-        },
-        searchParams
-      )}`,
-      {
-        scroll: false,
-      }
-    )
+  // React.useEffect(() => {
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageIndex, pageSize])
+
+  //     router.push(
+  //       `${pathname}?${createQueryString(
+  //         {
+  //           page: pageIndex + 1,
+  //           perPage: pageSize,
+  //         },
+  //         searchParams
+  //       )}`,
+  //       {
+  //         scroll: false,
+  //       }
+  //     )
+
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [pageIndex, pageSize])
+
+
+
 
   // Handle server-side sorting
   const [sorting, setSorting] = React.useState<SortingState>([

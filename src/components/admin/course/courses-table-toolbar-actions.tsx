@@ -11,10 +11,12 @@ interface CoursesTableToolbarActionsProps {
   table: Table<Course>
   listCategory: Category[]
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+
+  fetchData:() =>void
 }
 
 export function CoursesTableToolbarActions({
-  table, listCategory, setIsLoading
+  table, listCategory, setIsLoading, fetchData
 }: CoursesTableToolbarActionsProps) {
 
   return (
@@ -26,6 +28,8 @@ export function CoursesTableToolbarActions({
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           onSuccess={() => {
+
+            fetchData()
             toast.success(
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} khóa học thành công!`
             )
@@ -34,7 +38,9 @@ export function CoursesTableToolbarActions({
           }
         />
       ) : null}
-      <CreateCourseDialog listCategory={listCategory} setIsLoading={setIsLoading} />
+      <CreateCourseDialog listCategory={listCategory} setIsLoading={setIsLoading} 
+      fetchData = {fetchData}
+      />
       {/**
        * Other actions can be added here.
        * For example, import, view, etc.

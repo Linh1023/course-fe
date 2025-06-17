@@ -11,21 +11,20 @@ import { ReadonlyURLSearchParams } from "next/navigation"
 import React from "react"
 
 export interface CourseProgressProps {
-    searchParams: ReadonlyURLSearchParams
+ 
     params: { id: string }
 }
 
-const CourseProgress = async ({ params, searchParams }: CourseProgressProps) => {
+const CourseProgress = async ({ params }: CourseProgressProps) => {
     const { id } = params;
-    const query = new URLSearchParams(searchParams).toString();
-    const courseProgressPromise = FetchServerGetApi(API.ACCOUNT.COURSE_PROGRESS + `/${id}?${query}`, `/admin/user/${id}`);
+    
 
 
     return (
         <>
             <div className="flex flex-col gap-4">
                 <div className="h-[100px] flex items-center gap-6">
-                    <Link href="/admin/user">
+                    <Link href="/admin/user?page=1&perPage=10">
                         <Button className="" ><ArrowLeft /></Button>  
                     </Link>
                      <h1 className="text-xl font-semibold">Tiến độ</h1>
@@ -37,7 +36,7 @@ const CourseProgress = async ({ params, searchParams }: CourseProgressProps) => 
                 />} >
 
                     <CourseProgressTable
-                        courseProgressPromise={courseProgressPromise}
+                       id = {id}
                     />
                 </React.Suspense>
             </div>

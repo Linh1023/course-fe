@@ -9,12 +9,13 @@ import { ChevronsUpDown, PlusIcon } from "lucide-react"
 import { DataTableFilterCombobox } from "./data-table-filter-combobox"
 import { DataTableMultiFilter } from "./data-table-multi-filter"
 import { DataTableFilterItem } from "./data-table-filter-item"
-
+import { flexRender, type Table as TanstackTable } from "@tanstack/react-table"
 interface DataTableAdvancedToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
   filterFields?: DataTableFilterField<TData>[]
-  setIsLoading?: (v: boolean) => void,
-  isLoading?: boolean
+  setIsLoading: (v: boolean) => void,
+  setQuerySearch: (query: string) => void,
+  querySearch: string
 }
 
 export function DataTableAdvancedToolbar<TData>({
@@ -22,7 +23,8 @@ export function DataTableAdvancedToolbar<TData>({
   children,
   className,
   setIsLoading,
-  isLoading,
+  setQuerySearch,
+  querySearch,
   ...props
 }: DataTableAdvancedToolbarProps<TData>) {
   const searchParams = useSearchParams()
@@ -109,11 +111,13 @@ export function DataTableAdvancedToolbar<TData>({
             .map((selectedOption) => (
               <DataTableFilterItem
                 setIsLoading={setIsLoading}
-                isLoading={isLoading}
+    
                 key={String(selectedOption.value)}
                 selectedOption={selectedOption}
                 setSelectedOptions={setSelectedOptions}
                 defaultOpen={openCombobox}
+                setQuerySearch={setQuerySearch}
+                querySearch={querySearch}
               />
             ))}
 
@@ -137,7 +141,7 @@ export function DataTableAdvancedToolbar<TData>({
                 variant="outline"
                 size="sm"
                 className="h-7 rounded-full"
-                disabled={isLoading}
+                // disabled={isLoading}
                 onClick={() => setOpenCombobox(true)}
               >
                 <PlusIcon className="mr-2 size-4 opacity-50" />

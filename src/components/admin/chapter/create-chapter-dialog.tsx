@@ -26,8 +26,9 @@ import { useRouter } from "next/navigation"
 interface CreateChapterDialogProps {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   courseId: string
+  fetchData: () => void
 }
-export function CreateChapterDialog({ courseId, setIsLoading }: CreateChapterDialogProps) {
+export function CreateChapterDialog({ courseId, setIsLoading, fetchData }: CreateChapterDialogProps) {
   const [open, setOpen] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
   const router = useRouter()
@@ -50,9 +51,9 @@ export function CreateChapterDialog({ courseId, setIsLoading }: CreateChapterDia
       courseId: courseId
     }
     startTransition(async () => {
-      const res = await FetchServerPostApi(API.CHAPTER.ROOT, createData, "/admin/course")
+      const res = await FetchServerPostApi(API.CHAPTER.ROOT, createData)
       if (res.status === 200) {
-        router.replace("?page=1")
+        fetchData()
         form.reset()
         toast.success("Tạo chương thành công")
         setOpen(false)

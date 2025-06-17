@@ -44,7 +44,7 @@ interface Props
   setShowUpdateSubmissionSheet: (v: boolean) => void;
 
   setIsLoading:(v: boolean) => void;  
-
+ fetchData:()=>void
 }
 
 export function UpdateSubmissionSheet(props: Props) {
@@ -52,7 +52,7 @@ export function UpdateSubmissionSheet(props: Props) {
 
 
   const [isUpdatePending, startUpdateTransition] = React.useState(false)
-  const { submission, showUpdateSubmissionSheet, setShowUpdateSubmissionSheet,setIsLoading } = props;
+  const { submission, showUpdateSubmissionSheet, setShowUpdateSubmissionSheet,setIsLoading ,fetchData} = props;
 
   const form = useForm<UpdateSubmissionSchema>({
     resolver: zodResolver(updateSubmissionSchema),
@@ -86,6 +86,7 @@ export function UpdateSubmissionSheet(props: Props) {
       const res = await FetchServerPutApi( `${API.SUBMISSON.SUBMISSION}/${submission.id}`  , req, "/admin/submission")
       if (res && res.status === 200) {
         toast.success("Thao tác thành công")
+        fetchData()
         setShowUpdateSubmissionSheet(false)
        setIsLoading(true
         )

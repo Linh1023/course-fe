@@ -36,9 +36,10 @@ interface UpdateLessonSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
   lesson: Lesson
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  fetchData:()=>void
 }
 
-export function UpdateLessonSheet({ lesson, setIsLoading, ...props }: UpdateLessonSheetProps) {
+export function UpdateLessonSheet({ lesson,fetchData, setIsLoading, ...props }: UpdateLessonSheetProps) {
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
   const [previewVideo, setPreviewVideo] = React.useState<string | null>(null)
   const [previewDocument, setPreviewDocument] = React.useState<{ url: string; name: string } | null>(null)
@@ -69,8 +70,9 @@ export function UpdateLessonSheet({ lesson, setIsLoading, ...props }: UpdateLess
     console.log(`${API.LESSON.ROOT}/${lesson.id}`)
     startUpdateTransition(async () => {
       const res = await FetchServerPutApi(
-        `${API.LESSON.ROOT}/${lesson.id}`, updateData, "/admin/course")
+        `${API.LESSON.ROOT}/${lesson.id}`, updateData)
       if (res.status === 200) {
+        fetchData()
         toast.success("Cập nhật thành công!")
         props.onOpenChange?.(false)
         setIsLoading(true)

@@ -19,8 +19,9 @@ import { Ellipsis } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link";
 
-
-export function getColumns(): ColumnDef<User>[] {
+export function getColumns(
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,  
+  fetchData: () => Promise<void>): ColumnDef<User>[] {
   return [
     {
       id: "select",
@@ -55,7 +56,6 @@ export function getColumns(): ColumnDef<User>[] {
         const user = row.original;
         return (
           <div className="flex items-center space-x-3">
-            
             <div className="flex flex-col">
               <span className="max-w-[15rem] truncate font-medium">
                 {user.name}
@@ -179,13 +179,20 @@ export function getColumns(): ColumnDef<User>[] {
               open={showUpdateUserSheet}
               onOpenChange={setShowUpdateUserSheet}
               user={row.original}
+              setIsLoading={setIsLoading}
+              fetchData = {fetchData}
             />
             <DeleteUsersDialog
               open={showDeleteUserDialog}
               onOpenChange={setShowDeleteUserDialog}
               users={[row.original]}
               showTrigger={false}
-              onSuccess={() => row.toggleSelected(false)}
+              onSuccess={() => {
+                fetchData()
+                row.toggleSelected(false)
+                setIsLoading(true)
+              }}
+              setIsLoading={setIsLoading}
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -223,7 +230,7 @@ export function getColumns(): ColumnDef<User>[] {
                   <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <Link href={`/admin/user/${user.id}?page=1`} className="text-blue-600">
+                <Link href={`/admin/user/${user.id}?page=1&perPage=10`} className="text-blue-600">
                   <DropdownMenuItem>
                     Xem tiến độ
                   </DropdownMenuItem>
