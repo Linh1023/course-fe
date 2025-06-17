@@ -29,8 +29,9 @@ import { set } from "date-fns"
 interface CreateLessonDialogProps {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   chapterId: number
+  fetchData:()=>void
 }
-export function CreateLessonDialog({ chapterId, setIsLoading }: CreateLessonDialogProps) {
+export function CreateLessonDialog({ chapterId, setIsLoading, fetchData }: CreateLessonDialogProps) {
   const [open, setOpen] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
   const [previewVideo, setPreviewVideo] = React.useState<string | null>(null)
@@ -62,7 +63,7 @@ export function CreateLessonDialog({ chapterId, setIsLoading }: CreateLessonDial
     startTransition(async () => {
       const res = await FetchServerPostApi(API.LESSON.ROOT, createData, "/admin/course")
       if (res.status === 200) {
-        router.replace("?page=1")
+        fetchData()
         form.reset()
         toast.success("Tạo bài học thành công")
         setPreviewVideo(null)

@@ -9,23 +9,94 @@ import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table
 import { getColumns } from "./courses-table-column"
 import { CoursesTableFloatingBar } from "./courses-table-floating-bar"
 import { CoursesTableToolbarActions } from "./courses-table-toolbar-actions"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useDebounce } from "@/hooks/use-debounce"
+import { FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api"
+import API from "@/api/api"
 
 interface CoursesTableProps {
   categoryPromise: Promise<CategoryPageResponse>
-  coursePromise: Promise<CoursePageResponse>
+
 }
 
-export function CoursesTable({ categoryPromise, coursePromise }: CoursesTableProps) {
+export function CoursesTable({ categoryPromise }: CoursesTableProps) {
   const { result: listCategory } = React.use(categoryPromise)
-  const { result: data, totalPages } = React.use(coursePromise)
+
+
+
   const [isLoading, setIsLoading] = React.useState(false)
+  const searchParams = useSearchParams()
+  const pathName = usePathname()
+  const [dataResult, setDataResult] = React.useState<Course[]>([])
+  const [totalPages, setTotalPages] = React.useState(1)
+  const router = useRouter()
+  const abortControllerRef = React.useRef<AbortController | null>(null); // Use ref to keep track of the controller
+
+
+
+  const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
+
 
   React.useEffect(() => {
-    setIsLoading(false)
+    setIsLoading(true);
 
-  }, [data, totalPages])
+    fetchData();
+  }, [querySearch]);
+
+
+  const fetchData = async () => {
+    // Huỷ request cũ nếu còn
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    const { signal } = abortController;
+
+    try {
+      const submissions = await FetchClientGetApiSignalNoToken(
+        `/api/proxy/search?${querySearch}&api=${API.COURSE.ROOT}`,
+        signal
+      );
+
+
+      if (submissions?.status === 200) {
+        setDataResult(submissions.result);
+        setTotalPages(submissions.totalPages);
+
+        //  Chỉ chạy nếu không bị huỷ
+        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+        router.replace(`${pathName}?${querySearch}`, {
+          scroll: false,
+        });
+      }
+
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        // Yêu cầu bị huỷ, không làm gì cả
+        return;
+      } else {
+        console.error('Lỗi khi fetch:', err);
+      }
+    } finally {
+      // ✅ Luôn setIsLoading(false) nếu không bị huỷ
+      if (!signal.aborted) {
+        setIsLoading(false);
+      }
+    }
+  };
+
+
+
+
+
+
+
+
+
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo(() => getColumns({ listCategory, setIsLoading }), [setIsLoading])
+  const columns = React.useMemo(() => getColumns({ listCategory, setIsLoading, fetchData }), [setIsLoading, fetchData])
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -62,12 +133,13 @@ export function CoursesTable({ categoryPromise, coursePromise }: CoursesTablePro
 
   // TODO: Replace with actual data fetching logic
   const { table } = useDataTable({
-    data: data || [],
+    data: dataResult,
     columns,
     pageCount: totalPages || 1,
     // optional props
     filterFields,
     defaultPerPage: 10,
+
   })
 
   return (
@@ -75,10 +147,23 @@ export function CoursesTable({ categoryPromise, coursePromise }: CoursesTablePro
       <DataTable
         isLoading={isLoading}
         table={table}
-        floatingBar={<CoursesTableFloatingBar table={table} setIsLoading={setIsLoading} />}
+        setQuerySearch={setQuerySearch}
+        querySearch={querySearch}
+        setIsLoading={setIsLoading}
+        floatingBar={<CoursesTableFloatingBar table={table} setIsLoading={setIsLoading}
+          fetchData={fetchData}
+
+
+        />}
       >
-        <DataTableAdvancedToolbar filterFields={filterFields} setIsLoading={setIsLoading}>
-          <CoursesTableToolbarActions table={table} listCategory={listCategory} setIsLoading={setIsLoading} />
+        <DataTableAdvancedToolbar filterFields={filterFields} setIsLoading={setIsLoading}
+          setQuerySearch={setQuerySearch}
+          querySearch={querySearch}
+
+        >
+          <CoursesTableToolbarActions table={table} listCategory={listCategory} setIsLoading={setIsLoading}
+            fetchData={fetchData}
+          />
         </DataTableAdvancedToolbar>
       </DataTable>
     </TableInstanceProvider>

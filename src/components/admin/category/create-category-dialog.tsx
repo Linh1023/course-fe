@@ -42,8 +42,9 @@ import { set } from "date-fns"
 
 interface CreateCategoryDialogProps {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  fetchData: () => void
 }
-export function CreateCategoryDialog({ setIsLoading }: CreateCategoryDialogProps) {
+export function CreateCategoryDialog({ setIsLoading, fetchData }: CreateCategoryDialogProps) {
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [isCreatePending, startCreateTransition] = React.useTransition()
@@ -57,9 +58,9 @@ export function CreateCategoryDialog({ setIsLoading }: CreateCategoryDialogProps
 
   function onSubmit(input: CreateCategorySchema) {
     startCreateTransition(async () => {
-      const res = await FetchServerPostApi(API.CATEGORY.ROOT, input, "/admin/category")
+      const res = await FetchServerPostApi(API.CATEGORY.ROOT, input)
       if (res.status === 200) {
-        router.replace("?page=1")
+        fetchData()
         form.reset()
         toast.success("Tạo danh mục thành công")
         setOpen(false)

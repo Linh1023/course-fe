@@ -35,9 +35,10 @@ interface UpdateChapterSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
   chapter: Chapter
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  fetchData:()=>void
 }
 
-export function UpdateChapterSheet({ chapter, setIsLoading, ...props }: UpdateChapterSheetProps) {
+export function UpdateChapterSheet({ chapter, fetchData,setIsLoading, ...props }: UpdateChapterSheetProps) {
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
   const form = useForm<UpdateChapterSchema>({
     resolver: zodResolver(updateChapterSchema),
@@ -60,9 +61,9 @@ export function UpdateChapterSheet({ chapter, setIsLoading, ...props }: UpdateCh
       const updateCategoryResponse = await FetchServerPutApi(
         `${API.CHAPTER.ROOT}/${chapter.id}`,
         updateData,
-        "/admin/course"
       )
       if (updateCategoryResponse.status == 200) {
+        fetchData()
         toast.success("Cập nhật thành công!")
         props.onOpenChange?.(false)
         setIsLoading?.(true)

@@ -70,9 +70,9 @@ interface DateRangePickerProps
    */
   triggerClassName?: string
 
-  setIsLoading?: (v: boolean) => void
-  setQuerySearch?: (v: string) => void,
-  querySearch?: string
+  setIsLoading: (v: boolean) => void
+  setQuerySearch: (v: string) => void,
+  querySearch: string
 
 
 }
@@ -95,17 +95,7 @@ export function DateRangePicker({
   const [fromDate, setFromDate] = React.useState<Date | null>(null)
   const [toDate, setToDate] = React.useState<Date | null>(null)
 
-
   const { tableInstance: table } = useTableInstanceContext()
-
-  // const [fromDate, setFromDate] = useQueryState(
-  //   "from",
-  //   parseAsDate.withOptions({ shallow: false, history: "push" })
-  // )
-  // const [toDate, setToDate] = useQueryState(
-  //   "to",
-  //   parseAsDate.withOptions({ shallow: false, history: "push" })
-  // )
 
   const from = fromDate ?? undefined
   const to = toDate ?? undefined
@@ -148,18 +138,18 @@ export function DateRangePicker({
             selected={{ from, to }}
             disabled={(date) => date > new Date()}
             onSelect={(value) => {
-              if (setIsLoading) {
-                setIsLoading(true)
-              }
-              if (setQuerySearch && querySearch != undefined) {
+
                 const fromStr = value?.from ? parseAsDate.serialize(value.from) : undefined
                 const toStr = value?.to ? parseAsDate.serialize(value.to) : undefined
 
                 const newQuerySearch1 = updateQueryStringManually(querySearch, "from", fromStr)
                 const newQuerySearch2 = updateQueryStringManually(newQuerySearch1, "to", toStr)
                 const newQuerySearch = updateQueryStringManually(newQuerySearch2, "page", "1")
-                setQuerySearch(newQuerySearch)
-              }
+                if (newQuerySearch != querySearch ) {
+                  setIsLoading(true)
+                  setQuerySearch(newQuerySearch)
+                }
+              
               // eslint-disable-next-line @typescript-eslint/no-floating-promises
               setFromDate(value?.from ?? null)
               // eslint-disable-next-line @typescript-eslint/no-floating-promises

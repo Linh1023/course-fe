@@ -90,8 +90,6 @@ interface UseDataTableProps<TData, TValue> {
    * ```
    */
   filterFields?: DataTableFilterField<TData>[],
-  querySearch?: string,
-  setQuerySearch?: (v: string) => void
 }
 
 const schema = z.object({
@@ -107,8 +105,7 @@ export function useDataTable<TData, TValue>({
   defaultPerPage = 10,
   defaultSort,
   filterFields = [],
-  querySearch,
-  setQuerySearch
+
 }: UseDataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -180,30 +177,24 @@ export function useDataTable<TData, TValue>({
     [pageIndex, pageSize]
   )
 
-  React.useEffect(() => {
-    if (setQuerySearch && querySearch != undefined) {
-      // const newQuerySearch = updateQueryStringManually(querySearch, "page", (pageIndex + 1).toString())
-      // const newQuerySearch1 = updateQueryStringManually(newQuerySearch, "pageSize", (pageSize).toString())
-      // setQuerySearch(newQuerySearch1)
-    } else {
-      router.push(
-        `${pathname}?${createQueryString(
-          {
-            page: pageIndex + 1,
-            perPage: pageSize,
-          },
-          searchParams
-        )}`,
-        {
-          scroll: false,
-        }
-      )
-
-    }
+  // React.useEffect(() => {
 
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageIndex, pageSize])
+  //     router.push(
+  //       `${pathname}?${createQueryString(
+  //         {
+  //           page: pageIndex + 1,
+  //           perPage: pageSize,
+  //         },
+  //         searchParams
+  //       )}`,
+  //       {
+  //         scroll: false,
+  //       }
+  //     )
+
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [pageIndex, pageSize])
 
 
 

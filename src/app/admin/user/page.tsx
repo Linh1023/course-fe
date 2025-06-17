@@ -5,33 +5,14 @@ import { DataTableSkeleton } from "@/components/admin/share/data-table/data-tabl
 import { ReadonlyURLSearchParams } from "next/navigation"
 import React from "react"
 
-export interface UserPageProps {
-  searchParams: ReadonlyURLSearchParams;
-}
 
-const UserPage = async ({ searchParams }: UserPageProps) => {
-  const query = new URLSearchParams(searchParams).toString();
-  console.log("Query params:", query); // Debugging log
-
-  const userPromise = FetchServerGetApi(
-    `${API.ACCOUNT.ROOT}${query ? `?${query}` : ""}`,
-    "/admin/user"
-  );
+const UserPage =  () => {
 
   return (
     <div className="flex flex-col gap-4">
       <div className="h-[100px] flex items-center justify-between gap-2">
         <h1 className="text-xl font-semibold">Quản Lý Người Dùng</h1>
       </div>
-      <React.Suspense
-        fallback={
-          <DataTableSkeleton
-            columnCount={7}
-            cellWidths={["5rem", "15rem", "20rem", "10rem", "10rem", "10rem", "5rem"]}
-            shrinkZero
-          />
-        }
-      >
         {/* Khoang tg - Comment vì không dùng cho Account */}
         {/* <DateRangePicker
           triggerSize="sm"
@@ -39,8 +20,8 @@ const UserPage = async ({ searchParams }: UserPageProps) => {
           className="dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
           align="end"
         /> */}
-        <UsersTable userPromise={userPromise} />
-      </React.Suspense>
+        <UsersTable />
+
     </div>
   );
 };

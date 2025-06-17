@@ -9,31 +9,82 @@ import { TableInstanceProvider } from "@/components/admin/share/data-table/table
 import { DataTable } from "@/components/admin/share/data-table/data-table"
 import { DataTableAdvancedToolbar } from "@/components/admin/share/data-table/advance/data-table-advance-toolbar"
 import { getCourseProgressColumns } from "./course_progress_table_column"
-import { useParams, useSearchParams } from "next/navigation"
-
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useDebounce } from "@/hooks/use-debounce"
+import { FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api"
+import API from "@/api/api"
 
 interface Props {
-  courseProgressPromise: Promise<CourseProgressPageResponse>
+  id:string
 }
 
+export function CourseProgressTable(props:Props) {
 
-export function CourseProgressTable(props: Props) {
-
-  const { courseProgressPromise } = props
-
-  const { result, totalPages } = React.use(courseProgressPromise)
-
-  const pa = useSearchParams()
-
+  const { id } = props
   const [isLoading, setIsLoading] = React.useState(false)
-  React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      console.log("URL params changed, stop loading >>> ", pa.toString())
-      setIsLoading(false)
-    }, 500)
+  const searchParams = useSearchParams()
+  const pathName = usePathname()
+  const [dataResult, setDataResult] = React.useState<CourseProgressResponse[]>([])
+  const [totalPages, setTotalPages] = React.useState(1)
+  const router = useRouter()
+  const abortControllerRef = React.useRef<AbortController | null>(null); // Use ref to keep track of the controller
 
-    return () => clearTimeout(timeout)
-  }, [pa])
+
+
+  const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
+
+
+  React.useEffect(() => {
+    setIsLoading(true);
+
+    fetchData();
+  }, [querySearch]);
+
+
+  const fetchData = async () => {
+    // Huỷ request cũ nếu còn
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    const { signal } = abortController;
+
+    try {
+      const submissions = await FetchClientGetApiSignalNoToken(
+        `/api/proxy/search?${querySearch}&api=${API.ACCOUNT.COURSE_PROGRESS}/${id}`,
+        signal
+      );
+
+
+      if (submissions?.status === 200) {
+        setDataResult(submissions.result);
+        setTotalPages(submissions.totalPages);
+
+        //  Chỉ chạy nếu không bị huỷ
+        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+        router.replace(`${pathName}?${querySearch}`, {
+          scroll: false,
+        });
+      }
+
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        // Yêu cầu bị huỷ, không làm gì cả
+        return;
+      } else {
+        console.error('Lỗi khi fetch:', err);
+      }
+    } finally {
+      // ✅ Luôn setIsLoading(false) nếu không bị huỷ
+      if (!signal.aborted) {
+        setIsLoading(false);
+      }
+    }
+  };
+
+
 
   // cái này là từng dòng dữ liệu của bảng kể cả header
   const columns = React.useMemo(() => getCourseProgressColumns(), [])
@@ -71,11 +122,12 @@ export function CourseProgressTable(props: Props) {
 
 
   const { table } = useDataTable({
-    data: result, // dữ liệu đổ vào table
+    data: dataResult, // dữ liệu đổ vào table
     columns, // cái này là từng dòng dữ liệu của bảng kể cả header
     pageCount: totalPages, // tổng số trang
     filterFields, // bộ lọc
     defaultPerPage: 10, // tổng số phần tử trên 1 trang
+
   })
 
   const [isOpen, setIsOpen] = React.useState(false)
@@ -87,11 +139,14 @@ export function CourseProgressTable(props: Props) {
         table={table}
         isLoading={isLoading}
         setIsLoading={setIsLoading}
+        setQuerySearch={setQuerySearch}
+        querySearch={querySearch}
       >
 
         <DataTableAdvancedToolbar
           setIsLoading={setIsLoading}
-      
+          setQuerySearch={setQuerySearch}
+          querySearch={querySearch}
           filterFields={filterFields}>
 
         </DataTableAdvancedToolbar>

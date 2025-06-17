@@ -15,9 +15,10 @@ import { DeleteChaptersDialog } from "./delete-chapter-dialog"
 interface ChaptersTableFloatingBarProps {
   table: Table<Chapter>
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  fetchData :() =>void
 }
 
-export function ChaptersTableFloatingBar({ table, setIsLoading }: ChaptersTableFloatingBarProps) {
+export function ChaptersTableFloatingBar({ table, setIsLoading, fetchData }: ChaptersTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
   const [isOpen, setIsOpen] = React.useState(false)
   return (
@@ -31,6 +32,7 @@ export function ChaptersTableFloatingBar({ table, setIsLoading }: ChaptersTableF
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           onSuccess={() => {
+            fetchData()
             toast.success(
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} chương thành công!`
             )

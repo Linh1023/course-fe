@@ -10,10 +10,12 @@ import { toast } from "sonner"
 interface CategoriesTableToolbarActionsProps {
   table: Table<Category>
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  fetchData:()=>void
 }
 
 export function CategoriesTableToolbarActions({
-  table, setIsLoading
+  table, setIsLoading,
+  fetchData
 }: CategoriesTableToolbarActionsProps) {
 
   return (
@@ -25,6 +27,7 @@ export function CategoriesTableToolbarActions({
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           onSuccess={() => {
+            fetchData()
             toast.success(
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} danh mục thành công!`
             )
@@ -33,7 +36,9 @@ export function CategoriesTableToolbarActions({
           }
         />
       ) : null}
-      <CreateCategoryDialog setIsLoading={setIsLoading} />
+      <CreateCategoryDialog setIsLoading={setIsLoading} 
+      fetchData= {fetchData}
+      />
       {/**
        * Other actions can be added here.
        * For example, import, view, etc.

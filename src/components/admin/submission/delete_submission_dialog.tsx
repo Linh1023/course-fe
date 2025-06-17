@@ -53,7 +53,7 @@ export function DeleteSubmissionsDialog(props: DeleteSubmissionsDialogProps) {
       console.log(submission.id);
       await FetchServerDeleteApi(`${API.SUBMISSON.SUBMISSION}/${submission.id}`)
     }
-    router.refresh();
+ 
 
     //  thanh cong
     setIsOpen(false)

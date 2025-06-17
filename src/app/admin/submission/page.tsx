@@ -14,7 +14,6 @@ const SubmissionPage = () => {
                 <div className="h-[100px] flex items-center justify-between gap-2">
                     <h1 className="text-xl font-semibold">Quản Lý bài nộp</h1>
                 </div>
-
                 <SubmissionTable
                 />
             </div>

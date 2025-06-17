@@ -36,9 +36,10 @@ interface UpdateCategorySheetProps
   listCategory: Category[]
   course: Course
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  fetchData :()=>void
 }
 
-export function UpdateCourseSheet({ listCategory, course, setIsLoading, ...props }: UpdateCategorySheetProps) {
+export function UpdateCourseSheet({ listCategory, course, fetchData,setIsLoading, ...props }: UpdateCategorySheetProps) {
   const [previewImage, setPreviewImage] = React.useState<string | null>(null)
   const [previewVideo, setPreviewVideo] = React.useState<string | null>(null)
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
@@ -69,10 +70,11 @@ export function UpdateCourseSheet({ listCategory, course, setIsLoading, ...props
 
     startUpdateTransition(async () => {
       const res = await FetchServerPutApi(
-        `${API.COURSE.ROOT}/${course.id}`, dataFormatted, "/admin/course")
+        `${API.COURSE.ROOT}/${course.id}`, dataFormatted)
       if (res.status === 200) {
         toast.success("Cập nhật thành công!")
         props.onOpenChange?.(false)
+        fetchData()
         setIsLoading(true)
       }
       else {

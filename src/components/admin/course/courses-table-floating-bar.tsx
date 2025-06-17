@@ -15,9 +15,10 @@ import { DeleteCoursesDialog } from "./delete-course-dialog"
 interface CoursesTableFloatingBarProps {
   table: Table<Course>
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  fetchData:() =>void
 }
 
-export function CoursesTableFloatingBar({ table, setIsLoading }: CoursesTableFloatingBarProps) {
+export function CoursesTableFloatingBar({ table, setIsLoading, fetchData }: CoursesTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
   const [isOpen, setIsOpen] = React.useState(false)
   return (
@@ -31,6 +32,7 @@ export function CoursesTableFloatingBar({ table, setIsLoading }: CoursesTableFlo
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           onSuccess={() => {
+            fetchData()
             toast.success(
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} khóa học thành công!`
             )

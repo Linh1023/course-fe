@@ -69,7 +69,7 @@ export function DeleteChaptersDialog({
               startDeleteTransition(async () => {
                 const res = await Promise.all(
                   chapters.map((chapter) =>
-                    FetchServerDeleteApi(`${API.CHAPTER.ROOT}/${chapter.id}`, "/admin/course")
+                    FetchServerDeleteApi(`${API.CHAPTER.ROOT}/${chapter.id}`)
                   ))
                 if (res.some((r) => r.status !== 200)) {
                   toast.error("Xóa chương thất bại, vui lòng thử lại sau")

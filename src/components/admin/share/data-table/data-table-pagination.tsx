@@ -16,9 +16,9 @@ import { set } from "date-fns"
 
 interface DataTablePaginationProps {
   pageSizeOptions?: number[]
-  setIsLoading?: (v: boolean) => void
-  setQuerySearch?: (v: string) => void,
-  querySearch?: string
+  setIsLoading: (v: boolean) => void
+  setQuerySearch: (v: string) => void,
+  querySearch: string
 }
 
 export function DataTablePagination({
@@ -33,28 +33,26 @@ export function DataTablePagination({
   const [perPage, setPerPage] = useState(() => searchParams.get("perPage") ?? 10); // hoặc giá trị mặc định ban đầ
   const [page, setPage] = useState(() => searchParams.get("page") ?? 1); // hoặc giá trị mặc định ban đầu
 
-  // const page = searchParams.get("page") ?? 1
-  // const perPage = searchParams.get("perPage") ?? 10
   useEffect(() => {
     const pageIndex = Number(searchParams.get("page") ?? 1) - 1
     table.setPageIndex(pageIndex)
   }, [])
 
   const handleLoading = () => {
-    if (setIsLoading) {
-      setIsLoading(true)
-    }
+
+    setIsLoading(true)
+
   }
 
   useEffect(() => {
 
     const currentPage = table.getState().pagination.pageIndex + 1;
     setPage(currentPage);
-    if (querySearch != undefined && setQuerySearch) {
-      const newQuerySearch = updateQueryStringManually(querySearch, "page", currentPage.toString())
-      setQuerySearch(newQuerySearch)
-      console.log("newQuerySearch >>> ", newQuerySearch)
-    }
+
+    const newQuerySearch = updateQueryStringManually(querySearch, "page", currentPage.toString())
+    setQuerySearch(newQuerySearch)
+    console.log("newQuerySearch >>> ", newQuerySearch)
+
   }, [table.getState().pagination.pageIndex]);
 
   return (
@@ -73,10 +71,10 @@ export function DataTablePagination({
               setPerPage(value)
               table.setPageIndex(0);
               table.setPageSize(Number(value));
-              if (querySearch != undefined && setQuerySearch) {
-                const newQuerySearch = updateQueryStringManually(querySearch, "perPage", value.toString())
-                setQuerySearch(newQuerySearch)
-              }
+
+              const newQuerySearch = updateQueryStringManually(querySearch, "perPage", value.toString())
+              setQuerySearch(newQuerySearch)
+
               handleLoading()
             }}
           >
@@ -104,7 +102,7 @@ export function DataTablePagination({
             variant="outline"
             className=" size-8 p-0 lg:flex"
             onClick={() => {
-              // setPage(0)
+ 
               table.setPageIndex(0);
               handleLoading()
             }}
@@ -145,7 +143,7 @@ export function DataTablePagination({
             size="icon"
             className=" size-8 lg:flex"
             onClick={() => {
-              // setPage(table.getPageCount() - 1)
+        
               table.setPageIndex(table.getPageCount() - 1);
               handleLoading()
             }}

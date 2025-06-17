@@ -33,6 +33,7 @@ interface User {
 interface UpdateUserSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
   user: User;
   setIsLoading: (v: boolean) => void;
+  fetchData:()=>void
 }
 
 // Hàm xử lý thông báo lỗi từ server
@@ -58,7 +59,7 @@ const handleServerErrors = (errors: any[], form: any) => {
   });
 };
 
-export function UpdateUserSheet({ user, setIsLoading, ...props }: UpdateUserSheetProps) {
+export function UpdateUserSheet({ user,fetchData, setIsLoading, ...props }: UpdateUserSheetProps) {
   const router = useRouter();
   const [isUpdatePending, startUpdateTransition] = React.useTransition();
 
@@ -103,15 +104,14 @@ export function UpdateUserSheet({ user, setIsLoading, ...props }: UpdateUserShee
 
         const updateUserResponse = await FetchServerPutApi(
           API.ACCOUNT.UPDATE(user.id),
-          input,
-          "/admin/user"
+          input
         );
         
         if (updateUserResponse.status === 200) {
+          fetchData()
           toast.success("Cập nhật người dùng thành công!");
           props.onOpenChange?.(false);
           setIsLoading(true);
-          router.refresh();
         } else if (updateUserResponse.status === 400 && updateUserResponse.errors) {
           // Xử lý lỗi validation từ server
           handleServerErrors(updateUserResponse.errors, form);

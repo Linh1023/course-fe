@@ -27,8 +27,9 @@ import { FetchServerPostApi } from "@/actions/server/fetch_server_api"
 interface CreateCourseDialogProps {
   listCategory: Category[]
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  fetchData: () => void
 }
-export function CreateCourseDialog({ listCategory, setIsLoading }: CreateCourseDialogProps) {
+export function CreateCourseDialog({ listCategory, setIsLoading, fetchData }: CreateCourseDialogProps) {
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
@@ -71,7 +72,7 @@ export function CreateCourseDialog({ listCategory, setIsLoading }: CreateCourseD
     startTransition(async () => {
       const res = await FetchServerPostApi(API.COURSE.ROOT, dataFormmatted, "/admin/course")
       if (res.status === 200) {
-        router.replace("?page=1")
+        fetchData()
         form.reset()
         toast.success("Tạo khóa học thành công")
         setPreviewImage(null)
