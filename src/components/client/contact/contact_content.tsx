@@ -1,10 +1,41 @@
 'use client'
 import React, { useState } from 'react'
-import { Phone, Mail, MapPin, Send, CheckCircle } from "lucide-react";
+import { Phone, Mail, MapPin, Send, CheckCircle, AlertCircle, XCircle } from "lucide-react";
 
 const MyContact = () => {
   const [result, setResult] = useState("");
   const [formError, setFormError] = useState("");
+  const [errors, setErrors] = useState({
+    email: "",
+    phone: ""
+  });
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePhone = (phone: string) => {
+    const phoneRegex = /^[0-9]{10,11}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setErrors(prev => ({ ...prev, [name]: "" }));
+
+    if (name === "email" && value) {
+      if (!validateEmail(value)) {
+        setErrors(prev => ({ ...prev, email: "Email không đúng định dạng" }));
+      }
+    }
+
+    if (name === "phone" && value) {
+      if (!validatePhone(value)) {
+        setErrors(prev => ({ ...prev, phone: "Số điện thoại phải có 10-11 chữ số" }));
+      }
+    }
+  };
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -17,6 +48,18 @@ const MyContact = () => {
 
     if (!email && !phone) {
       setFormError("Vui lòng nhập email hoặc số điện thoại");
+      setResult("");
+      return;
+    }
+
+    if (email && !validateEmail(email)) {
+      setFormError("Email không đúng định dạng");
+      setResult("");
+      return;
+    }
+
+    if (phone && !validatePhone(phone)) {
+      setFormError("Số điện thoại phải có 10-11 chữ số");
       setResult("");
       return;
     }
@@ -158,8 +201,18 @@ const MyContact = () => {
                   type="email"
                   placeholder="your.email@example.com"
                   name="email"
-                  className="w-full bg-gray-50 border-2 border-gray-200 p-3 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 text-gray-800"
+                  pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
+                  onChange={handleInputChange}
+                  className={`w-full bg-gray-50 border-2 ${errors.email ? 'border-red-300' : 'border-gray-200'
+                    } p-3 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 text-gray-800`}
                 />
+                {errors.email && (
+                  <p className="text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle size={14} />
+                    {errors.email}
+                  </p>
+                )}
+                <p className="text-xs text-gray-500">Ví dụ: example@gmail.com</p>
               </div>
             </div>
 
@@ -169,9 +222,18 @@ const MyContact = () => {
                 type="tel"
                 placeholder="Số điện thoại của bạn"
                 name="phone"
-                className="w-full bg-gray-50 border-2 border-gray-200 p-3 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 text-gray-800"
+                pattern="[0-9]{10,11}"
+                onChange={handleInputChange}
+                className={`w-full bg-gray-50 border-2 ${errors.phone ? 'border-red-300' : 'border-gray-200'
+                  } p-3 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 text-gray-800`}
               />
-              <p className="text-xs text-gray-500">Vui lòng nhập email hoặc số điện thoại</p>
+              {errors.phone && (
+                <p className="text-xs text-red-500 flex items-center gap-1">
+                  <AlertCircle size={14} />
+                  {errors.phone}
+                </p>
+              )}
+              <p className="text-xs text-gray-500">Nhập 10-11 chữ số (Ví dụ: 0987654321)</p>
             </div>
 
             <div className="space-y-2">
@@ -196,20 +258,25 @@ const MyContact = () => {
             </div>
 
             {formError && (
-              <div className="text-center p-4 rounded-xl bg-red-100 text-red-800 border border-red-200">
-                <span className="font-medium">{formError}</span>
+              <div className="text-center p-4 rounded-xl bg-red-50 text-red-800 border border-red-200 animate-fade-in">
+                <div className="flex items-center justify-center gap-2">
+                  <AlertCircle size={20} className="text-red-500" />
+                  <span className="font-medium">{formError}</span>
+                </div>
               </div>
             )}
 
             {result && (
-              <div className={`text-center p-4 rounded-xl ${result.includes('thành công')
-                ? 'bg-green-100 text-green-800 border border-green-200'
+              <div className={`text-center p-4 rounded-xl animate-fade-in ${result.includes('thành công')
+                ? 'bg-green-50 text-green-800 border border-green-200'
                 : result.includes('Đang gửi')
-                  ? 'bg-blue-100 text-blue-800 border border-blue-200'
-                  : 'bg-red-100 text-red-800 border border-red-200'
+                  ? 'bg-blue-50 text-blue-800 border border-blue-200'
+                  : 'bg-red-50 text-red-800 border border-red-200'
                 }`}>
                 <div className="flex items-center justify-center gap-2">
-                  {result.includes('thành công') && <CheckCircle size={20} />}
+                  {result.includes('thành công') && <CheckCircle size={20} className="text-green-500" />}
+                  {result.includes('Đang gửi') && <Send size={20} className="text-blue-500 animate-pulse" />}
+                  {result.includes('lỗi') && <XCircle size={20} className="text-red-500" />}
                   <span className="font-medium">{result}</span>
                 </div>
               </div>
@@ -220,11 +287,18 @@ const MyContact = () => {
 
       <style jsx>{`
         @keyframes fade-in {
-          from { opacity: 0; transform: translateY(30px); }
+          from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in {
-          animation: fade-in 0.8s ease-out;
+          animation: fade-in 0.3s ease-out;
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+        .animate-pulse {
+          animation: pulse 1.5s ease-in-out infinite;
         }
       `}</style>
     </div>
