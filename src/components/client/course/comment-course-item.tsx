@@ -69,6 +69,7 @@ export const CommentCourseItem = ({
     if (showReplies) {
       setShowReplies(false);
     } else if (!replies.length && mainComment.replyCount > 0) {
+      fetchReplies(0, mainComment.id);
     } else {
       setShowReplies(true);
     }
@@ -111,9 +112,14 @@ export const CommentCourseItem = ({
       replyCount: 0,
       authorId: currentAccount?.id || "",
     };
+    setMainComment((prev) => ({
+      ...prev,
+      replyCount: prev.replyCount + 1,
+    }));
 
     setReplies((prev) => [optimisticComment, ...prev]);
     setNewReplyContent("");
+    setShowReplies(true)
 
     const res = await FetchServerPostApi(API.COMMENT.COMMENT, {
       courseId,
@@ -172,12 +178,13 @@ export const CommentCourseItem = ({
   return (
     <div className={level > 0 ? `ml-2 pt-2` : ""}>
       <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+        {/* comment chính */}
         <div className="flex items-start gap-4">
           <Avatar className={`w-${level > 0 ? 8 : 10} h-${level > 0 ? 8 : 10}`}>
             <AvatarImage src={mainComment.authorAvatar} />
             <AvatarFallback>{mainComment.authorName[0]}</AvatarFallback>
           </Avatar>
-          <div className="flex-1">
+          <div className="">
             <div className="flex items-center justify-between">
               <div className="font-semibold text-gray-900 dark:text-gray-100">
                 {mainComment.authorName}
@@ -241,10 +248,7 @@ export const CommentCourseItem = ({
               variant="link"
               size="sm"
               className="text-blue-600 hover:underline"
-              onClick={async () => {
-                await fetchReplies(0, mainComment.id);
-                setShowReplies(true);
-              }}
+              onClick={handleViewReplies}
               disabled={isLoadingReplies}
             >
               {isLoadingReplies ? (

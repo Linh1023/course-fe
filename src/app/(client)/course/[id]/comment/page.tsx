@@ -12,9 +12,9 @@ const PageCourseComment = async (props: any) => {
     redirect("/");
   }
   return (
-    <>
+    <>  
       <CommentCourseSection
-        comments={commentResponse.result}
+        comments={commentResponse?.result}
         courseId={params.id}
       />
     </>
