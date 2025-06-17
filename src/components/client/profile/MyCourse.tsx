@@ -5,9 +5,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import LearningCourses from "./LearningCourses";
 import { MyCourseResponse } from "@/types/response/account/my_course";
 
-interface MyCourseProps {
-  coursePromise: Promise<MyCourseResponse>;
-}
 
 const tabs = [
   {
@@ -17,8 +14,10 @@ const tabs = [
   },
 ];
 
-export default function MyCourse({ coursePromise }: MyCourseProps) {
+export default function MyCourse() {
   const [isMobile, setIsMobile] = React.useState(false);
+
+
 
   React.useEffect(() => {
     const checkMobile = () => {
@@ -49,7 +48,7 @@ export default function MyCourse({ coursePromise }: MyCourseProps) {
 
         {/* Mobile Content */}
         <div className="p-4">
-          <LearningCourses coursePromise={coursePromise} />
+          <LearningCourses />
         </div>
       </div>
     );
@@ -75,7 +74,7 @@ export default function MyCourse({ coursePromise }: MyCourseProps) {
       </TabsList>
       {tabs.map((tab) => (
         <TabsContent key={tab.value} value={tab.value} className="mt-4">
-          <LearningCourses coursePromise={coursePromise} />
+          <LearningCourses />
         </TabsContent>
       ))}
     </Tabs>

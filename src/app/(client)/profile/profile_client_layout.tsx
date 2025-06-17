@@ -19,7 +19,7 @@ const tabs = [
         name: "Khóa học của tôi",
         value: "courses",
         icon: ListVideo,
-        link: "/profile/course"
+        link: "/profile/course?page=1"
     },
     {
         name: "Bài tập của tôi",
