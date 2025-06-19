@@ -1,5 +1,5 @@
 "use server"
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import API from "@/api/api"
 import { FetchServerPostApiNoToken } from "./fetch_server_api"
 import { getToken } from "./token_store"
@@ -11,6 +11,7 @@ export const introspectAccessTokenInMiddleware = async (req: AccessTokenRequest)
     if (res && res.status == 200) {
         return res.result
     }
+
     return null
 }
 
@@ -59,10 +60,12 @@ interface AuthResult {
 }
 
 
-export const authentication = async (): Promise<AuthResult> => {
+export const authentication = async (request: NextRequest): Promise<AuthResult> => {
 
-    const refreshToken = await getToken("refresh_token");
-    const accessToken = await getToken("access_token");
+    const accessToken = request.cookies.get("access_token")?.value;
+    const refreshToken = request.cookies.get("refresh_token")?.value;
+  
+
 
     const accessTokenRequest: AccessTokenRequest = {
         accessToken: accessToken
@@ -85,6 +88,7 @@ export const authentication = async (): Promise<AuthResult> => {
     // neu access token khong co va co refreshToken 
     if (accessToken === undefined) {
         // xin cap lai access token
+
         return refreshTokenInMiddleware(refreshTokenRequest)
     }
     // truong hop co access token
@@ -104,6 +108,7 @@ export const authentication = async (): Promise<AuthResult> => {
             }
             // neu co refreshToken xin cap lai access token
             else {
+            
                 return refreshTokenInMiddleware(refreshTokenRequest)
             }
         }
@@ -113,7 +118,7 @@ export const authentication = async (): Promise<AuthResult> => {
             return {
                 isAuthentication: true,
                 role: data.role,
-                 response: null
+                response: null
             };
         }
 
