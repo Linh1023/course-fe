@@ -20,7 +20,7 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link";
 
 export function getColumns(
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,  
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   fetchData: () => Promise<void>): ColumnDef<User>[] {
   return [
     {
@@ -64,7 +64,9 @@ export function getColumns(
           </div>
         );
       },
-      enableSorting: true,
+      enableSorting: false,
+      enableHiding: false,
+
     },
     {
       accessorKey: "email",
@@ -78,10 +80,11 @@ export function getColumns(
           </span>
         </div>
       ),
-      enableSorting: true,
+      enableSorting: false,
+      enableHiding: false,
     },
     {
-      accessorKey: "username", 
+      accessorKey: "username",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Tài khoản" />
       ),
@@ -93,6 +96,7 @@ export function getColumns(
         </div>
       ),
       enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: "createdAt",
@@ -106,7 +110,8 @@ export function getColumns(
           </span>
         </div>
       ),
-      enableSorting: true,
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: "role",
@@ -123,21 +128,22 @@ export function getColumns(
                   role === "ADMIN"
                     ? "default"
                     : role === "CLIENT"
-                    ? "secondary"
-                    : "outline"
+                      ? "secondary"
+                      : "outline"
                 }
               >
                 {role === "ADMIN"
                   ? "Quản Trị Viên"
                   : role === "CLIENT"
-                  ? "Học Viên"
-                  : "Khác"}
+                    ? "Học Viên"
+                    : "Khác"}
               </Badge>
             </span>
           </div>
         );
       },
-      enableSorting: true,
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: "status",
@@ -153,16 +159,16 @@ export function getColumns(
                 variant={status === "active" ? "secondary" : "destructive"}
                 className="flex items-center gap-1"
               >
-                <div className={`w-2 h-2 rounded-full ${
-                  status === "active" ? "bg-green-500" : "bg-red-500"
-                }`} />
+                <div className={`w-2 h-2 rounded-full ${status === "active" ? "bg-green-500" : "bg-red-500"
+                  }`} />
                 {status === "active" ? "Hoạt động" : "Ngưng hoạt động"}
               </Badge>
             </span>
           </div>
         );
       },
-      enableSorting: true,
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       id: "actions",
@@ -180,7 +186,7 @@ export function getColumns(
               onOpenChange={setShowUpdateUserSheet}
               user={row.original}
               setIsLoading={setIsLoading}
-              fetchData = {fetchData}
+              fetchData={fetchData}
             />
             <DeleteUsersDialog
               open={showDeleteUserDialog}

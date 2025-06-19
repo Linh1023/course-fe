@@ -2,6 +2,11 @@ import { useSearchParams } from "next/navigation"
 
 import { type Column } from "@tanstack/react-table"
 
+
+import {
+  type SortingState,
+} from "@tanstack/react-table"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -12,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ArrowDownIcon, ArrowUpIcon, ChevronDownIcon, ChevronsUpDownIcon } from "lucide-react"
+import React, { useEffect, useState } from "react"
 
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -25,13 +31,18 @@ export function DataTableColumnHeader<TData, TValue>({
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
   const searchParams = useSearchParams()
+  const [columnName, setColumnName] = useState(() => searchParams.get("sort")?.split(".")[0])
+  const [sortOrder, setSortOrder] = useState(() => searchParams.get("sort")?.split(".")[1])
+  const isSorted = columnName === column.id
 
   if (!column.getCanSort() && !column.getCanHide()) {
     return <div className={cn(className)}>{title}</div>
   }
 
-  const [columnName, sortOrder] = searchParams.get("sort")?.split(".") ?? []
-  const isSorted = columnName === column.id
+
+
+
+
 
   return (
     <div className={cn("flex items-center space-x-2", className)}>
@@ -67,7 +78,14 @@ export function DataTableColumnHeader<TData, TValue>({
             <>
               <DropdownMenuItem
                 aria-label="Sort ascending"
-                onClick={() => column.toggleSorting(false)}
+                onClick={() => {
+
+                  console.log("sort 1 >>> Asc", column.id)
+                  setColumnName(column.id)
+                  setSortOrder("asc")
+
+                  column.toggleSorting(false)
+                }}
               >
                 <ArrowUpIcon
                   className="mr-2 size-3.5 text-muted-foreground/70"
@@ -77,7 +95,12 @@ export function DataTableColumnHeader<TData, TValue>({
               </DropdownMenuItem>
               <DropdownMenuItem
                 aria-label="Sort descending"
-                onClick={() => column.toggleSorting(true)}
+                onClick={() => {
+                  console.log("sort 1 >>> Desc", column.id)
+                  setColumnName(column.id)
+                  setSortOrder("desc")
+                  column.toggleSorting(true)
+                }}
               >
                 <ArrowDownIcon
                   className="mr-2 size-3.5 text-muted-foreground/70"

@@ -22,8 +22,8 @@ import { Badge } from "@/components/ui/badge"
 import { UpdateSubmissionSheet } from "./update_submission_sheet"
 export function getSubmissionColumns(
 
- setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
- fetchData: () => Promise<void>
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  fetchData: () => Promise<void>
 
 ): ColumnDef<SubmissionAdminResponse>[] {
   return [
@@ -67,6 +67,8 @@ export function getSubmissionColumns(
           </div>
         )
       },
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: "submitterName",
@@ -82,6 +84,8 @@ export function getSubmissionColumns(
           </div>
         )
       },
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: "courseName",
@@ -97,6 +101,8 @@ export function getSubmissionColumns(
           </div>
         )
       },
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: "lessonName",
@@ -112,6 +118,8 @@ export function getSubmissionColumns(
           </div>
         )
       },
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: "status",
@@ -137,6 +145,8 @@ export function getSubmissionColumns(
           </>
         )
       },
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: "submittedAt",
@@ -152,6 +162,8 @@ export function getSubmissionColumns(
           </div>
         )
       },
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       id: "actions",
@@ -165,9 +177,9 @@ export function getSubmissionColumns(
             <UpdateSubmissionSheet
               showUpdateSubmissionSheet={showUpdateSubmissionSheet}
               setShowUpdateSubmissionSheet={setShowUpdateSubmissionSheet}
-              fetchData = {fetchData}
+              fetchData={fetchData}
               submission={row.original}
-              setIsLoading = {setIsLoading}
+              setIsLoading={setIsLoading}
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

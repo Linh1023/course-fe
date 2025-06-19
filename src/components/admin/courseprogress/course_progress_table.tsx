@@ -127,7 +127,9 @@ export function CourseProgressTable(props:Props) {
     pageCount: totalPages, // tổng số trang
     filterFields, // bộ lọc
     defaultPerPage: 10, // tổng số phần tử trên 1 trang
-
+    setQuerySearch: setQuerySearch,
+    querySearch: querySearch,
+    setIsLoading:setIsLoading
   })
 
   const [isOpen, setIsOpen] = React.useState(false)
