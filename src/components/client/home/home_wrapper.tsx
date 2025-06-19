@@ -10,8 +10,7 @@ interface HomeProps {
 const HomeWrapper = (props:HomeProps) => {
 
     const { data_hot, data_newest, data_my_lesson } = props;
-    console.log("data_hot", data_hot);
-    console.log("data_newest", data_newest);
+
     
 
     return (

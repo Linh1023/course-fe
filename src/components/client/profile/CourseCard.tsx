@@ -36,7 +36,7 @@ const CourseCard: React.FC<CourseCardProps> = React.memo(({ course, isProgress }
           />
         </div>
         <div className="p-4">
-          <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+          <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 h-[49px]">
             {course.name}
           </h3>
 
