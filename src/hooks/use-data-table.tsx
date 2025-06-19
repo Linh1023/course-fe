@@ -90,6 +90,9 @@ interface UseDataTableProps<TData, TValue> {
    * ```
    */
   filterFields?: DataTableFilterField<TData>[],
+  setQuerySearch: (v: string) => void,
+  querySearch: string,
+  setIsLoading: (v: boolean) => void
 }
 
 const schema = z.object({
@@ -105,6 +108,9 @@ export function useDataTable<TData, TValue>({
   defaultPerPage = 10,
   defaultSort,
   filterFields = [],
+  setIsLoading,
+  setQuerySearch,
+  querySearch
 
 }: UseDataTableProps<TData, TValue>) {
   const router = useRouter()
@@ -177,27 +183,6 @@ export function useDataTable<TData, TValue>({
     [pageIndex, pageSize]
   )
 
-  // React.useEffect(() => {
-
-
-  //     router.push(
-  //       `${pathname}?${createQueryString(
-  //         {
-  //           page: pageIndex + 1,
-  //           perPage: pageSize,
-  //         },
-  //         searchParams
-  //       )}`,
-  //       {
-  //         scroll: false,
-  //       }
-  //     )
-
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [pageIndex, pageSize])
-
-
-
 
   // Handle server-side sorting
   const [sorting, setSorting] = React.useState<SortingState>([
@@ -208,19 +193,15 @@ export function useDataTable<TData, TValue>({
   ])
 
   React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString(
-        {
-          page,
-          sort: sorting[0]?.id
-            ? `${sorting[0]?.id}.${sorting[0]?.desc ? "desc" : "asc"}`
-            : undefined,
-        },
-        searchParams
-      )}`,
-      { scroll: false }
-    )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const newQuerySearch = updateQueryStringManually(querySearch, "sort", sorting[0]?.id
+      ? `${sorting[0]?.id}.${sorting[0]?.desc ? "desc" : "asc"}`
+      : undefined,)
+    if (newQuerySearch != querySearch) {
+      setIsLoading(true)
+      setQuerySearch(newQuerySearch)
+      table.setPageIndex(0);
+    }
+
   }, [sorting])
 
   // Handle server-side filtering

@@ -23,38 +23,39 @@ import { useQuerySearchClientContext } from "@/context/query_search_client_conte
 interface HomeProps {
   data_hot: CourseCardResponse[];
   data_newest: CourseCardResponse[];
+  data_my_lesson: CourseCardResponse[];
 }
 
-const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
+const HomeContent = ({ data_hot, data_newest, data_my_lesson }: HomeProps) => {
   const router = useRouter();
-  const { currentAccount } = useCurrentAccountContext();
+  
   const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext();
-  const [enrollCourse, setEnrollCourse] = useState<CourseCardResponse[]>([]);
+  const [enrollCourse, setEnrollCourse] = useState<CourseCardResponse[]>(data_my_lesson);
   const [isProgress, setIsProgress] = useState(true);
 
   const { querySearch, setQuerySearch } = useQuerySearchClientContext()
 
-  useEffect(() => {
-    const fetchEnrollCourse = async () => {
-      if (!currentAccount) return;
+  // useEffect(() => {
+  //   const fetchEnrollCourse = async () => {
 
-      const res = await FetchServerGetApi(
-        `${API.ACCOUNT.MY_COURSE}?perPage=3`
-      );
-      if (res && res.status === 200) {
-        setEnrollCourse(res.result);
-      }
-    };
 
-    fetchEnrollCourse();
-  }, [currentAccount]);
+  //     const res = await FetchServerGetApi(
+  //       `${API.ACCOUNT.MY_COURSE}?perPage=3`
+  //     );
+  //     if (res && res.status === 200) {
+  //       setEnrollCourse(res.result);
+  //     }
+  //   };
+
+  //   fetchEnrollCourse();
+  // }, []);
 
   return (
     <div className="p-4 h-full mb-8">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
         {/* Cột trái */}
         <div
-          className={`${currentAccount && enrollCourse.length > 0 ? "lg:col-span-3" : "lg:col-span-4"
+          className={`${enrollCourse.length > 0 ? "lg:col-span-3" : "lg:col-span-4"
             } space-y-6`}
         >
           {/* Carousel */}
@@ -284,7 +285,7 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
           </div>
 
           {/* Khóa học đang học - HIỂN THỊ trên mobile/tablet, ẨN desktop */}
-          {currentAccount && enrollCourse.length > 0 && (
+          {enrollCourse.length > 0 && (
             <div className="block lg:hidden mb-8">
               <CourseList
                 title="Khóa học đang học"
@@ -319,7 +320,7 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
         </div>
 
         {/* Cột phải - KHÓA HỌC ĐANG HỌC chỉ hiện desktop asdasd */}
-        {currentAccount && enrollCourse.length > 0 && (
+        { enrollCourse.length > 0 && (
           <div className="hidden lg:flex lg:col-span-1 flex-col space-y-4 bg-gray-100 p-4 rounded-xl">
             <CourseList
               title="Khóa học đang học"
