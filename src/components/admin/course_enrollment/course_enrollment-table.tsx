@@ -107,16 +107,17 @@ export function CourseEnrollmentTable() {
       label: "Tên khóa học",
       value: "courseName",
       placeholder: "Lọc theo mô tả danh mục...",
-    }
-    // {
-    //   label: "Ngày đăng ký",
-    //   value: "enrolledAt",
-    //   placeholder: "Lọc theo trạng thái...",
-    //   options: [
-    //     { label: "Hoạt động", value: "active" },
-    //     { label: "Không hoạt động", value: "inactive" },
-    //   ],
-    // }
+    },
+    {
+      label: "Trạng thái",
+      value: "status",
+      placeholder: "Lọc theo trạng thái...",
+      options: [
+        { label: "Hoạt động", value: "active" },
+        { label: "Đang chờ", value: "pending" },
+        { label: "Không hoạt động", value: "inactive" },
+      ],
+    },
   ]
 
   // TODO: Replace with actual data fetching logic

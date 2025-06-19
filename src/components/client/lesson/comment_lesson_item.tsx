@@ -167,9 +167,6 @@ export const CommentLessonItem = ({
     // Sử dụng modal tùy chỉnh thay vì window.confirm
     const confirmed = await new Promise((resolve) => {
       // Logic hiển thị modal xác nhận ở đây
-      // Ví dụ đơn giản với console log, trong thực tế sẽ là một component modal
-      console.log("Bạn có chắc chắn muốn xóa bình luận này?");
-      // Giả lập người dùng xác nhận
       const userConfirmed = window.confirm("Bạn có chắc chắn muốn xóa bình luận này?");
       resolve(userConfirmed);
     });
@@ -210,7 +207,7 @@ export const CommentLessonItem = ({
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <div className="font-semibold text-gray-900 dark:text-gray-100">
-                {mainComment.authorName} {/* + " " + mainComment.id */}
+                {mainComment.authorName}
               </div>
             </div>
             <p

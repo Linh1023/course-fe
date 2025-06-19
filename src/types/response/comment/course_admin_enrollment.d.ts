@@ -5,6 +5,7 @@ interface CourseEnrollmentAdmin {
   courseName: string;
   accountName: string;
   enrolledAt: string;
+  status: "active" | "inactive" | "pending";
 }
 interface CourseEnrollmentResponse {
   result: CourseEnrollmentAdmin[];
