@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    const auth = await authentication();
+    const auth = await authentication(request);
     if (currentPath === "/login" && auth.isAuthentication === true) {
         return NextResponse.redirect(new URL('/', request.url))
     }
@@ -25,8 +25,9 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/', request.url))
     }
 
-    const courseMatch = currentPath.match(/^\/course\/([^\/]+)$/)
+    const courseMatch = currentPath.match(/^\/course\/([^\/]+)$/) 
     if (courseMatch && auth.isAuthentication) {
+     
         const courseId = courseMatch[1]
         const resLessonProgress = await FetchServerGetApi(`${API.LESSON_PROGRESS.LAST_VIEWED_LESSON}/${courseId}`);
         if (resLessonProgress && resLessonProgress.status === 200) {
