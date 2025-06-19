@@ -1,5 +1,3 @@
-"use client"
-
 import { CourseChapters } from "@/components/client/course/course_chapter"
 
 interface Props {

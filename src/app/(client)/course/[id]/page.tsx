@@ -8,7 +8,6 @@ import CourseSidebarSection from "@/components/client/course/course_sidebar"
 import SidebarSkeleton from "@/components/client/course/sidebar_skeleton"
 import MyConnect from "@/components/client/share/MyConnect"
 import { redirect } from "next/navigation"
-import { Suspense } from "react"
 
 interface CoursePageProps {
     params: {
@@ -22,7 +21,14 @@ const CoursePage = async ({ params }: CoursePageProps) => {
     if (res && res.status === 200) {
         courseResponse = res.result
     } else {
-        redirect("/")
+        redirect('/');
+    }
+
+    if (!courseResponse) {
+        return <>
+            <CourseInfoSkeleton />
+            <SidebarSkeleton />
+        </>
     }
 
     return (
@@ -30,13 +36,9 @@ const CoursePage = async ({ params }: CoursePageProps) => {
             <div className="flex justify-center bg-gray-50">
                 <div className="flex flex-col-reverse  md:flex-row max-w-[90rem] w-full px-4 gap-6 py-10">
                     {/* Cột trái: Nội dung khóa học */}
-                    <Suspense fallback={<CourseInfoSkeleton />}>
-                        <CourseInfoSection course={courseResponse} />
-                    </Suspense>
+                    <CourseInfoSection course={courseResponse} />
                     {/* Cột phải: Sidebar khóa học */}
-                    <Suspense fallback={<SidebarSkeleton />}>
-                        <CourseSidebarSection course={courseResponse} courseId={params.id} />
-                    </Suspense>
+                    <CourseSidebarSection course={courseResponse} courseId={params.id} />
                 </div>
             </div>
             <MyConnect />

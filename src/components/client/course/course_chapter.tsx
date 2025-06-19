@@ -9,6 +9,9 @@ export function CourseChapters({ chapters }: CourseChaptersProps) {
   return (
     <Accordion type="multiple" className="w-full flex flex-col space-y-2">
       <h2 className="font-bold text-lg">Nội dung khóa học</h2>
+      {chapters.length === 0 && (
+        <div className="text-sm text-muted-foreground">Chưa có nội dung</div>
+      )}
       {chapters.map((chapter, index) => (
         <AccordionItem key={index} value={`item-${index}`} className="border-none">
           <AccordionTrigger className="flex justify-between px-4 py-3 bg-muted rounded-md hover:bg-muted/70">
