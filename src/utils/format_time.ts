@@ -24,3 +24,16 @@ export const formatTimeShort = (dateString: string): string => {
         const secs = Math.floor(seconds % 60);
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
+
+  export const formatTimeWithDaysHoursMinutes = (seconds: number) => {
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    if (days > 0) {
+      return `${days} ngày ${hours} giờ ${mins} phút`;
+    }
+    if (hours > 0) {
+      return `${hours} giờ ${mins} phút`;
+    }
+    return `${mins} phút`;
+  }
