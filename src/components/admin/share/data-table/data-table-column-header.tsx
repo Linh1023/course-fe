@@ -31,6 +31,9 @@ export function DataTableColumnHeader<TData, TValue>({
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
   const searchParams = useSearchParams()
+  const [columnName, setColumnName] = useState(() => searchParams.get("sort")?.split(".")[0])
+  const [sortOrder, setSortOrder] = useState(() => searchParams.get("sort")?.split(".")[1])
+  const isSorted = columnName === column.id
 
   if (!column.getCanSort() && !column.getCanHide()) {
     return <div className={cn(className)}>{title}</div>
@@ -38,16 +41,8 @@ export function DataTableColumnHeader<TData, TValue>({
 
 
 
-  // const [columnName, sortOrder] = searchParams.get("sort")?.split(".") ?? []
-  const [columnName, setColumnName] = useState(() => searchParams.get("sort")?.split(".")[0])
-  const [sortOrder, setSortOrder] = useState(() => searchParams.get("sort")?.split(".")[1])
 
-  // const [isSorted, setIsSorted] = useState(columnName === column.id)
-  const isSorted = columnName === column.id
-  // useEffect(() => {
-  //   setIsSorted(columnName === column.id)
-  // }, [columnName])
-console.log("Render: columnName=", columnName, "sortOrder=", sortOrder, "isSorted=", isSorted)
+
 
   return (
     <div className={cn("flex items-center space-x-2", className)}>
