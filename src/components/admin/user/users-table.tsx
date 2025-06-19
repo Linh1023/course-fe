@@ -55,7 +55,7 @@ export function UsersTable() {
 
       if (submissions?.status === 200) {
         setDataResult(submissions.result);
-        setTotalPages(submissions.totalPages); 
+        setTotalPages(submissions.totalPages);
 
         //  Chỉ chạy nếu không bị huỷ
         console.log("fetch >>> ", `${pathName}?${querySearch}`);
@@ -82,7 +82,7 @@ export function UsersTable() {
 
 
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo(() => getColumns(setIsLoading, fetchData), [setIsLoading, fetchData]);
+  const columns = React.useMemo(() => getColumns(setIsLoading, fetchData), []);
 
   const filterFields: DataTableFilterField<User>[] = [
     {
@@ -125,7 +125,10 @@ export function UsersTable() {
     columns,
     pageCount: totalPages,
     filterFields,
-    defaultPerPage: 10
+    defaultPerPage: 10,
+    setQuerySearch: setQuerySearch,
+    querySearch: querySearch,
+    setIsLoading: setIsLoading
   });
 
   return (

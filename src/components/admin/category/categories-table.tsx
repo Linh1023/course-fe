@@ -84,7 +84,7 @@ export function CategoriesTable() {
 
 
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo(() => getColumns({ setIsLoading, fetchData }), [setIsLoading, fetchData])
+  const columns = React.useMemo(() => getColumns({ setIsLoading, fetchData }), [])
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -126,7 +126,9 @@ export function CategoriesTable() {
     // optional props
     filterFields,
     defaultPerPage: 10,
-
+    setQuerySearch: setQuerySearch,
+    querySearch: querySearch,
+    setIsLoading:setIsLoading
   })
 
   return (
@@ -147,9 +149,9 @@ export function CategoriesTable() {
           setQuerySearch={setQuerySearch}
           querySearch={querySearch}
         >
-          <CategoriesTableToolbarActions table={table} 
-          fetchData={fetchData}
-          setIsLoading={setIsLoading} 
+          <CategoriesTableToolbarActions table={table}
+            fetchData={fetchData}
+            setIsLoading={setIsLoading}
           />
         </DataTableAdvancedToolbar>
       </DataTable>

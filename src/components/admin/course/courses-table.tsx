@@ -96,7 +96,7 @@ export function CoursesTable({ categoryPromise }: CoursesTableProps) {
 
 
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo(() => getColumns({ listCategory, setIsLoading, fetchData }), [setIsLoading, fetchData])
+  const columns = React.useMemo(() => getColumns({ listCategory, setIsLoading, fetchData }), [])
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -139,7 +139,9 @@ export function CoursesTable({ categoryPromise }: CoursesTableProps) {
     // optional props
     filterFields,
     defaultPerPage: 10,
-
+    setQuerySearch: setQuerySearch,
+    querySearch: querySearch,
+    setIsLoading: setIsLoading
   })
 
   return (
