@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    const auth = await authentication(request);
+    const auth = await authentication();
     if (currentPath === "/login" && auth.isAuthentication === true) {
         return NextResponse.redirect(new URL('/', request.url))
     }
@@ -49,7 +49,7 @@ export async function middleware(request: NextRequest) {
     if (auth.response != null) {
         return auth.response;
     }
-    return NextResponse.redirect(new URL('/', request.url))
+    return NextResponse.next();
 }
 
 
