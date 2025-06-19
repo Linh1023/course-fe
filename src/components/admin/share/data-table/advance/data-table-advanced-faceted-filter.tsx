@@ -53,7 +53,6 @@ export function DataTableAdvancedFacetedFilter<TData, TValue>({
                     selectedValues.delete(option.value)
                   } else {
                     selectedValues.add(option.value)
-                    console.log("add item")
                   }
                   const filterValues = Array.from(selectedValues)
                   setSelectedOptions((prev) =>

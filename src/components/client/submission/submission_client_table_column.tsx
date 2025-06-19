@@ -39,6 +39,8 @@ export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse
                     </div>
                 )
             },
+            enableSorting: false,
+            enableHiding: false,
         },
 
         {
@@ -55,6 +57,9 @@ export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse
                     </div>
                 )
             },
+
+            enableSorting: false,
+            enableHiding: false,
         },
 
         // {
@@ -116,6 +121,8 @@ export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse
                     </>
                 )
             },
+            enableSorting: false,
+            enableHiding: false,
         },
         {
             accessorKey: "submittedAt",
@@ -131,6 +138,8 @@ export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse
                     </div>
                 )
             },
+            enableSorting: false,
+            enableHiding: false,
         },
 
         {
@@ -159,13 +168,13 @@ export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse
                             variant="ghost"
                             className="flex size-8 p-0 data-[state=open]:bg-muted "
                             onClick={
-                                () => {setIsOpen(true)}
+                                () => { setIsOpen(true) }
                             }
                         >
                             {/* <Ellipsis className="size-4" aria-hidden="true" /> */}
-                           
-                           <div className="bg-gray-200 p-1 rounded-[5px]"> Chi tiết</div>
-                           
+
+                            <div className="bg-gray-200 p-1 rounded-[5px]"> Chi tiết</div>
+
                         </Button>
                     </>
                 )

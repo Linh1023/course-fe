@@ -14,7 +14,7 @@ import { DateRangePicker } from "../share/data-table/advance/date-range-picker"
 import API from "@/api/api"
 import { FetchServerGetApi } from "@/actions/server/fetch_server_api"
 import { useDebounce } from "@/hooks/use-debounce"
-import {  FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api"
+import { FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api"
 
 export function SubmissionTable() {
 
@@ -33,7 +33,7 @@ export function SubmissionTable() {
 
   React.useEffect(() => {
     setIsLoading(true);
-   
+
     fetchData();
   }, [querySearch]);
 
@@ -85,7 +85,7 @@ export function SubmissionTable() {
 
 
   // cái này là từng dòng dữ liệu của bảng kể cả header
-  const columns = React.useMemo(() => getSubmissionColumns(setIsLoading, fetchData), [setIsLoading, fetchData])
+  const columns = React.useMemo(() => getSubmissionColumns(setIsLoading, fetchData), [])
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -139,6 +139,9 @@ export function SubmissionTable() {
     pageCount: totalPages, // tổng số trang
     filterFields, // bộ lọc
     defaultPerPage: 10, // tổng số phần tử trên 1 trang
+    setQuerySearch: setQuerySearch,
+    querySearch: querySearch,
+    setIsLoading: setIsLoading
   })
 
   const [isOpen, setIsOpen] = React.useState(false)

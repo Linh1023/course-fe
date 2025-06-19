@@ -89,7 +89,7 @@ export function CommentsTable() {
 
 
   // Memoize the columns so they don't re-render on every render
-  const columns = useMemo(() => getCommentColumns(setIsLoading, fetchData), [setIsLoading, fetchData]);
+  const columns = useMemo(() => getCommentColumns(setIsLoading, fetchData), []);
 
 
   /**
@@ -128,7 +128,9 @@ export function CommentsTable() {
     // optional props
     filterFields,
     defaultPerPage: 10,
- 
+    setQuerySearch: setQuerySearch,
+    querySearch: querySearch,
+    setIsLoading: setIsLoading
   });
 
   return (
