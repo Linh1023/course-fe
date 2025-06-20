@@ -25,21 +25,28 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/', request.url))
     }
 
-    const courseMatch = currentPath.match(/^\/course\/([^\/]+)$/) 
-    if (courseMatch && auth.isAuthentication) {
-     
-        const courseId = courseMatch[1]
-        const resLessonProgress = await FetchServerGetApi(`${API.LESSON_PROGRESS.LAST_VIEWED_LESSON}/${courseId}`);
-        if (resLessonProgress && resLessonProgress.status === 200) {
-            const lessonProgress: LessonProgressResponse = resLessonProgress.result;
-            if (lessonProgress != null && lessonProgress.lessonId != null) {
-                return NextResponse.redirect(new URL(`/lesson/${lessonProgress.lessonId}`, request.url))
+    const courseMatch = currentPath.match(/^\/course\/([^\/]+)$/)
+    if (courseMatch && auth.isAuthentication === true) {
+        const courseId = courseMatch[1];
+
+        try {
+            const resLessonProgress = await FetchServerGetApi(
+                `${API.LESSON_PROGRESS.LAST_VIEWED_LESSON}/${courseId}`
+            );
+
+            if (resLessonProgress?.status === 200) {
+                const lessonProgress: LessonProgressResponse = resLessonProgress.result;
+                if (lessonProgress?.lessonId) {
+                    return NextResponse.redirect(new URL(`/lesson/${lessonProgress.lessonId}`, request.url));
+                }
             }
+        } catch (error) {
+            console.error("Fetch lesson progress failed:", error);
         }
     }
-    
+
     if (currentPath === "/" || currentPath.startsWith("/course") || currentPath === "/login" || currentPath.startsWith("/search") || currentPath === "/contact") {
-       
+
         if (auth.response != null) {
             return auth.response;
         }

@@ -8,7 +8,6 @@ import CourseSidebarSection from "@/components/client/course/course_sidebar"
 import SidebarSkeleton from "@/components/client/course/sidebar_skeleton"
 import MyConnect from "@/components/client/share/MyConnect"
 import { redirect } from "next/navigation"
-import { toast } from "sonner"
 
 interface CoursePageProps {
     params: {
@@ -35,8 +34,12 @@ const CoursePage = async ({ params }: CoursePageProps) => {
 
     if (!courseResponse) {
         return <>
-            <CourseInfoSkeleton />
-            <SidebarSkeleton />
+            <div className="flex justify-center bg-gray-50">
+                <div className="flex flex-col-reverse  md:flex-row max-w-[90rem] w-full px-4 gap-6 py-10">
+                    <CourseInfoSkeleton />
+                    <SidebarSkeleton />
+                </div>
+            </div>
         </>
     }
 
