@@ -1,6 +1,6 @@
 "use server"
 
-import { FetchServerGetApi, FetchServerGetApiNoToken } from "@/actions/server/fetch_server_api"
+import { FetchServerGetApiNoToken } from "@/actions/server/fetch_server_api"
 import API from "@/api/api"
 import CourseInfoSection from "@/components/client/course/course_info"
 import CourseInfoSkeleton from "@/components/client/course/course_info_skeleton"
@@ -34,11 +34,9 @@ const CoursePage = async ({ params }: CoursePageProps) => {
 
     if (!courseResponse) {
         return <>
-            <div className="flex justify-center bg-gray-50">
-                <div className="flex flex-col-reverse  md:flex-row max-w-[90rem] w-full px-4 gap-6 py-10">
-                    <CourseInfoSkeleton />
-                    <SidebarSkeleton />
-                </div>
+            <div className="flex flex-col-reverse md:flex-row max-w-[90rem] w-full px-4 gap-6 py-10">
+                <CourseInfoSkeleton />
+                <SidebarSkeleton />
             </div>
         </>
     }
@@ -46,7 +44,7 @@ const CoursePage = async ({ params }: CoursePageProps) => {
     return (
         <>
             <div className="flex justify-center bg-gray-50">
-                <div className="flex flex-col-reverse  md:flex-row max-w-[90rem] w-full px-4 gap-6 py-10">
+                <div className="flex flex-col-reverse md:flex-row max-w-[90rem] w-full px-4 gap-6 py-10">
                     {/* Cột trái: Nội dung khóa học */}
                     <CourseInfoSection course={courseResponse} comments={commentResponse?.result} />
                     {/* Cột phải: Sidebar khóa học */}
