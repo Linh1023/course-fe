@@ -62,8 +62,9 @@ const LoginForm = ({ redirectUrl, onSuccess }: LoginFormProps) => {
       onSuccess?.();
     } else {
       setErrorLogin(true)
-    }
     stopLoadingSpiner()
+    }
+ 
   }
 
 
@@ -80,7 +81,7 @@ const LoginForm = ({ redirectUrl, onSuccess }: LoginFormProps) => {
       const state = searchParams.get("state");
       if (code != null) {
         startLoadingSpiner()
-        await new Promise(resolve => setTimeout(resolve, 9000));
+    
         const req: AuthenticationRequest = {
           code: code,
         }

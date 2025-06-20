@@ -3,7 +3,6 @@
 import { CourseTrailerDialog } from "@/components/client/course/course_trailer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { useCurrentAccountContext } from "@/context/current_account_context"
 import { formatTimeWithDaysHoursMinutes } from "@/utils/format_time"
 import { Book, Earth, Timer } from "lucide-react"
 import { LoginDialog } from "../login/login_dialog"
@@ -35,7 +34,11 @@ const CourseSidebarSection = ({ course, courseId }: Props) => {
                 })}
               </span>
             </p>
-            <RegisterButton setOpen={setOpen} courseId={courseId} />
+            {course?.chapters.length === 0 ? (
+              <Button className="w-full bg-gray-300 text-gray-600 cursor-not-allowed" disabled>Khóa học đang bổ sung nội dung</Button>
+            ) : (
+              <RegisterButton setOpen={setOpen} courseId={courseId} />
+            )}
             <ul className="text-sm space-y-2">
               <li className="flex items-center gap-2">
                 <Book className="w-5 h-5" />{" "}

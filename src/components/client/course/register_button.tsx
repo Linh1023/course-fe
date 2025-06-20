@@ -3,6 +3,7 @@ import { FetchClientDeleteApi, FetchClientGetApi, FetchClientPostApi } from "@/a
 import API from "@/api/api";
 import { LoaderIcon } from "@/components/share/loading-icon";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useCurrentAccountContext } from "@/context/current_account_context";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -15,17 +16,24 @@ export const RegisterButton = ({ setOpen, courseId }: RegisterButtonProps) => {
   const { currentAccount } = useCurrentAccountContext()
   const [registration, setRegistration] = useState<CourseEnrollment | null>(null)
   const [loading, setLoading] = useState(false)
+  const [isFetching, setIsFetching] = useState(true);
+  const [cancelLoading, setCancelLoading] = useState(false)
 
   useEffect(() => {
     const fetchRegistration = async () => {
-      if (!currentAccount) return
-      const res = await FetchClientGetApi(`${API.COURSE_ENROLLMENT.OF_ACCOUNT}/${courseId}`)
+      if (!currentAccount) {
+        setIsFetching(false);
+        return;
+      }
+
+      const res = await FetchClientGetApi(`${API.COURSE_ENROLLMENT.OF_ACCOUNT}/${courseId}`);
       if (res && res.status === 200) {
         setRegistration(res.result);
       } else {
         setRegistration(null);
       }
-    }
+      setIsFetching(false);
+    };
 
     fetchRegistration()
   }, [currentAccount, courseId])
@@ -48,13 +56,19 @@ export const RegisterButton = ({ setOpen, courseId }: RegisterButtonProps) => {
     if (!currentAccount) {
       return;
     }
-    setLoading(true);
+    setCancelLoading(true);
     const res = await FetchClientDeleteApi(`${API.COURSE_ENROLLMENT.CANCEL_COURSE_REGISTER}/${courseId}`);
     if (res && res.status === 200) {
       setRegistration(null);
       toast.success("Hủy đăng ký khóa học thành công");
     }
-    setLoading(false);
+    setCancelLoading(false);
+  }
+
+  if (isFetching) {
+    return (
+      <Skeleton className="w-full h-10 rounded-md" />
+    );
   }
 
   if (!currentAccount) {
@@ -74,7 +88,9 @@ export const RegisterButton = ({ setOpen, courseId }: RegisterButtonProps) => {
         <Button className="w-full bg-blue-100 text-blue-700 hover:bg-blue-200" onClick={() => {
           window.open("https://www.facebook.com/tran.cuong.737360", "_blank");
         }}>Liên hệ để thanh toán</Button>
-        <Button className="bg-[#FE4444] hover:bg-[#F87171] w-full" onClick={handleCancelRegisterCourse}>Hủy đăng ký</Button>
+        <Button className="bg-[#FE4444] hover:bg-[#F87171] w-full" onClick={handleCancelRegisterCourse} disabled={cancelLoading || loading}>
+          {cancelLoading ? <div className="flex items-center gap-2"><LoaderIcon className="mr-1.5 size-4 animate-spin"
+            aria-hidden="true" /> Đang hủy đăng ký...</div> : "Hủy đăng ký"}</Button>
       </>
     )
   }
@@ -83,9 +99,10 @@ export const RegisterButton = ({ setOpen, courseId }: RegisterButtonProps) => {
     <Button
       className="bg-[#FE4444] hover:bg-[#F87171] w-full"
       onClick={handleRegisterCourse}
-      disabled={loading}
+      disabled={loading || cancelLoading}
     >
-      {loading ? <div className="flex items-center"><LoaderIcon /> Đang đăng ký...</div> : "Đăng ký học"}
+      {loading ? <div className="flex items-center gap-2"><LoaderIcon className="mr-1.5 size-4 animate-spin"
+        aria-hidden="true" /> Đang đăng ký...</div> : "Đăng ký học"}
     </Button>
   )
 }

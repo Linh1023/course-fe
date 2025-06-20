@@ -25,8 +25,9 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/', request.url))
     }
 
-    const courseMatch = currentPath.match(/^\/course\/([^\/]+)$/)
+    const courseMatch = currentPath.match(/^\/course\/([^\/]+)$/) 
     if (courseMatch && auth.isAuthentication) {
+     
         const courseId = courseMatch[1]
         const resLessonProgress = await FetchServerGetApi(`${API.LESSON_PROGRESS.LAST_VIEWED_LESSON}/${courseId}`);
         if (resLessonProgress && resLessonProgress.status === 200) {
@@ -48,7 +49,7 @@ export async function middleware(request: NextRequest) {
     if (auth.response != null) {
         return auth.response;
     }
-    return NextResponse.redirect(new URL('/', request.url))
+    return NextResponse.next();
 }
 
 
