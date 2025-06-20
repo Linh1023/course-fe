@@ -30,7 +30,7 @@ const CoursePage = async ({ params }: CoursePageProps) => {
     } else {
         // redirect('/');
         console.log(res)
-        toast.error(res.message || "Không tìm thấy khóa học");
+        // toast.error(res.message || "Không tìm thấy khóa học");
     }
 
     if (!courseResponse) {
