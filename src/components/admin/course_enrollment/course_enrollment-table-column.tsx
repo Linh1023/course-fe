@@ -1,19 +1,17 @@
-import * as React from "react";
-import { type ColumnDef } from "@tanstack/react-table";
+import { FetchClientPutApi } from "@/actions/client/fetch_client_api";
+import API from "@/api/api";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { type ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
 import { toast } from "sonner";
 import { DataTableColumnHeader } from "../share/data-table/data-table-column-header";
-import { Checkbox } from "@/components/ui/checkbox";
-import { FetchClientPutApi } from "@/actions/client/fetch_client_api";
-import API from "@/api/api";
 
 const statusMap = {
   active: {
@@ -23,7 +21,7 @@ const statusMap = {
   },
   inactive: {
     variant: "destructive",
-    dotColor: "bg-red-500",
+    dotColor: "bg-red-300",
     label: "Ngưng hoạt động",
   },
   pending: {
@@ -33,11 +31,7 @@ const statusMap = {
   },
 } as const;
 
-const updateStatus = async (
-  newStatus: "active" | "inactive",
-  id: string,
-  onSuccess: () => void
-) => {
+const updateStatus = async (newStatus: "active" | "inactive", id: string) => {
   try {
     const res = await FetchClientPutApi(
       API.COURSE_ENROLLMENT.ADMIN_CHANGE_STATUS,
@@ -47,22 +41,18 @@ const updateStatus = async (
     if (res.status != 200) throw new Error("Update failed");
     else {
       toast.success("Cập nhật trạng thái thành công");
-      onSuccess();
     }
   } catch (err) {
     toast.error("Không thể cập nhật trạng thái");
   }
 };
 
-export function getColumns(
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  fetchData: () => void
-): ColumnDef<CourseEnrollmentAdmin>[] {
+export function getColumns(): ColumnDef<CourseEnrollmentAdmin>[] {
   return [
     {
       accessorKey: "accountName",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Tên người dùng" />
+        <DataTableColumnHeader column={column} title="Tên học viên" />
       ),
       cell: ({ row }) => (
         <span className="max-w-[10rem] truncate font-medium">
@@ -120,7 +110,7 @@ export function getColumns(
               <DropdownMenuItem
                 className="bg-red-100 hover:bg-red-200 text-red-800"
                 onSelect={async () =>
-                  await updateStatus("inactive", row.original.id, fetchData)
+                  await updateStatus("inactive", row.original.id)
                 }
               >
                 Ngưng kích hoạt
@@ -130,7 +120,7 @@ export function getColumns(
               <DropdownMenuItem
                 className="bg-green-100 hover:bg-green-200 text-green-800"
                 onSelect={async () =>
-                  await updateStatus("active", row.original.id, fetchData)
+                  await updateStatus("active", row.original.id)
                 }
               >
                 Kích hoạt
@@ -139,17 +129,17 @@ export function getColumns(
             {row.original.status === "pending" && (
               <>
                 <DropdownMenuItem
-                  className="bg-green-100 hover:bg-green-200 text-green-800"
+                  className="dark:bg-slate-500 dark:text-white bg-green-100 hover:bg-green-200 text-green-800"
                   onSelect={async () =>
-                    await updateStatus("active", row.original.id, fetchData)
+                    await updateStatus("active", row.original.id)
                   }
                 >
                   Duyệt
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="bg-red-100 hover:bg-red-200 text-red-800 mt-1"
+                  className="dark:bg-slate-500 dark:text-white bg-red-100 hover:bg-red-200 text-red-800 mt-1"
                   onSelect={async () =>
-                    await updateStatus("inactive", row.original.id, fetchData)
+                    await updateStatus("inactive", row.original.id)
                   }
                 >
                   Từ chối
