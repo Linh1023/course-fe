@@ -27,9 +27,7 @@ const CoursePage = async ({ params }: CoursePageProps) => {
     if (res && res.status === 200) {
         courseResponse = res.result
     } else {
-        // redirect('/');
-        console.log(res)
-        // toast.error(res.message || "Không tìm thấy khóa học");
+        redirect('/');
     }
 
     if (!courseResponse) {
