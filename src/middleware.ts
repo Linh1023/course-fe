@@ -5,7 +5,6 @@ import { authentication } from './actions/server/middleware_helpers';
 import { FetchServerGetApi } from './actions/server/fetch_server_api';
 import API from './api/api';
 
-
 export async function middleware(request: NextRequest) {
     const currentPath = request.nextUrl.pathname; // Lấy path hiện tại
     // Kiểm tra xem yêu cầu có phải là yêu cầu call api
@@ -21,13 +20,9 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/', request.url))
     }
 
-    if (currentPath.startsWith("/admin") && auth.role != "ADMIN") {
-        return NextResponse.redirect(new URL('/', request.url))
-    }
-
-    const courseMatch = currentPath.match(/^\/course\/([^\/]+)$/) 
+    const courseMatch = currentPath.match(/^\/course\/([^\/]+)$/)
     if (courseMatch && auth.isAuthentication) {
-     
+
         const courseId = courseMatch[1]
         const resLessonProgress = await FetchServerGetApi(`${API.LESSON_PROGRESS.LAST_VIEWED_LESSON}/${courseId}`);
         if (resLessonProgress && resLessonProgress.status === 200) {
@@ -37,9 +32,13 @@ export async function middleware(request: NextRequest) {
             }
         }
     }
-    
+
+    if (currentPath.startsWith("/admin") && auth.role != "ADMIN") {
+        return NextResponse.redirect(new URL('/', request.url))
+    }
+
     if (currentPath === "/" || currentPath.startsWith("/course") || currentPath === "/login" || currentPath.startsWith("/search") || currentPath === "/contact") {
-       
+
         if (auth.response != null) {
             return auth.response;
         }
