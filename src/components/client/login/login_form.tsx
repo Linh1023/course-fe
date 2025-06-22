@@ -62,9 +62,8 @@ const LoginForm = ({ redirectUrl, onSuccess }: LoginFormProps) => {
       onSuccess?.();
     } else {
       setErrorLogin(true)
-    stopLoadingSpiner()
     }
- 
+    stopLoadingSpiner()
   }
 
 
@@ -81,7 +80,7 @@ const LoginForm = ({ redirectUrl, onSuccess }: LoginFormProps) => {
       const state = searchParams.get("state");
       if (code != null) {
         startLoadingSpiner()
-    
+
         const req: AuthenticationRequest = {
           code: code,
         }
@@ -90,9 +89,8 @@ const LoginForm = ({ redirectUrl, onSuccess }: LoginFormProps) => {
         if (data && data.status === 200) {
           await fetchGetCurrentAccount()
           router.push(state || "/")
-        } else {
-          stopLoadingSpiner()
         }
+        stopLoadingSpiner()
       }
     }
 
