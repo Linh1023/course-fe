@@ -18,7 +18,6 @@ import { LoginGoogleAction, LoginWithCode } from "@/actions/server/login_google_
 import { useCurrentAccountContext } from "@/context/current_account_context";
 import { LoginServerAction } from "@/actions/server/login_action";
 import { useLoadingContext } from "@/context/loading_context";
-import { on } from "events";
 
 interface LoginFormProps {
   redirectUrl?: string;
@@ -62,8 +61,9 @@ const LoginForm = ({ redirectUrl, onSuccess }: LoginFormProps) => {
       onSuccess?.();
     } else {
       setErrorLogin(true)
+      stopLoadingSpiner()
     }
-    stopLoadingSpiner()
+
   }
 
 
@@ -89,8 +89,9 @@ const LoginForm = ({ redirectUrl, onSuccess }: LoginFormProps) => {
         if (data && data.status === 200) {
           await fetchGetCurrentAccount()
           router.push(state || "/")
+        } else {
+          stopLoadingSpiner()
         }
-        stopLoadingSpiner()
       }
     }
 
