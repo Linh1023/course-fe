@@ -11,6 +11,7 @@ import PROFILE_API from "./endpoints/profile";
 import REFRESH_TOKEN_API from "./endpoints/refresh_token";
 import STATISTIC_API from "./endpoints/statistic";
 import SUBMISSION_API from "./endpoints/submission";
+import VIDEO_API from "./endpoints/video";
 
 const API = {
   AUTH: AUTH_API,
@@ -25,7 +26,8 @@ const API = {
   LESSON:LESSON_API,
   PROFILE:PROFILE_API,
   SUBMISSON:SUBMISSION_API,
-  STATISTIC:STATISTIC_API
+  STATISTIC:STATISTIC_API,
+  VIDEO:VIDEO_API
 };
 
 export default API;

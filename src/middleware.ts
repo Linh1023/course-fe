@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    const auth = await authentication();
+    const auth = await authentication(request);
     if (currentPath === "/login" && auth.isAuthentication === true) {
         return NextResponse.redirect(new URL('/', request.url))
     }

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu"
 import { BookCheck, Play } from "lucide-react"
+import VideoPlayer from "../video/video_player"
 interface Props {
     lessonResponse: LessonClientDetailResponse
 }
@@ -16,7 +17,12 @@ const LessonVideo = (props: Props) => {
 
             <DropdownMenuSeparator className="mt-[10px] mb-[10px] bg-gray-200 h-[1px]" />
             <div className="w-full h-[500px] border-[1px] border-gray-300 mt-[20px] mb-[10px]" >
-                {lessonResponse.videoUrl}
+                <div className="w-full h-[497px]">
+                    <VideoPlayer
+                        fileName={lessonResponse.videoUrl}
+                      
+                    />
+                </div>
             </div>
 
             <div className="mb-[20px]">

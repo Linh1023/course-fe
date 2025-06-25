@@ -26,9 +26,11 @@ import { LoaderIcon } from "@/components/share/loading-icon"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { updateCourseSchema, UpdateCourseSchema } from "@/validation/courseSchema"
-import { FetchServerPutApi } from "@/actions/server/fetch_server_api"
+import { FetchServerPostApiNoJsonBody, FetchServerPutApi } from "@/actions/server/fetch_server_api"
 import API from "@/api/api"
 import { toast } from "sonner"
+import VideoPlayer from "@/components/client/video/video_player"
+import TrailerPlayer from "@/components/client/video/trailer_player"
 
 
 interface UpdateCategorySheetProps
@@ -36,10 +38,10 @@ interface UpdateCategorySheetProps
   listCategory: Category[]
   course: Course
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
-  fetchData :()=>void
+  fetchData: () => void
 }
 
-export function UpdateCourseSheet({ listCategory, course, fetchData,setIsLoading, ...props }: UpdateCategorySheetProps) {
+export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoading, ...props }: UpdateCategorySheetProps) {
   const [previewImage, setPreviewImage] = React.useState<string | null>(null)
   const [previewVideo, setPreviewVideo] = React.useState<string | null>(null)
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
@@ -56,14 +58,33 @@ export function UpdateCourseSheet({ listCategory, course, fetchData,setIsLoading
     },
   })
 
-  function onSubmit(input: UpdateCourseSchema) {
+  const urlVideo = React.useRef(course.videoUrl)
+  const uploadVideo = async (file: any) => {
+    const formData = new FormData();
+    formData.append("file", file); // key phải đúng là "file"
+
+    const res = await FetchServerPostApiNoJsonBody(API.VIDEO.UP_LOAD, formData)
+    if (res && res.status === 200) {
+      return res.result
+    } else {
+      return null
+    }
+  };
+
+  const onSubmit = async (input: UpdateCourseSchema) => {
+
+    if (input.video && input.video.length > 0) {
+      const videourl = await uploadVideo(input.video[0])
+      urlVideo.current = videourl
+    }
+
     const dataFormatted: UpdateCourseRequest = {
       name: input.name,
       detail: input.detail ?? "",
       categoryId: input.categoryId,
       price: Number(input.price), // Convert formatted price to number
       imageUrl: input.image ? "update url image" : course.imageUrl,
-      videoUrl: input.video ? "update url video" : course.videoUrl,
+      videoUrl: urlVideo.current,
       status: input.status as "active" | "inactive",
     }
     console.log(dataFormatted)
@@ -219,11 +240,17 @@ export function UpdateCourseSheet({ listCategory, course, fetchData,setIsLoading
                   <FormItem>
                     <FormLabel>Video trailer</FormLabel>
                     <Input type="file" accept="video/mp4" onChange={(e) => handleVideoChange(e.target.files || undefined)} />
-                    {previewVideo && (
+                    {previewVideo && previewVideo != urlVideo.current ? (
                       <video key={previewVideo} controls className="mt-2 w-full max-w-full rounded shadow">
                         <source src={previewVideo} type="video/mp4" />
                         Trình duyệt của bạn không hỗ trợ video.
                       </video>
+                    ) : (
+                      <>
+                        <TrailerPlayer
+                          fileName={urlVideo.current}
+                        />
+                      </>
                     )}
                     <FormMessage />
                   </FormItem>

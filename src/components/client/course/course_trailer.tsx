@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/tooltip"
 import { PlayCircleIcon } from "lucide-react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import TrailerPlayer from "../video/trailer_player"
 
 interface CourseTrailerDialogProps {
   course: CourseClientResponse | null
@@ -60,13 +61,11 @@ export function CourseTrailerDialog({ course }: CourseTrailerDialogProps) {
             {course?.name}
           </DialogDescription>
         </DialogHeader>
-        <video controls className="mt-2 w-full rounded shadow">
-          <source
-            src={course?.videoUrl || "https://files.fullstack.edu.vn/f8-prod/courses/21/63e1bcbaed1dd.mp4"}
-            type="video/mp4"
+        <div className="mt-2 w-full rounded shadow">
+          <TrailerPlayer
+            fileName={course?.videoUrl ??  ""}
           />
-          Your browser does not support the video tag.
-        </video>
+        </div>
       </DialogContent>
     </Dialog >
   )
