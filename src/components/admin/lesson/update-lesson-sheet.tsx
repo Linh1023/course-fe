@@ -45,7 +45,7 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, ...props }:
   const [previewVideo, setPreviewVideo] = React.useState<string | null>(null)
   const [previewDocument, setPreviewDocument] = React.useState<{ url: string; name: string } | null>(null)
   const [previewAssignment, setPreviewAssignment] = React.useState<{ url: string; name: string } | null>(null)
-  let urlVideo = React.useRef(lesson.videoUrl)
+  const urlVideo = React.useRef(lesson.videoUrl)
   const videoRef = React.useRef<HTMLVideoElement>(null)
   const form = useForm<UpdateLessonSchema>({
     resolver: zodResolver(updateLessonSchema),

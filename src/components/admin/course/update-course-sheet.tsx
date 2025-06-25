@@ -58,7 +58,7 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
     },
   })
 
-  let urlVideo = React.useRef(course.videoUrl)
+  const urlVideo = React.useRef(course.videoUrl)
   const uploadVideo = async (file: any) => {
     const formData = new FormData();
     formData.append("file", file); // key phải đúng là "file"
