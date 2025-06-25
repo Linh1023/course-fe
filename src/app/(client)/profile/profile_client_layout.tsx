@@ -46,7 +46,7 @@ export default function ProfileClientLayout({ children }: { children: React.Reac
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);
         };
-        
+
         checkMobile();
         window.addEventListener('resize', checkMobile);
         return () => window.removeEventListener('resize', checkMobile);
@@ -74,8 +74,8 @@ export default function ProfileClientLayout({ children }: { children: React.Reac
                                 {currentAccount?.role === "ADMIN"
                                     ? "Quản Trị Viên"
                                     : currentAccount?.role === "CLIENT"
-                                    ? "Học Viên"
-                                    : currentAccount?.role ?? ""}
+                                        ? "Học Viên"
+                                        : currentAccount?.role ?? ""}
                             </p>
                         </div>
                     </div>
@@ -84,17 +84,16 @@ export default function ProfileClientLayout({ children }: { children: React.Reac
                 {/* Mobile Tab Navigation */}
                 <div className="flex border-b bg-white top-[73px]">
                     {tabs.map((tab) => (
-                        <Link 
-                            href={tab.link} 
+                        <Link
+                            href={tab.link}
                             key={tab.value}
                             className="flex-1"
                         >
                             <button
-                                className={`w-full py-3 px-2 text-xs font-medium transition-colors relative ${
-                                    getActiveTab() === tab.value
+                                className={`w-full py-3 px-2 text-xs font-medium transition-colors relative ${getActiveTab() === tab.value
                                         ? 'text-blue-600 border-b-2 border-blue-600'
                                         : 'text-gray-600 hover:text-gray-900'
-                                }`}
+                                    }`}
                             >
                                 <div className="flex flex-col items-center gap-1">
                                     <tab.icon size={16} />
