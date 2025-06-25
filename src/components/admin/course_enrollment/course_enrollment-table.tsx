@@ -1,42 +1,40 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { TableInstanceProvider } from "../share/data-table/table-instance-provider"
-import { DataTable } from "../share/data-table/data-table"
-import { getColumns } from "./course_enrollment-table-column"
-import { CESTableFloatingBar } from "./course_enrollment-table-floating-bar"
-import { CESTableToolbarActions } from "./course_enrollment-table-toolbar-actions"
-import { useDataTable } from "@/hooks/use-data-table"
-import { DataTableFilterField } from "@/types/ui/data-table"
-import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table-advance-toolbar"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useDebounce } from "@/hooks/use-debounce"
-import { FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api"
-import API from "@/api/api"
+import { FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api";
+import API from "@/api/api";
+import { useDataTable } from "@/hooks/use-data-table";
+import { DataTableFilterField } from "@/types/ui/data-table";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import * as React from "react";
+import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table-advance-toolbar";
+import { DataTable } from "../share/data-table/data-table";
+import { TableInstanceProvider } from "../share/data-table/table-instance-provider";
+import { getColumns } from "./course_enrollment-table-column";
+import { CESTableFloatingBar } from "./course_enrollment-table-floating-bar";
+import { CESTableToolbarActions } from "./course_enrollment-table-toolbar-actions";
 
 // CourseEnrollmentAdmin
 
 export function CourseEnrollmentTable() {
-
-
-  const [isLoading, setIsLoading] = React.useState(false)
-  const searchParams = useSearchParams()
-  const pathName = usePathname()
-  const [dataResult, setDataResult] = React.useState<CourseEnrollmentAdmin[]>([])
-  const [totalPages, setTotalPages] = React.useState(1)
-  const router = useRouter()
+  const [isLoading, setIsLoading] = React.useState(false);
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
+  const [dataResult, setDataResult] = React.useState<CourseEnrollmentAdmin[]>(
+    []
+  );
+  const [totalPages, setTotalPages] = React.useState(1);
+  const router = useRouter();
   const abortControllerRef = React.useRef<AbortController | null>(null); // Use ref to keep track of the controller
 
-
-
-  const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
+  const [querySearch, setQuerySearch] = React.useState(() =>
+    searchParams.toString()
+  );
 
   React.useEffect(() => {
     setIsLoading(true);
 
     fetchData();
   }, [querySearch]);
-
 
   const fetchData = async () => {
     // Huỷ request cũ nếu còn
@@ -54,7 +52,6 @@ export function CourseEnrollmentTable() {
         signal
       );
 
-
       if (submissions?.status === 200) {
         setDataResult(submissions.result);
         setTotalPages(submissions.totalPages);
@@ -65,13 +62,12 @@ export function CourseEnrollmentTable() {
           scroll: false,
         });
       }
-
     } catch (err: any) {
-      if (err.name === 'AbortError') {
+      if (err.name === "AbortError") {
         // Yêu cầu bị huỷ, không làm gì cả
         return;
       } else {
-        console.error('Lỗi khi fetch:', err);
+        console.error("Lỗi khi fetch:", err);
       }
     } finally {
       // ✅ Luôn setIsLoading(false) nếu không bị huỷ
@@ -81,10 +77,8 @@ export function CourseEnrollmentTable() {
     }
   };
 
-
-
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo(() => getColumns(setIsLoading, fetchData), [setIsLoading, fetchData])
+  const columns = React.useMemo(() => getColumns(), []);
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -99,7 +93,7 @@ export function CourseEnrollmentTable() {
    */
   const filterFields: DataTableFilterField<CourseEnrollmentAdmin>[] = [
     {
-      label: "Tên người dùng",
+      label: "Tên học viên",
       value: "accountName",
       placeholder: "Lọc tên danh mục...",
     },
@@ -107,17 +101,18 @@ export function CourseEnrollmentTable() {
       label: "Tên khóa học",
       value: "courseName",
       placeholder: "Lọc theo mô tả danh mục...",
-    }
-    // {
-    //   label: "Ngày đăng ký",
-    //   value: "enrolledAt",
-    //   placeholder: "Lọc theo trạng thái...",
-    //   options: [
-    //     { label: "Hoạt động", value: "active" },
-    //     { label: "Không hoạt động", value: "inactive" },
-    //   ],
-    // }
-  ]
+    },
+    {
+      label: "Trạng thái",
+      value: "status",
+      placeholder: "Lọc theo trạng thái...",
+      options: [
+        { label: "Hoạt động", value: "active" },
+        { label: "Đang chờ", value: "pending" },
+        { label: "Không hoạt động", value: "inactive" },
+      ],
+    },
+  ];
 
   // TODO: Replace with actual data fetching logic
   const { table } = useDataTable({
@@ -127,8 +122,10 @@ export function CourseEnrollmentTable() {
     // optional props
     filterFields,
     defaultPerPage: 10,
-
-  })
+    setQuerySearch: setQuerySearch,
+    querySearch: querySearch,
+    setIsLoading: setIsLoading,
+  });
 
   return (
     <TableInstanceProvider table={table}>
@@ -138,22 +135,29 @@ export function CourseEnrollmentTable() {
         setIsLoading={setIsLoading}
         setQuerySearch={setQuerySearch}
         querySearch={querySearch}
-        floatingBar={<CESTableFloatingBar table={table}
-          setIsLoading={setIsLoading}
-          fetchData={fetchData}
-        />}
+        floatingBar={
+          <CESTableFloatingBar
+            table={table}
+            setIsLoading={setIsLoading}
+            fetchData={fetchData}
+          />
+        }
       >
-        <DataTableAdvancedToolbar filterFields={filterFields}
+        <DataTableAdvancedToolbar
+          filterFields={filterFields}
           setIsLoading={setIsLoading}
           setQuerySearch={setQuerySearch}
           querySearch={querySearch}
         >
-          <CESTableToolbarActions table={table}
+          <CESTableToolbarActions
+            table
+            
+            ={table}
             setIsLoading={setIsLoading}
             fetchData={fetchData}
           />
         </DataTableAdvancedToolbar>
       </DataTable>
     </TableInstanceProvider>
-  )
+  );
 }

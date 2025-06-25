@@ -18,13 +18,13 @@ const LessonCollapsibleItem = (props: Props) => {
     const pathName = usePathname()
     const parts = pathName.split('/');
     const lessonId = parts[2];
-    const handleLesson = () => {
-        startLoadingSpiner()
-        if (lessonId === lessonSidebarResponse.id) {
-            stopLoadingSpiner()
-        }
-        router.push(`/lesson/${lessonSidebarResponse.id}`)
-    }
+    // const handleLesson = () => {
+    //     startLoadingSpiner()
+    //     if (lessonId === lessonSidebarResponse.id) {
+    //         stopLoadingSpiner()
+    //     }
+    //     router.push(`/lesson/${lessonSidebarResponse.id}`)
+    // }
     return (
         <>
             <div className={`
@@ -36,7 +36,7 @@ const LessonCollapsibleItem = (props: Props) => {
                     : 'hover:bg-gradient-to-r hover:from-slate-50 hover:to-blue-50'
                 }
 `}
-                onClick={() => { handleLesson() }}
+                // onClick={() => { handleLesson() }}
             >
                 {/* Left side - Checkbox and lesson name */}
                 <div className="flex items-center flex-1 min-w-0">

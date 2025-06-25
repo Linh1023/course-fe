@@ -18,40 +18,44 @@ import {
 import CourseList from "./CourseList";
 import { Facebook, PhoneCall } from "lucide-react";
 import Link from "next/link";
+import { useQuerySearchClientContext } from "@/context/query_search_client_context";
 
 interface HomeProps {
   data_hot: CourseCardResponse[];
   data_newest: CourseCardResponse[];
+  data_my_lesson: CourseCardResponse[];
 }
 
-const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
+const HomeContent = ({ data_hot, data_newest, data_my_lesson }: HomeProps) => {
   const router = useRouter();
-  const { currentAccount } = useCurrentAccountContext();
+  
   const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext();
-  const [enrollCourse, setEnrollCourse] = useState<CourseCardResponse[]>([]);
+  const [enrollCourse, setEnrollCourse] = useState<CourseCardResponse[]>(data_my_lesson);
   const [isProgress, setIsProgress] = useState(true);
 
-  useEffect(() => {
-    const fetchEnrollCourse = async () => {
-      if (!currentAccount) return;
+  const { querySearch, setQuerySearch } = useQuerySearchClientContext()
 
-      const res = await FetchServerGetApi(
-        `${API.ACCOUNT.MY_COURSE}?perPage=3`
-      );
-      if (res && res.status === 200) {
-        setEnrollCourse(res.result);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchEnrollCourse = async () => {
 
-    fetchEnrollCourse();
-  }, [currentAccount]);
+
+  //     const res = await FetchServerGetApi(
+  //       `${API.ACCOUNT.MY_COURSE}?perPage=3`
+  //     );
+  //     if (res && res.status === 200) {
+  //       setEnrollCourse(res.result);
+  //     }
+  //   };
+
+  //   fetchEnrollCourse();
+  // }, []);
 
   return (
     <div className="p-4 h-full mb-8">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
         {/* Cột trái */}
         <div
-          className={`${currentAccount && enrollCourse.length > 0 ? "lg:col-span-3" : "lg:col-span-4"
+          className={`${enrollCourse.length > 0 ? "lg:col-span-3" : "lg:col-span-4"
             } space-y-6`}
         >
           {/* Carousel */}
@@ -92,7 +96,14 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
                         </p>
 
                         {/* CTA Button */}
-                        <Link href={"/search?page=1"}>
+                        <Link href={"/search?page=1"}
+                          onClick={() => {
+                            const newQuerySearch = `page=1&size=12`
+                            if (newQuerySearch != querySearch) {
+                              setQuerySearch(newQuerySearch)
+                            }
+                          }}
+                        >
                           <button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 text-white font-semibold py-1.5 px-3 md:py-2 md:px-4 rounded-full transition-all duration-300 hover:scale-105 shadow-lg mb-2 md:mb-3 text-sm md:text-base">
                             <span className="flex items-center gap-1.5">
                               <span>Khám Phá Ngay</span>
@@ -158,7 +169,14 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
 
 
                         {/* CTA Button */}
-                        <Link href={"/search?page=1&sort=hot"}>
+                        <Link href={"/search?page=1&sort=hot"}
+                          onClick={() => {
+                            const newQuerySearch = `page=1&size=12&sort=hot`
+                            if (newQuerySearch != querySearch) {
+                              setQuerySearch(newQuerySearch)
+                            }
+                          }}
+                        >
                           <button className="bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-300 hover:to-orange-300 text-orange-900 font-bold py-2.5 px-5 md:py-3 md:px-6 rounded-full transition-all duration-300 hover:scale-105 shadow-lg mb-3 text-sm md:text-base">
                             <span className="flex items-center gap-1.5">
                               <span>Xem Khóa Học Hot</span>
@@ -219,7 +237,14 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
                         </p>
 
                         {/* CTA Button */}
-                        <Link href={"/search?page=1&sort=newest"}>
+                        <Link href={"/search?page=1&sort=newest"}
+                        onClick={() => {
+                            const newQuerySearch = `page=1&size=12&sort=newest`
+                            if (newQuerySearch != querySearch) {
+                              setQuerySearch(newQuerySearch)
+                            }
+                          }}
+                        >
                           <button className="bg-gradient-to-r from-cyan-400 to-teal-400 hover:from-cyan-300 hover:to-teal-300 text-teal-900 font-bold py-2.5 px-5 md:py-3 md:px-6 rounded-full transition-all duration-300 hover:scale-105 shadow-lg mb-3 text-sm md:text-base">
                             <span className="flex items-center gap-1.5">
                               <span>Khám Phá Ngay</span>
@@ -260,7 +285,7 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
           </div>
 
           {/* Khóa học đang học - HIỂN THỊ trên mobile/tablet, ẨN desktop */}
-          {currentAccount && enrollCourse.length > 0 && (
+          {enrollCourse.length > 0 && (
             <div className="block lg:hidden mb-8">
               <CourseList
                 title="Khóa học đang học"
@@ -277,13 +302,13 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
               title="Khóa học nổi bật"
               courses={data_hot}
               layout="grid"
-              seeMoreLink="/search?sort=hot&page=1&size=12"
+              seeMoreLink="sort=hot&page=1&size=12"
             />
             <CourseList
               title="Khóa học mới ra mắt"
               courses={data_newest}
               layout="grid"
-              seeMoreLink="/search?sort=new&page=1&size=12"
+              seeMoreLink="sort=newest&page=1&size=12"
             />
             {/* <CourseList
               title="Khóa học mới ra mắt"
@@ -295,7 +320,7 @@ const HomeContent = ({ data_hot, data_newest }: HomeProps) => {
         </div>
 
         {/* Cột phải - KHÓA HỌC ĐANG HỌC chỉ hiện desktop asdasd */}
-        {currentAccount && enrollCourse.length > 0 && (
+        { enrollCourse.length > 0 && (
           <div className="hidden lg:flex lg:col-span-1 flex-col space-y-4 bg-gray-100 p-4 rounded-xl">
             <CourseList
               title="Khóa học đang học"

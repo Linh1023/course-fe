@@ -6,7 +6,7 @@ import { Button } from "../../ui/button";
 import { useEffect, useState } from "react";
 import { setAccessToken, setRefreshToken } from "@/actions/server/token_store";
 import { FetchServerPostApiNoToken } from "@/actions/server/fetch_server_api";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter, usePathname, useSearchParams, redirect } from "next/navigation";
 
 import { cn } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
@@ -19,7 +19,11 @@ import { useCurrentAccountContext } from "@/context/current_account_context";
 import { LoginServerAction } from "@/actions/server/login_action";
 import { useLoadingContext } from "@/context/loading_context";
 
-const LoginForm = () => {
+interface LoginFormProps {
+  redirectUrl?: string;
+  onSuccess?: () => void;
+}
+const LoginForm = ({ redirectUrl, onSuccess }: LoginFormProps) => {
 
   const router = useRouter();
   const pathName = usePathname();
@@ -31,7 +35,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState("")
   const [errorLogin, setErrorLogin] = useState(false)
 
-  const {startLoadingSpiner, stopLoadingSpiner} = useLoadingContext()
+  const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext()
 
 
   // cho nay de khi bi loi
@@ -53,7 +57,8 @@ const LoginForm = () => {
     const res = await LoginServerAction(req);
     if (res && res.status === 200) {
       await fetchGetCurrentAccount()
-      router.push("/")
+      router.push(redirectUrl || "/")
+      onSuccess?.();
     } else {
       setErrorLogin(true)
       stopLoadingSpiner()
@@ -64,7 +69,7 @@ const LoginForm = () => {
 
   const handleLoginGoole = async () => {
     startLoadingSpiner()
-    await LoginGoogleAction()
+    await LoginGoogleAction(redirectUrl)
   }
 
   useEffect(() => {
@@ -72,10 +77,10 @@ const LoginForm = () => {
     const fectAPI = async () => {
 
       const code = searchParams.get('code')
-
+      const state = searchParams.get("state");
       if (code != null) {
         startLoadingSpiner()
-        await new Promise(resolve => setTimeout(resolve, 9000));
+
         const req: AuthenticationRequest = {
           code: code,
         }
@@ -83,9 +88,9 @@ const LoginForm = () => {
 
         if (data && data.status === 200) {
           await fetchGetCurrentAccount()
-          router.push("/")
-        }  else {
-              stopLoadingSpiner()
+          router.push(state || "/")
+        } else {
+          stopLoadingSpiner()
         }
       }
     }
@@ -135,7 +140,7 @@ const LoginForm = () => {
                     type="text"
                     placeholder="Tài khoản"
                     required
-                    onChange={(e) => { setUsername(e.target.value);  setErrorLogin(false) }}
+                    onChange={(e) => { setUsername(e.target.value); setErrorLogin(false) }}
                   />
                 </div>
 

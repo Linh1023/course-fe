@@ -1,19 +1,8 @@
 // comments-table-toolbar-actions.tsx
 "use client";
 
-import { FetchClientPutApi } from "@/actions/client/fetch_client_api";
-import API from "@/api/api";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,15 +13,13 @@ import {
 import { type ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { DataTableColumnHeader } from "../share/data-table/data-table-column-header";
 import { DeleteCommentsDialog } from "./delete_comments_dialog";
-import { set } from "zod";
 
 export function getCommentColumns(
- setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
- fetchData: () => Promise<void>
-
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  fetchData: () => Promise<void>
 ): ColumnDef<CommentAdmin>[] {
   return [
     {
@@ -77,7 +64,7 @@ export function getCommentColumns(
     {
       accessorKey: "authorName",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Tên người dùng" />
+        <DataTableColumnHeader column={column} title="Tên học viên" />
       ),
       cell: ({ row }) => {
         return (
@@ -149,10 +136,11 @@ export function getCommentColumns(
               onOpenChange={setShowDeleteCommentDialog}
               comments={[row.original]}
               showTrigger={false}
-              onSuccess={() => {row.toggleSelected(false);
+              onSuccess={() => {
+                row.toggleSelected(false);
                 setIsLoading(true);
-                fetchData()
-              } }
+                fetchData();
+              }}
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -173,12 +161,13 @@ export function getCommentColumns(
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                onSelect={() => {
+                <DropdownMenuItem
+                  onSelect={() => {
                     setTimeout(() => {
-                      setShowDeleteCommentDialog(true)
-                    }, 0)
-                  }}>
+                      setShowDeleteCommentDialog(true);
+                    }, 0);
+                  }}
+                >
                   Xóa
                 </DropdownMenuItem>
               </DropdownMenuContent>
