@@ -4,34 +4,62 @@ import * as React from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import SearchHeader from "./SearchHeader";
 import PaginationCourse from "./PaginationCourse";
-import { MyCourseResponse, Course } from "@/types/response/account/my_course";
-import CoursesGrid from "./CourseGrid";
 import { LoaderIcon } from "@/components/share/loading-icon";
 import { FetchServerGetApi } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
 
-// Type cho CourseEnrollment response từ backend
-// Type cho CourseEnrollment
-interface CourseEnrollment {
-    id: number;
-    accountId: string;
-    courseId: string;
-    status: "active" | "pending" | "inactive";
-    enrolledAt: string;
+// Type cho Course từ API mới
+interface Course {
+    id: string;
+    name: string;
+    detail?: string | null;
+    price: number;
+    videoUrl?: string | null;
+    imageUrl?: string | null;
+    category?: any;
+    status: string;
 }
 
-// Type cho API response
-interface CourseEnrollmentApiResponse {
-    status: number;
-    message: string;
-    result: CourseEnrollment[];
-    timestamp: number;
-}
+// Component Card cho mỗi khóa học
+const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
+    return (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
+            <div className="aspect-video bg-gray-200 overflow-hidden flex items-center justify-center">
+                <img
+                    src={course.imageUrl || '/placeholder-course.jpg'}
+                    alt={course.name}
+                    className="w-full h-full object-cover"
+                />
+            </div>
+            <div className="p-4">
+                <h3 className="font-semibold text-gray-900 line-clamp-2 h-[30px]">
+                    {course.name}
+                </h3>
+                <p className="text-md text-red-500 font-bold truncate mb-2">
+                    {course.price.toLocaleString('vi-VN')}đ
+                </p>
+                <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${course.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                    {course.status === 'active' ? 'Đang chờ duyệt' : course.status}
+                </span>
+            </div>
+        </div>
+    );
+};
+
+// Component Grid cho các khóa học
+const CoursesGrid: React.FC<{ courses: Course[] }> = ({ courses }) => {
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {courses.map((course) => (
+                <CourseCard key={course.id} course={course} />
+            ))}
+        </div>
+    );
+};
 
 export default function PendingCourses() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [courseEnrollments, setCourseEnrollments] = React.useState<CourseEnrollment[]>([]);
     const [courses, setCourses] = React.useState<Course[]>([]);
     const [totalPages, setTotalPages] = React.useState(1);
     const [isLoading, setIsLoading] = React.useState(true);
@@ -42,7 +70,6 @@ export default function PendingCourses() {
     const [name, setName] = React.useState(initialName);
     const [page, setPage] = React.useState(initialPage);
 
-    const pathName = usePathname();
     const abortControllerRef = React.useRef<AbortController | null>(null);
 
     React.useEffect(() => {
@@ -51,59 +78,24 @@ export default function PendingCourses() {
     }, [name, page]);
 
     const fetchPendingCourses = async () => {
-        // Huỷ request cũ nếu còn
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
         }
-
         const abortController = new AbortController();
         abortControllerRef.current = abortController;
-
         try {
-            // Gọi API lấy course enrollments với status pending
-            const enrollmentResponse = await FetchServerGetApi(
-                API.ACCOUNT.PENDING_COURSE("pending")
-            );
+            const perPage = 10;
+            const apiUrl = `${API.ACCOUNT.PENDING_COURSE("pending")}&page=${page}&perPage=${perPage}&name=${encodeURIComponent(name)}`;
 
-            console.log("check course 123: ", enrollmentResponse)
+            const response = await FetchServerGetApi(apiUrl);
 
-            if (enrollmentResponse?.status === 200) {
-                const enrollments: CourseEnrollment[] = enrollmentResponse.result;
-                setCourseEnrollments(enrollments);
-
-                // Lọc theo tên nếu có
-                let filteredEnrollments = enrollments;
-                if (name.trim()) {
-                    // Tạm thời filter theo ID hoặc có thể cần thêm logic khác
-                    filteredEnrollments = enrollments.filter(enrollment =>
-                        enrollment.courseId?.toLowerCase().includes(name.toLowerCase()) ||
-                        enrollment.id.toString().includes(name)
-                    );
-                }
-
-                // Pagination logic (giả định mỗi trang 10 items)
-                const itemsPerPage = 10;
-                const startIndex = (page - 1) * itemsPerPage;
-                const endIndex = startIndex + itemsPerPage;
-                const paginatedEnrollments = filteredEnrollments.slice(startIndex, endIndex);
-
-                setTotalPages(Math.ceil(filteredEnrollments.length / itemsPerPage));
-
-                // Convert enrollments to courses format for display
-                const coursesData: Course[] = paginatedEnrollments.map(enrollment => ({
-                    id: enrollment.courseId || enrollment.id.toString(),
-                    name: `Course ${enrollment.id}`, // Tạm thời, cần API trả về thông tin course
-                    description: `Enrolled at: ${new Date(enrollment.enrolledAt).toLocaleDateString()}`,
-                    imageUrl: "/placeholder.jpg",
-                    status: enrollment.status as any,
-                    enrolledAt: enrollment.enrolledAt,
-                    viewedLessons: 0,
-                    totalLessons: 0,
-                }));
-
-                setCourses(coursesData);
+            if (response?.status === 200) {
+                setCourses(response.result || []);
+                setTotalPages(response.totalPages || 1);
+            } else {
+                setCourses([]);
+                setTotalPages(1);
             }
-
         } catch (err: any) {
             if (err.name === 'AbortError') {
                 return;
@@ -126,13 +118,11 @@ export default function PendingCourses() {
                 setName={setName}
                 setPage={setPage}
             />
-            <p>Pending Courses ({courseEnrollments.length} total)</p>
-
             {isLoading ? (
                 <div className="flex items-center justify-center py-8">
                     <LoaderIcon className="mr-1.5 size-9 animate-spin" aria-hidden="true" />
                     <span className="text-sm text-gray-600">
-                        Đang tải khóa học pending...
+                        Đang tải danh sách khóa học pending...
                     </span>
                 </div>
             ) : hasNoCourses ? (
@@ -143,14 +133,7 @@ export default function PendingCourses() {
                 </div>
             ) : (
                 <>
-                    <CoursesGrid
-                        courses={courses.map((course) => ({
-                            ...course,
-                            imageUrl: course.imageUrl || "/placeholder.jpg",
-                            price: (course as any).price ?? 0,
-                        }))}
-                        isProgress={true}
-                    />
+                    <CoursesGrid courses={courses} />
                     <PaginationCourse
                         currentPage={page}
                         totalPages={totalPages}
