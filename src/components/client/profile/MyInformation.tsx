@@ -14,7 +14,7 @@ const MyInformation = () => {
   const [currentProfile, setCurrentProfile] = useState<CurrentProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const {fetchGetCurrentAccount} = useCurrentAccountContext();
+  const { fetchGetCurrentAccount } = useCurrentAccountContext();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -62,8 +62,7 @@ const MyInformation = () => {
         email: currentProfile.email || '',
         name: currentProfile.name || '',
         phone: currentProfile.phoneNumber || '',
-        birthdate: currentProfile.birthday ?
-          new Date(currentProfile.birthday).toISOString().slice(0, 16) : '',
+        birthdate: currentProfile.birthday ? currentProfile.birthday.slice(0, 10) : '',
         bio: currentProfile.detail || '',
         sex: currentProfile.sex || ''
       });
@@ -73,14 +72,14 @@ const MyInformation = () => {
   // Hàm validate từng trường
   const validateField = (name: string, value: string) => {
     let error = '';
-    
+
     switch (name) {
       case 'name':
         if (!value.trim()) {
           error = 'Họ và tên là bắt buộc';
         }
         break;
-      
+
       case 'phone':
         if (!value.trim()) {
           error = 'Số điện thoại là bắt buộc';
@@ -92,9 +91,9 @@ const MyInformation = () => {
           error = 'Số điện thoại phải có ít nhất 10 số';
         }
         break;
-    
+
     }
-    
+
     return error;
   };
 
@@ -105,9 +104,9 @@ const MyInformation = () => {
       phone: validateField('phone', formData.phone),
       birthdate: validateField('birthdate', formData.birthdate)
     };
-    
+
     setErrors(newErrors);
-    
+
     // Trả về true nếu không có lỗi
     return !Object.values(newErrors).some(error => error !== '');
   };
@@ -116,7 +115,7 @@ const MyInformation = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    
+
     // Xử lý đặc biệt cho số điện thoại - chỉ cho phép nhập số
     if (name === 'phone') {
       const numbersOnly = value.replace(/\D/g, '');
@@ -125,7 +124,7 @@ const MyInformation = () => {
           ...prev,
           [name]: numbersOnly
         }));
-        
+
         // Clear error khi user bắt đầu sửa
         if (errors[name as keyof typeof errors]) {
           setErrors(prev => ({
@@ -136,12 +135,12 @@ const MyInformation = () => {
       }
       return;
     }
-    
+
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    
+
     // Clear error khi user bắt đầu sửa các trường bắt buộc
     if (name === 'name' || name === 'birthdate') {
       if (errors[name as keyof typeof errors]) {
@@ -191,15 +190,15 @@ const MyInformation = () => {
           name: response.result.name || '',
           phone: response.result.phoneNumber || '',
           birthdate: response.result.birthday ?
-            new Date(response.result.birthday).toISOString().slice(0, 16) : '',
+            new Date(response.result.birthday).toISOString().slice(0, 10) : '',
           bio: response.result.detail || '',
           sex: response.result.sex || ''
         });
         fetchGetCurrentAccount()
-        
-        toast.success("Cập nhật thông tin cá nhân thành công!") 
+
+        toast.success("Cập nhật thông tin cá nhân thành công!")
         setIsEditing(false);
-        
+
         // Clear tất cả errors
         setErrors({
           name: '',
@@ -289,11 +288,10 @@ const MyInformation = () => {
                 value={formData.name}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent transition-colors disabled:bg-gray-50 ${
-                  errors.name 
-                    ? 'border-red-500 focus:ring-red-500' 
-                    : 'border-gray-300 focus:ring-blue-500'
-                }`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent transition-colors disabled:bg-gray-50 ${errors.name
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-blue-500'
+                  }`}
                 placeholder="Nguyễn Văn A"
                 disabled={!isEditing}
               />
@@ -317,11 +315,10 @@ const MyInformation = () => {
                 value={formData.phone}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent transition-colors disabled:bg-gray-50 ${
-                  errors.phone 
-                    ? 'border-red-500 focus:ring-red-500' 
-                    : 'border-gray-300 focus:ring-blue-500'
-                }`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent transition-colors disabled:bg-gray-50 ${errors.phone
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-blue-500'
+                  }`}
                 placeholder="0123456789"
                 disabled={!isEditing}
                 maxLength={12}
@@ -338,16 +335,15 @@ const MyInformation = () => {
             </label>
             <div className="relative">
               <input
-                type="datetime-local"
+                type="date"
                 name="birthdate"
                 value={formData.birthdate}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent transition-colors disabled:bg-gray-50 ${
-                  errors.birthdate 
-                    ? 'border-red-500 focus:ring-red-500' 
-                    : 'border-gray-300 focus:ring-blue-500'
-                }`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent transition-colors disabled:bg-gray-50 ${errors.birthdate
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-blue-500'
+                  }`}
                 disabled={!isEditing}
               />
             </div>
