@@ -122,13 +122,13 @@ export default function PendingCourses() {
                 <div className="flex items-center justify-center py-8">
                     <LoaderIcon className="mr-1.5 size-9 animate-spin" aria-hidden="true" />
                     <span className="text-sm text-gray-600">
-                        Đang tải danh sách khóa học pending...
+                        Đang tải danh sách khóa học...
                     </span>
                 </div>
             ) : hasNoCourses ? (
                 <div className="flex items-center justify-center py-8">
                     <span className="text-sm text-gray-600">
-                        {name ? "Không tìm thấy khóa học pending phù hợp" : "Không có khóa học pending"}
+                        {name ? "Không tìm thấy khóa học phù hợp" : "Không có khóa học"}
                     </span>
                 </div>
             ) : (
