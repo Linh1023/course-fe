@@ -25,25 +25,27 @@ import { Textarea } from "@/components/ui/textarea"
 import { LoaderIcon } from "@/components/share/loading-icon"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { FetchServerPutApi } from "@/actions/server/fetch_server_api"
+import { FetchServerPostApiNoJsonBody, FetchServerPutApi } from "@/actions/server/fetch_server_api"
 import API from "@/api/api"
 import { toast } from "sonner"
 import { updateLessonSchema, UpdateLessonSchema } from "@/validation/lessonSchema"
 import { UploadedFilePreview } from "@/components/share/upload-file-preview"
 import { getFileNameFromUrl } from "@/utils/url"
+import VideoPlayer from "@/components/client/video/video_player"
 
 interface UpdateLessonSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
   lesson: Lesson
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
-  fetchData:()=>void
+  fetchData: () => void
 }
 
-export function UpdateLessonSheet({ lesson,fetchData, setIsLoading, ...props }: UpdateLessonSheetProps) {
+export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, ...props }: UpdateLessonSheetProps) {
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
   const [previewVideo, setPreviewVideo] = React.useState<string | null>(null)
   const [previewDocument, setPreviewDocument] = React.useState<{ url: string; name: string } | null>(null)
   const [previewAssignment, setPreviewAssignment] = React.useState<{ url: string; name: string } | null>(null)
+  let urlVideo = React.useRef(lesson.videoUrl)
   const videoRef = React.useRef<HTMLVideoElement>(null)
   const form = useForm<UpdateLessonSchema>({
     resolver: zodResolver(updateLessonSchema),
@@ -55,12 +57,32 @@ export function UpdateLessonSheet({ lesson,fetchData, setIsLoading, ...props }: 
     },
   })
 
-  function onSubmit(input: UpdateLessonSchema) {
+  const uploadVideo = async (file: any) => {
+    const formData = new FormData();
+    formData.append("file", file); // key phải đúng là "file"
+
+    const res = await FetchServerPostApiNoJsonBody(API.VIDEO.UP_LOAD, formData)
+    if (res && res.status === 200) {
+      return res.result
+    } else {
+      return null
+    }
+  };
+
+  const onSubmit = async (input: UpdateLessonSchema) => {
+
+
+
+    if (input.video && input.video.length > 0) {
+      const videourl = await uploadVideo(input.video[0])
+      urlVideo.current = videourl
+    }
+
     const updateData: UpdateLessonRequest = {
       lessonNumber: Number(input.lessonNumber),
       name: input.name,
       detail: input.detail || "",
-      videoUrl: input.video ? "http://url" : lesson.videoUrl, // sau này sẽ upload video lên server
+      videoUrl: urlVideo.current, // sau này sẽ upload video lên server
       documentUrl: input.document ? "https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf" : lesson.documentUrl,
       assignmentUrl: input.assignment ? "https://example.com/assignment1.docx" : lesson.assigmentUrl,
       duration: Math.floor(videoRef?.current?.duration || lesson.duration),  // Lấy thời lượng video nếu có;
@@ -186,12 +208,21 @@ export function UpdateLessonSheet({ lesson,fetchData, setIsLoading, ...props }: 
                   <FormItem>
                     <FormLabel>Video bài học</FormLabel>
                     <Input type="file" accept="video/mp4" onChange={(e) => handleVideoChange(e.target.files || undefined)} />
-                    {previewVideo && (
+
+                    {previewVideo && previewVideo != urlVideo.current ? (
                       <video ref={videoRef} key={previewVideo} controls className="mt-2 w-full max-w-full rounded shadow">
                         <source src={previewVideo} type="video/mp4" />
                         Trình duyệt của bạn không hỗ trợ video.
+
                       </video>
-                    )}
+                    ) : (<>
+
+                      <VideoPlayer
+                        fileName={urlVideo.current}
+                      />
+
+                    </>)}
+                    
                     <FormMessage />
                   </FormItem>
                 )}

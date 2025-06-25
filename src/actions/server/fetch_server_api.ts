@@ -60,6 +60,34 @@ export const FetchServerPostApi = async (api: string, bodyData: any = null, path
 }
 
 
+export const FetchServerPostApiNoJsonBody = async (api: string, bodyData: any = null, path = "") => {
+  try {
+    const access_token = await getToken("access_token")
+
+    // if (refresh_token === undefined) {
+    //   throw new Error("Session ID is undefined");
+    // }
+
+    if (access_token === undefined) {
+      await refreshToken()
+    }
+
+    let data = await serverPostPutApiNoJsonBody(api, bodyData, "POST");
+
+    if (data && data.status === 401) {
+      await refreshToken()
+      data = await serverPostPutApiNoJsonBody(api, bodyData, "POST");
+    }
+    if (path !== "") {
+      revalidatePath(path);
+    }
+    return data;
+
+  } catch (error) {
+    redirect('/login');
+  }
+}
+
 
 // Ham fetch put api khi can access token tu dong
 export const FetchServerPutApi = async (api: string, bodyData: any, path = "") => {
@@ -109,16 +137,27 @@ export const FetchServerGetApiNoToken = async (api: string) => {
   }
 }
 
+export const FetchServerGetApiRangeNoToken = async (api: string, range:any) => {
+
+  try {
+    const res = await fetch(api, {
+      method: "GET", // Đúng phương thức
+      headers: {
+        Range: range || ''
+      },
+    });
+
+    return res;
+  } catch (error) {
+  }
+}
+
 
 // Ham fetch get api khi can access token tu dong
 export const FetchServerGetApi = async (api: string, path = "") => {
   try {
-    const refresh_token = await getToken("refresh_token")
-    const access_token = await getToken("access_token")
 
-    // if ( refresh_token === undefined) {
-    //   throw new Error("Session ID is undefined");
-    // }
+    const access_token = await getToken("access_token")
 
     if (access_token === undefined) {
       await refreshToken()
@@ -134,6 +173,29 @@ export const FetchServerGetApi = async (api: string, path = "") => {
       revalidatePath(path);
     }
     return data;
+
+  } catch (error) {
+    redirect('/login');
+  }
+}
+
+
+export const FetchServerGetApiRange = async (api: string, range:any) => {
+  try {
+
+    const access_token = await getToken("access_token")
+
+    if (access_token === undefined) {
+      await refreshToken()
+    }
+
+    let res = await serverGetApiRange(api, range);
+
+    if (res && res.status === 401) {
+      await refreshToken()
+      res = await serverGetApiRange(api,range);
+    }
+    return res;
 
   } catch (error) {
     redirect('/login');
@@ -266,6 +328,22 @@ export const serverPostPutApi = async (api: string, bodyData: any, methodReq: st
   }
 }
 
+export const serverPostPutApiNoJsonBody = async (api: string, bodyData: any, methodReq: string) => {
+  console.log("body data >>> ", bodyData)
+  try {
+    const res = await fetch(api, {
+      method: methodReq, // Đúng phương thức
+      headers: {
+        Authorization: `Bearer ${await getToken("access_token")}`, // Set Authorization header
+      },
+      body: bodyData, // Gửi dữ liệu
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+  }
+}
 
 
 // ham fetch get api mac dinh
@@ -283,6 +361,23 @@ export const serverGetApi = async (api: string) => {
 
     const data = await res.json();
     return data;
+  } catch (error) {
+  }
+}
+
+
+export const serverGetApiRange = async (api: string, range:any) => {
+
+  try {
+    const res = await fetch(api, {
+      method: "GET", // Đúng phương thức
+      headers: {
+        Range: range || '',
+        Authorization: `Bearer ${await getToken("access_token")}`, // Set Authorization header
+      },
+    });
+
+    return res;
   } catch (error) {
   }
 }

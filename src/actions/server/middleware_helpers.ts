@@ -60,10 +60,10 @@ interface AuthResult {
 }
 
 
-export const authentication = async (): Promise<AuthResult> => {
+export const authentication = async (req: NextRequest): Promise<AuthResult> => {
 
-    const accessToken = await getToken("access_token")
-    const refreshToken = await getToken("request_token")
+    const accessToken = req.cookies.get("access_token")?.value;
+    const refreshToken = req.cookies.get("refresh_token")?.value;
 
 
     console.log("vao day ne 1")
@@ -77,7 +77,7 @@ export const authentication = async (): Promise<AuthResult> => {
 
     // neu khong co access token va refresh token
     if (accessToken === undefined && refreshToken === undefined) {
-
+        console.log("vao day ne 222222222")
         return {
             isAuthentication: false,
             role: "guest",
@@ -87,6 +87,7 @@ export const authentication = async (): Promise<AuthResult> => {
     console.log("vao day ne 2")
     // neu access token khong co va co refreshToken 
     if (accessToken === undefined) {
+        console.log("vao day ne 1 hehehehe")
         // xin cap lai access token
         return refreshTokenInMiddleware(refreshTokenRequest)
     }

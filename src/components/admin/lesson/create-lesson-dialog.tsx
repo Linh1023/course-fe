@@ -19,7 +19,7 @@ import { PlusIcon } from "lucide-react"
 import { LoaderIcon } from "@/components/share/loading-icon"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import API from "@/api/api"
-import { FetchServerPostApi } from "@/actions/server/fetch_server_api"
+import { FetchServerPostApi, FetchServerPostApiNoJsonBody } from "@/actions/server/fetch_server_api"
 import { useRouter } from "next/navigation"
 import { createLessonSchema, CreateLessonSchema } from "@/validation/lessonSchema"
 import { UploadedFilePreview } from "@/components/share/upload-file-preview"
@@ -29,7 +29,7 @@ import { set } from "date-fns"
 interface CreateLessonDialogProps {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   chapterId: number
-  fetchData:()=>void
+  fetchData: () => void
 }
 export function CreateLessonDialog({ chapterId, setIsLoading, fetchData }: CreateLessonDialogProps) {
   const [open, setOpen] = React.useState(false)
@@ -46,13 +46,34 @@ export function CreateLessonDialog({ chapterId, setIsLoading, fetchData }: Creat
   })
 
 
+  const uploadVideo = async (file: any) => {
+    const formData = new FormData();
+    formData.append("file", file); // key phải đúng là "file"
 
-  const onSubmit = (data: CreateLessonSchema) => {
+    const res = await FetchServerPostApiNoJsonBody(API.VIDEO.UP_LOAD, formData)
+    if (res && res.status === 200) {
+      return res.result
+    } else {
+      return null
+    }
+
+  };
+
+
+
+  const onSubmit = async (data: CreateLessonSchema) => {
+ 
+    const dataUpload = await uploadVideo(data.video[0])
+    if (dataUpload === null) {
+      toast.error("Tạo bài học thất bại, vui lòng thử lại sau")
+      return
+    }
+
     const createData: CreateLessonRequest = {
       lessonNumber: Number(data.lessonNumber),
       name: data.name,
       detail: data.detail || "",
-      videoUrl: data.video ? "http://url" : "", // sau này sẽ upload video lên server
+      videoUrl: dataUpload, // sau này sẽ upload video lên server
       documentUrl: data.document ? "https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf" : "",
       assignmentUrl: data.assignment ? "https://example.com/assignment1.docx" : "",
       duration: Math.round(videoRef?.current?.duration || 0),  // Lấy thời lượng video nếu có;
@@ -61,6 +82,7 @@ export function CreateLessonDialog({ chapterId, setIsLoading, fetchData }: Creat
 
     console.log(createData)
     startTransition(async () => {
+
       const res = await FetchServerPostApi(API.LESSON.ROOT, createData, "/admin/course")
       if (res.status === 200) {
         fetchData()
