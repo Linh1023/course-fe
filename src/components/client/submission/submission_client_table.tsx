@@ -9,33 +9,80 @@ import { TableInstanceProvider } from "@/components/admin/share/data-table/table
 import { DataTable } from "@/components/admin/share/data-table/data-table"
 import { DataTableAdvancedToolbar } from "@/components/admin/share/data-table/advance/data-table-advance-toolbar"
 import { getSubmissionClientColumns } from "./submission_client_table_column"
-import { useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useDebounce } from "@/hooks/use-debounce"
+
+import { FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api"
+import API from "@/api/api"
+import { DateRangePicker } from "@/components/admin/share/data-table/advance/date-range-picker"
 
 
-interface Props {
-  submissionsPromise: Promise<SubmissionClientPageResponse>
-}
-
-
-export function SubmissionClientTable(props: Props) {
-
-  const { submissionsPromise } = props
-
-  const { result, totalPages } = React.use(submissionsPromise)
+export function SubmissionClientTable() {
 
 
 
   const [isLoading, setIsLoading] = React.useState(false)
-  const pa = useSearchParams()
+  const searchParams = useSearchParams()
+  const pathName = usePathname()
+  const [dataResult, setDataResult] = React.useState<SubmissionClientResponse[]>([])
+  const [totalPages, setTotalPages] = React.useState(1)
+  const router = useRouter()
+  const abortControllerRef = React.useRef<AbortController | null>(null); // Use ref to keep track of the controller
+
+  const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
 
   React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      console.log("URL params changed, stop loading >>> ", pa.toString())
-      setIsLoading(false)
-    }, 500)
+    setIsLoading(true);
 
-    return () => clearTimeout(timeout)
-  }, [pa])
+    fetchData();
+  }, [querySearch]);
+
+
+
+  const fetchData = async () => {
+    // Huỷ request cũ nếu còn
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    const { signal } = abortController;
+
+    try {
+      const submissions = await FetchClientGetApiSignalNoToken(
+        `/api/proxy/search?${querySearch}&api=${API.SUBMISSON.SUBMISSION_CLIENT_FILTER}`,
+        signal
+      );
+
+
+      if (submissions?.status === 200) {
+        setDataResult(submissions.result);
+        setTotalPages(submissions.totalPages);
+
+        //  Chỉ chạy nếu không bị huỷ
+        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+        router.replace(`${pathName}?${querySearch}`, {
+          scroll: false,
+        });
+      }
+
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        // Yêu cầu bị huỷ, không làm gì cả
+        return;
+      } else {
+        console.error('Lỗi khi fetch:', err);
+      }
+    } finally {
+      // ✅ Luôn setIsLoading(false) nếu không bị huỷ
+      if (!signal.aborted) {
+        setIsLoading(false);
+      }
+    }
+  };
+
+
 
   // cái này là từng dòng dữ liệu của bảng kể cả header
   const columns = React.useMemo(() => getSubmissionClientColumns(), [])
@@ -78,7 +125,7 @@ export function SubmissionClientTable(props: Props) {
 
 
   const { table } = useDataTable({
-    data: result, // dữ liệu đổ vào table
+    data: dataResult, // dữ liệu đổ vào table
     columns, // cái này là từng dòng dữ liệu của bảng kể cả header
     pageCount: totalPages, // tổng số trang
     filterFields, // bộ lọc
@@ -90,16 +137,30 @@ export function SubmissionClientTable(props: Props) {
   return (
     <TableInstanceProvider table={table}>
 
+      <DateRangePicker
+        setIsLoading={setIsLoading}
+        setQuerySearch={setQuerySearch}
+        querySearch={querySearch}
+        triggerSize="sm"
+        triggerClassName="ml-auto w-56 sm:w-60 mr-1"
+        className="dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
+        align="end"
+      />
+
       <DataTable
         table={table}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        setQuerySearch={setQuerySearch}
+        querySearch={querySearch}
       >
 
         <DataTableAdvancedToolbar
           filterFields={filterFields}
-            isLoading={isLoading}
-          setIsLoading={setIsLoading}>
+          setIsLoading={setIsLoading}
+          setQuerySearch={setQuerySearch}
+          querySearch={querySearch}
+        >
 
         </DataTableAdvancedToolbar>
 

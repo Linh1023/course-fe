@@ -13,9 +13,3 @@ interface User {
   birthday: string;
 }
 
-interface UserPageResponse {
-  result: User[];
-  totalPages: number;
-  totalItems: number;
-  currentPage: number;
-}

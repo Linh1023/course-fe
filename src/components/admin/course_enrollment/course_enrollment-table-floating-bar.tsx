@@ -14,6 +14,8 @@ import { toast } from "sonner"
 
 interface CESTableFloatingBarProps {
   table: Table<CourseEnrollmentAdmin>
+  setIsLoading: (isLoading: boolean) => void
+  fetchData: () => void
 }
 
 export function CESTableFloatingBar({ table }: CESTableFloatingBarProps) {

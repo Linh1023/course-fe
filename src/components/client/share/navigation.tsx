@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { Fingerprint, MenuIcon, Search } from "lucide-react";
 
@@ -58,6 +58,9 @@ import {
 import API from "@/api/api";
 import { useLoadingContext } from "@/context/loading_context";
 import { LoaderIcon } from "@/components/share/loading-icon";
+import { useQuerySearchClientContext } from "@/context/query_search_client_context";
+import { updateQueryStringManually } from "@/utils/handle_query";
+import { FetchClientGetApiNoToken } from "@/actions/client/fetch_client_api";
 type CourseType = {
   id: string;
   name: string;
@@ -78,10 +81,13 @@ const Navigation = () => {
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const pathName = usePathname()
   // Lấy keyword từ URL để khởi tạo input
   // const [keyword, setKeyword] = useState(
   //   () => searchParams.get("keyword") || ""
   // );
+
+  const { querySearch, setQuerySearch, isLoading, setIsLoading } = useQuerySearchClientContext()
 
   useEffect(() => {
     if (!keyword.trim()) {
@@ -94,9 +100,9 @@ const Navigation = () => {
       setIsSearching(true);
       setHasSearched(false);
       try {
-        const res = await FetchServerGetApiNoToken(
+        const res = await FetchClientGetApiNoToken(
           API.COURSE.COURSE_FILTER +
-          `?keyword=${encodeURIComponent(keyword.trim())}&page=0&size=4`
+          `?keyword=${encodeURIComponent(keyword.trim())}&page=1&size=4`
         );
 
         if (res && res.status === 200) {
@@ -188,21 +194,26 @@ const Navigation = () => {
 
 
     if (keyword.trim()) {
-      params.set("keyword", keyword.trim());
-    }
 
-    params.set("page", "1");
+      if (pathName === "/search") {
+        const newQuerySearchTemporary = updateQueryStringManually(querySearch, "keyword", keyword.trim())
+        const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
+        if (newQuerySearch != querySearch) {
+          setIsLoading(true);
+          setQuerySearch(newQuerySearch)
+        }
+      } else {
 
-    if (searchParams.toString() != params.toString()) {
-      startLoadingSpiner();
-    }
-
-    router.push(`/search?${params.toString()}`);
-
-    setKeyword(""); // Xoá input
-    setShowSuggestions(false); // Ẩn hẳn
-    setSuggestions([]); // Ẩn gợi ý
-  };
+        params.set("keyword", keyword.trim());
+        params.set("page", "1");
+        startLoadingSpiner();
+        console.log("hihi", `/search?${params.toString()}`)
+        router.push(`/search?${params.toString()}`);
+      }
+      setShowSuggestions(false); // Ẩn hẳn
+      setSuggestions([]); // Ẩn gợi ý
+    };
+  }
 
   return (
     <>
@@ -646,6 +657,7 @@ const Navigation = () => {
       <div className="h-[68px]" />
     </>
   );
+
 };
 
 export { Navigation };

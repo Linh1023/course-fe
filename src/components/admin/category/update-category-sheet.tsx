@@ -37,9 +37,10 @@ interface UpdateCategorySheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
   category: Category
   setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>
+  fetchData:()=>void
 }
 
-export function UpdateCategorySheet({ category, setIsLoading, ...props }: UpdateCategorySheetProps) {
+export function UpdateCategorySheet({ category, fetchData, setIsLoading, ...props }: UpdateCategorySheetProps) {
   const router = useRouter()
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
   const form = useForm<UpdateCategorySchema>({
@@ -64,11 +65,12 @@ export function UpdateCategorySheet({ category, setIsLoading, ...props }: Update
       // update category in the database
       const updateCategoryResponse = await FetchServerPutApi(
         `${API.CATEGORY.ROOT}/${category.id}`,
-        input,
-        "/admin/category"
+        input
+
       )
       if (updateCategoryResponse.status == 200) {
         toast.success("Cập nhật thành công!")
+        fetchData()
         props.onOpenChange?.(false)
         setIsLoading?.(true)
       }

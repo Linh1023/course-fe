@@ -29,7 +29,11 @@ import { DataTableColumnHeader } from "../share/data-table/data-table-column-hea
 import { DeleteCommentsDialog } from "./delete_comments_dialog";
 import { set } from "zod";
 
-export function getCommentColumns(): ColumnDef<CommentAdmin>[] {
+export function getCommentColumns(
+ setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+ fetchData: () => Promise<void>
+
+): ColumnDef<CommentAdmin>[] {
   return [
     {
       id: "select",
@@ -145,7 +149,10 @@ export function getCommentColumns(): ColumnDef<CommentAdmin>[] {
               onOpenChange={setShowDeleteCommentDialog}
               comments={[row.original]}
               showTrigger={false}
-              onSuccess={() => row.toggleSelected(false)}
+              onSuccess={() => {row.toggleSelected(false);
+                setIsLoading(true);
+                fetchData()
+              } }
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

@@ -13,23 +13,27 @@ import { useTableInstanceContext } from "../table-instance-provider"
 import { DataTableFilterOption } from "@/types/ui/data-table"
 import { TrashIcon } from "lucide-react"
 import { DataTableAdvancedFacetedFilter } from "./data-table-advanced-faceted-filter"
-
+import { updateQueryStringManually } from "@/utils/handle_query"
+import { flexRender, type Table as TanstackTable } from "@tanstack/react-table"
 interface DataTableFilterItemProps<TData> {
   selectedOption: DataTableFilterOption<TData>
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
   defaultOpen: boolean
-  setIsLoading?: (v: boolean) => void
-  isLoading?: boolean
+  setIsLoading: (v: boolean) => void
+  setQuerySearch: (query: string) => void
+  querySearch: string
+
 }
 
 export function DataTableFilterItem<TData>({
   selectedOption,
   setSelectedOptions,
   defaultOpen,
-  isLoading,
-  setIsLoading
+  setQuerySearch,
+  setIsLoading,
+  querySearch
 }: DataTableFilterItemProps<TData>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -51,12 +55,7 @@ export function DataTableFilterItem<TData>({
 
 
   React.useEffect(() => {
-    console.log("debounceValue >>> ", debounceValue)
-    if (debounceValue != "") {
-      if (setIsLoading) {
-        setIsLoading(true)
-      }
-    }
+
 
     if (selectedOption.options.length > 0) {
       // key=value1.value2.value3
@@ -69,12 +68,22 @@ export function DataTableFilterItem<TData>({
         searchParams
       )
 
+      // console.log("querySearch data table filter >>> ", querySearch)
+      const newQuerySearchTemporary = updateQueryStringManually(querySearch, selectedOption.value.toString(), filterValues.join("."))
+      const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
+      if (newQuerySearch != querySearch) {
+        setIsLoading(true)
+        setQuerySearch(newQuerySearch)
+        table.setPageIndex(0);
+      }
 
-      router.push(`${pathname}?${newSearchParams}`, {
-        scroll: false,
-      })
+
+
+
+
     } else {
       // key=value
+
       const newSearchParams = createQueryString(
         {
           [selectedOption.value]: debounceValue,
@@ -85,9 +94,19 @@ export function DataTableFilterItem<TData>({
 
 
 
-      router.push(`${pathname}?${newSearchParams}`, {
-        scroll: false,
-      })
+      // console.log("querySearch data table filter >>> ", querySearch)
+      const newQuerySearchTemporary = updateQueryStringManually(querySearch, selectedOption.value.toString(), debounceValue)
+      const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
+
+      if (newQuerySearch != querySearch) {
+        setIsLoading(true)
+        setQuerySearch(newQuerySearch)
+        table.setPageIndex(0);
+      }
+
+
+
+
     }
 
 
@@ -143,13 +162,8 @@ export function DataTableFilterItem<TData>({
             variant="ghost"
             size="icon"
             className="size-7 text-muted-foreground"
-            disabled={isLoading}
+
             onClick={() => {
-
-              if (setIsLoading) {
-                setIsLoading(true)
-              }
-
               setSelectedOptions((prev) =>
                 prev.filter((item) => item.value !== selectedOption.value)
               )
@@ -162,10 +176,15 @@ export function DataTableFilterItem<TData>({
                 searchParams
               )
 
-              console.log("deleted >>> ", `${pathname}?${newSearchParams}`)
-              router.replace(`${pathname}?${newSearchParams}`, {
-                scroll: false,
-              })
+
+              const newQuerySearchTemporary = updateQueryStringManually(querySearch, selectedOption.value.toString())
+              const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
+              if (newQuerySearch != querySearch) {
+                setIsLoading(true)
+                setQuerySearch(newQuerySearch)
+                table.setPageIndex(0);
+              }
+
 
             }}
           >

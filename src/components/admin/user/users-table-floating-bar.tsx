@@ -16,9 +16,10 @@ import { toast } from "sonner"
 interface UsersTableFloatingBarProps {
   table: Table<User>
   setIsLoading: (v: boolean) => void
+  fetchData: () => void
 }
 
-export function UsersTableFloatingBar({ table, setIsLoading }: UsersTableFloatingBarProps) {
+export function UsersTableFloatingBar({ table, setIsLoading, fetchData }: UsersTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
   const [isOpen, setIsOpen] = React.useState(false)
   
@@ -30,6 +31,7 @@ export function UsersTableFloatingBar({ table, setIsLoading }: UsersTableFloatin
           onOpenChange={setIsOpen}
           users={table.getFilteredSelectedRowModel().rows.map((row) => row.original)}
           onSuccess={() => {
+            fetchData()
            FACbVhlR: toast.success(
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} người dùng thành công!`
             )

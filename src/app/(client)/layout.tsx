@@ -2,6 +2,7 @@ import Footer from "@/components/client/share/Footer";
 import MyConnect from "@/components/client/share/MyConnect";
 import Navbar from "@/components/client/share/navbar";
 import { Navigation } from "@/components/client/share/navigation";
+import { QuerySearchClientProvider } from "@/context/query_search_client_context";
 
 export default function ClientLayout({
   children,
@@ -11,10 +12,13 @@ export default function ClientLayout({
   return (
     <>
       {/* <h1>Layout Client</h1> */}
-      <Navigation></Navigation>
-      {/* <Navbar></Navbar> */}
+      <QuerySearchClientProvider>
+        <Navigation></Navigation>
+        {/* <Navbar></Navbar> */}
         {children}
-      <Footer/>
+        <Footer />
+      </QuerySearchClientProvider>
+
     </>
 
 

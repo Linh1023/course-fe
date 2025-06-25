@@ -3,7 +3,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
 import { BookCheck, ChevronLeft, ChevronRight, CirclePlay } from "lucide-react"
 import { LessonAppSidebar } from "@/components/client/lesson/lesson_app_sidebar";
-import { use, useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { FetchClientGetApi, FetchClientPostApi } from "@/actions/client/fetch_client_api";
 import { usePathname, useRouter } from "next/navigation";
 import API from "@/api/api";
@@ -20,7 +20,6 @@ export default function LessonClientLayout({ children }: { children: React.React
 
     const [clickedLessons, setClickedLessons] = useState<string[]>([]);
 
-
     const parts = pathName.split('/');
     const currentLessonId = parts[2];
     const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext()
@@ -33,8 +32,7 @@ export default function LessonClientLayout({ children }: { children: React.React
     }, [pathName])
 
 
-
-
+    
     useEffect(() => {
 
         const fetchGetCourseInfo = async () => {
@@ -87,14 +85,14 @@ export default function LessonClientLayout({ children }: { children: React.React
             const lessonIndex = chapter.lessons.findIndex(lesson => lesson.id === currentLessonId);
 
             if (lessonIndex !== -1) {
-               
+
                 if (lessonIndex > 0) {
-                     startLoadingSpiner()
+                    startLoadingSpiner()
                     // Lùi về bài trước trong cùng chương
                     const prevLessonId = chapter.lessons[lessonIndex - 1].id;
                     router.push(`/lesson/${prevLessonId}`);
                 } else if (i > 0) {
-                     startLoadingSpiner()
+                    startLoadingSpiner()
                     // Lùi về chương trước, bài cuối cùng
                     const prevChapter = courseInfoResponse.chapters[i - 1];
                     const prevLessonId = prevChapter.lessons[prevChapter.lessons.length - 1].id;
@@ -123,15 +121,15 @@ export default function LessonClientLayout({ children }: { children: React.React
             const lessonIndex = chapter.lessons.findIndex(lesson => lesson.id === currentLessonId);
 
             if (lessonIndex !== -1) {
-               
+
                 if (lessonIndex < chapter.lessons.length - 1) {
-                     startLoadingSpiner()
+                    startLoadingSpiner()
                     // Tới bài tiếp theo trong cùng chương
                     const nextLessonId = chapter.lessons[lessonIndex + 1].id;
                     router.push(`/lesson/${nextLessonId}`);
 
                 } else if (i < courseInfoResponse.chapters.length - 1) {
-                     startLoadingSpiner()
+                    startLoadingSpiner()
                     // Tới chương kế tiếp, bài đầu tiên
                     const nextChapter = courseInfoResponse.chapters[i + 1];
                     const nextLessonId = nextChapter.lessons[0].id;

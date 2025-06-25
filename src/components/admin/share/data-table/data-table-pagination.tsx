@@ -9,35 +9,51 @@ import {
 } from "@/components/ui/select"
 import { useTableInstanceContext } from "./table-instance-provider"
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { updateQueryStringManually } from "@/utils/handle_query"
+import { set } from "date-fns"
 
 
 interface DataTablePaginationProps {
   pageSizeOptions?: number[]
-  setIsLoading?: (v: boolean) => void
+  setIsLoading: (v: boolean) => void
+  setQuerySearch: (v: string) => void,
+  querySearch: string
 }
 
 export function DataTablePagination({
   pageSizeOptions = [10, 20, 30, 40, 50],
-  setIsLoading
+  setIsLoading,
+  setQuerySearch,
+  querySearch
 }: DataTablePaginationProps) {
   const searchParams = useSearchParams()
 
   const { tableInstance: table } = useTableInstanceContext()
+  const [perPage, setPerPage] = useState(() => searchParams.get("perPage") ?? 10); // hoặc giá trị mặc định ban đầ
+  const [page, setPage] = useState(() => searchParams.get("page") ?? 1); // hoặc giá trị mặc định ban đầu
 
-  const page = searchParams.get("page") ?? 1
-  const perPage = searchParams.get("perPage") ?? 10
   useEffect(() => {
     const pageIndex = Number(searchParams.get("page") ?? 1) - 1
     table.setPageIndex(pageIndex)
-  }, [searchParams])
+  }, [])
 
   const handleLoading = () => {
-    if (setIsLoading) {
-      setIsLoading(true)
-    }
+
+    setIsLoading(true)
+
   }
 
+  useEffect(() => {
+
+    const currentPage = table.getState().pagination.pageIndex + 1;
+    setPage(currentPage);
+
+    const newQuerySearch = updateQueryStringManually(querySearch, "page", currentPage.toString())
+    setQuerySearch(newQuerySearch)
+    console.log("newQuerySearch >>> ", newQuerySearch)
+
+  }, [table.getState().pagination.pageIndex]);
 
   return (
     <div className="flex w-full flex-col-reverse items-center justify-between gap-4 overflow-auto p-1 sm:flex-row sm:gap-8">
@@ -51,8 +67,14 @@ export function DataTablePagination({
           <Select
             value={`${perPage}`}
             onValueChange={(value) => {
+
+              setPerPage(value)
               table.setPageIndex(0);
               table.setPageSize(Number(value));
+
+              const newQuerySearch = updateQueryStringManually(querySearch, "perPage", value.toString())
+              setQuerySearch(newQuerySearch)
+
               handleLoading()
             }}
           >
@@ -80,6 +102,7 @@ export function DataTablePagination({
             variant="outline"
             className=" size-8 p-0 lg:flex"
             onClick={() => {
+ 
               table.setPageIndex(0);
               handleLoading()
             }}
@@ -92,8 +115,11 @@ export function DataTablePagination({
             variant="outline"
             size="icon"
             className="size-8"
-            onClick={() => {table.previousPage();
-              handleLoading()} }
+            onClick={() => {
+              table.previousPage();
+
+              handleLoading()
+            }}
             disabled={!table.getCanPreviousPage()}
           >
             <ChevronLeft className="size-4" aria-hidden="true" />
@@ -103,8 +129,10 @@ export function DataTablePagination({
             variant="outline"
             size="icon"
             className="size-8"
-            onClick={() => {table.nextPage();
-              handleLoading()}}
+            onClick={() => {
+              table.nextPage();
+              handleLoading()
+            }}
             disabled={!table.getCanNextPage()}
           >
             <ChevronRight className="size-4" aria-hidden="true" />
@@ -114,8 +142,11 @@ export function DataTablePagination({
             variant="outline"
             size="icon"
             className=" size-8 lg:flex"
-            onClick={() => {table.setPageIndex(table.getPageCount() - 1);
-               handleLoading()} }
+            onClick={() => {
+        
+              table.setPageIndex(table.getPageCount() - 1);
+              handleLoading()
+            }}
             disabled={!table.getCanNextPage()}
           >
             <ChevronsRight className="size-4" aria-hidden="true" />

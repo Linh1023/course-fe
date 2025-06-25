@@ -50,9 +50,10 @@ interface ApiError {
 
 interface CreateUserDialogProps {
   setIsLoading: (v: boolean) => void;
+  fetchData:() =>void
 }
 
-export function CreateUserDialog({ setIsLoading }: CreateUserDialogProps) {
+export function CreateUserDialog({ setIsLoading, fetchData }: CreateUserDialogProps) {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [isCreatePending, startCreateTransition] = React.useTransition();
@@ -113,13 +114,14 @@ export function CreateUserDialog({ setIsLoading }: CreateUserDialogProps) {
     form.clearErrors();
     startCreateTransition(async () => {
       try {
-        const res = await FetchServerPostApi(API.ACCOUNT.CREATE, input, "/admin/user");
+        const res = await FetchServerPostApi(API.ACCOUNT.CREATE, input);
         
         if (res.status === 200 || res.status === 201) {
-          router.replace("?page=1");
+
           form.reset();
           toast.success("Tạo người dùng thành công");
           setOpen(false);
+          fetchData()
           setIsLoading(true);
         } else if (res.status === 400) {
           if (res.data && res.data.errors && Array.isArray(res.data.errors)) {

@@ -70,7 +70,7 @@ export function DeleteCoursesDialog({
                 // thực hiện xóa khóa học
                 const res = await Promise.all(
                   courses.map((course) =>
-                    FetchServerDeleteApi(`${API.COURSE.ROOT}/${course.id}`, "/admin/course")
+                    FetchServerDeleteApi(`${API.COURSE.ROOT}/${course.id}`)
                   ))
                 if (res.some((r) => r.status !== 200)) {
                   toast.error("Xóa khóa học thất bại, vui lòng thử lại sau")

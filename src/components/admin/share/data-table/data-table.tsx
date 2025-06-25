@@ -30,7 +30,10 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
    */
   floatingBar?: React.ReactNode | null
   isLoading?: boolean
-  setIsLoading?: (v: boolean) => void
+  setIsLoading: (v: boolean) => void,
+  setQuerySearch: (v: string) => void,
+  querySearch: string
+
 }
 
 export function DataTable<TData>({
@@ -40,6 +43,8 @@ export function DataTable<TData>({
   className,
   isLoading,
   setIsLoading,
+  setQuerySearch,
+  querySearch,
   ...props
 }: DataTableProps<TData>) {
 
@@ -127,8 +132,10 @@ export function DataTable<TData>({
         </Table>
       </div>
       <div className="flex flex-col gap-2.5">
-        <DataTablePagination 
-        setIsLoading = {setIsLoading}
+        <DataTablePagination
+          setIsLoading={setIsLoading}
+          setQuerySearch={setQuerySearch}
+          querySearch={querySearch}
         />
         {table.getFilteredSelectedRowModel().rows.length > 0 && floatingBar}
       </div>

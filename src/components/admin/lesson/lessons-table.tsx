@@ -9,22 +9,83 @@ import { DataTableAdvancedToolbar } from "../share/data-table/advance/data-table
 import { getColumns } from "./lessons-table-column"
 import { LessonsTableFloatingBar } from "./lessons-table-floating-bar"
 import { LessonsTableToolbarActions } from "./lessons-table-toolbar-actions"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useDebounce } from "@/hooks/use-debounce"
+import { FetchClientGetApiSignalNoToken } from "@/actions/client/fetch_client_api"
+import API from "@/api/api"
 
 interface LessonsTableProps {
-  lessonPromise: Promise<LessonPageResponse>
+
   chapterId: number
 }
 
-export function LessonsTable({ lessonPromise, chapterId }: LessonsTableProps) {
-  const { result: data, totalPages } = React.use(lessonPromise)
-  const [isLoading, setIsLoading] = React.useState(false)
+export function LessonsTable({ chapterId }: LessonsTableProps) {
 
+  const [isLoading, setIsLoading] = React.useState(false)
+  const searchParams = useSearchParams()
+  const pathName = usePathname()
+  const [dataResult, setDataResult] = React.useState<Lesson[]>([])
+  const [totalPages, setTotalPages] = React.useState(1)
+  const router = useRouter()
+  const abortControllerRef = React.useRef<AbortController | null>(null); // Use ref to keep track of the controller
+
+
+
+  const [querySearch, setQuerySearch] = React.useState(() => searchParams.toString());
 
   React.useEffect(() => {
-    setIsLoading(false)
-  }, [data, totalPages])
+    setIsLoading(true);
+
+    fetchData();
+  }, [querySearch]);
+
+
+  const fetchData = async () => {
+    // Huỷ request cũ nếu còn
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    const { signal } = abortController;
+
+    try {
+      const submissions = await FetchClientGetApiSignalNoToken(
+        `/api/proxy/search?${querySearch}&api=${API.LESSON.ROOT}/${chapterId}`,
+        signal
+      );
+
+
+      if (submissions?.status === 200) {
+        setDataResult(submissions.result);
+        setTotalPages(submissions.totalPages);
+
+        //  Chỉ chạy nếu không bị huỷ
+        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+        router.replace(`${pathName}?${querySearch}`, {
+          scroll: false,
+        });
+      }
+
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        // Yêu cầu bị huỷ, không làm gì cả
+        return;
+      } else {
+        console.error('Lỗi khi fetch:', err);
+      }
+    } finally {
+      // ✅ Luôn setIsLoading(false) nếu không bị huỷ
+      if (!signal.aborted) {
+        setIsLoading(false);
+      }
+    }
+  };
+
+
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo(() => getColumns({ setIsLoading }), [setIsLoading])
+  const columns = React.useMemo(() => getColumns({ setIsLoading, fetchData }), [setIsLoading, fetchData])
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -74,12 +135,13 @@ export function LessonsTable({ lessonPromise, chapterId }: LessonsTableProps) {
   //     ]
   // TODO: Replace with actual data fetching logic
   const { table } = useDataTable({
-    data: data || [],
+    data: dataResult,
     columns,
     pageCount: totalPages || 1,
     // optional props
     filterFields,
     defaultPerPage: 10,
+
   })
 
   return (
@@ -87,10 +149,21 @@ export function LessonsTable({ lessonPromise, chapterId }: LessonsTableProps) {
       <DataTable
         table={table}
         isLoading={isLoading}
-        floatingBar={<LessonsTableFloatingBar table={table} setIsLoading={setIsLoading} />}
+        setIsLoading={setIsLoading}
+        setQuerySearch={setQuerySearch}
+        querySearch={querySearch}
+        floatingBar={<LessonsTableFloatingBar table={table} setIsLoading={setIsLoading}
+
+          fetchData={fetchData}
+        />}
       >
-        <DataTableAdvancedToolbar filterFields={filterFields} setIsLoading={setIsLoading}>
-          <LessonsTableToolbarActions table={table} setIsLoading={setIsLoading} chapterId={chapterId} />
+        <DataTableAdvancedToolbar filterFields={filterFields} setIsLoading={setIsLoading}
+          setQuerySearch={setQuerySearch}
+          querySearch={querySearch}
+        >
+          <LessonsTableToolbarActions table={table} setIsLoading={setIsLoading} chapterId={chapterId}
+            fetchData={fetchData}
+          />
         </DataTableAdvancedToolbar>
       </DataTable>
     </TableInstanceProvider>

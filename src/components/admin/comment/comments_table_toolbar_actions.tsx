@@ -15,9 +15,14 @@ import { DeleteCommentsDialog } from "./delete_comments_dialog"
 
 interface CommentsTableToolbarActionsProps {
   table: Table<CommentAdmin>
+  setIsLoading: (v: boolean) => void,
+  fetchData: () => void,
 }
 
 export function CommentsTableToolbarActions({
+  setIsLoading,
+  fetchData,
+
   table,
 }: CommentsTableToolbarActionsProps) {
 
@@ -29,6 +34,8 @@ export function CommentsTableToolbarActions({
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           onSuccess={() => {
+            setIsLoading(true)
+            fetchData()
             toast.success(
               `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} bình luận thành công!`
             )

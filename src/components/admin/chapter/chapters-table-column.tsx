@@ -22,9 +22,11 @@ import { DeleteChaptersDialog } from "./delete-chapter-dialog"
 
 interface getColumnsProps {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+
+   fetchData: () => Promise<void>
 }
 
-export function getColumns({ setIsLoading }: getColumnsProps): ColumnDef<Chapter>[] {
+export function getColumns({ setIsLoading,fetchData }: getColumnsProps): ColumnDef<Chapter>[] {
   return [
     {
       id: "select",
@@ -130,6 +132,7 @@ export function getColumns({ setIsLoading }: getColumnsProps): ColumnDef<Chapter
               open={showUpdateChapterSheet}
               onOpenChange={setShowUpdateChapterSheet}
               chapter={row.original}
+              fetchData= {fetchData}
             />
             <DeleteChaptersDialog
               setIsLoading={setIsLoading}
@@ -138,6 +141,7 @@ export function getColumns({ setIsLoading }: getColumnsProps): ColumnDef<Chapter
               chapters={[row.original]}
               showTrigger={false}
               onSuccess={() => {
+                fetchData()
                 toast.success(
                   `Đã xóa chương "${row.original.name}" thành công!`
                 )
@@ -158,7 +162,7 @@ export function getColumns({ setIsLoading }: getColumnsProps): ColumnDef<Chapter
                 align="end"
                 className="w-40 overflow-visible dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/40"
               >
-                <Link href={`/admin/course/${row.original.courseId}/chapter/${row.original.id}`}>
+                <Link href={`/admin/course/${row.original.courseId}/chapter/${row.original.id}?page=1&perPage=10`}>
                   <DropdownMenuItem >
                     Xem bài học
                   </DropdownMenuItem>
