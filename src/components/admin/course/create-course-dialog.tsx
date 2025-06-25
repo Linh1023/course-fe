@@ -22,7 +22,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import API from "@/api/api"
 import { useRouter } from "next/navigation"
 import { createCourseSchema, CreateCourseSchema } from "@/validation/courseSchema"
-import { FetchServerPostApi } from "@/actions/server/fetch_server_api"
+import { FetchServerPostApi, FetchServerPostApiNoJsonBody } from "@/actions/server/fetch_server_api"
 
 interface CreateCourseDialogProps {
   listCategory: Category[]
@@ -58,14 +58,38 @@ export function CreateCourseDialog({ listCategory, setIsLoading, fetchData }: Cr
     }
   }
 
-  const onSubmit = (data: CreateCourseSchema) => {
+  const uploadVideo = async (file: any) => {
+    const formData = new FormData();
+    formData.append("file", file); // key phải đúng là "file"
+
+    const res = await FetchServerPostApiNoJsonBody(API.VIDEO.UP_LOAD, formData)
+    if (res && res.status === 200) {
+      return res.result
+    } else {
+      return null
+    }
+  };
+
+  const onSubmit = async (data: CreateCourseSchema) => {
+    if (!data.video) {
+      toast.error("Tạo bài học thất bại, vui lòng thử lại sau")
+      return
+    }
+
+    const dataUpload = await uploadVideo(data.video[0])
+    if (dataUpload === null) {
+      toast.error("Tạo khóa học thất bại, vui lòng thử lại sau")
+      return
+    }
+
+
     const dataFormmatted: CreateCourseRequest = {
       name: data.name,
       detail: data.detail || "",
       categoryId: data.categoryId,
       price: Number(data.price), // Chuyển đổi giá sang số
       imageUrl: data.image ? "https://files.fullstack.edu.vn/f8-prod/courses/13/13.png" : "", // Sau nay sẽ upload lên server
-      videoUrl: data.video ? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" : "", // Sau nay sẽ upload lên server
+      videoUrl: dataUpload, // Sau nay sẽ upload lên server
     }
 
     console.log("Data to submit:", dataFormmatted)
