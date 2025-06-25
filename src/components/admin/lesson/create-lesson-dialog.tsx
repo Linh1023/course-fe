@@ -62,26 +62,28 @@ export function CreateLessonDialog({ chapterId, setIsLoading, fetchData }: Creat
 
 
   const onSubmit = async (data: CreateLessonSchema) => {
- 
-    const dataUpload = await uploadVideo(data.video[0])
-    if (dataUpload === null) {
-      toast.error("Tạo bài học thất bại, vui lòng thử lại sau")
-      return
-    }
 
-    const createData: CreateLessonRequest = {
-      lessonNumber: Number(data.lessonNumber),
-      name: data.name,
-      detail: data.detail || "",
-      videoUrl: dataUpload, // sau này sẽ upload video lên server
-      documentUrl: data.document ? "https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf" : "",
-      assignmentUrl: data.assignment ? "https://example.com/assignment1.docx" : "",
-      duration: Math.round(videoRef?.current?.duration || 0),  // Lấy thời lượng video nếu có;
-      chapterId: chapterId,
-    }
 
-    console.log(createData)
     startTransition(async () => {
+
+      const dataUpload = await uploadVideo(data.video[0])
+      if (dataUpload === null) {
+        toast.error("Tạo bài học thất bại, vui lòng thử lại sau")
+        return
+      }
+
+      const createData: CreateLessonRequest = {
+        lessonNumber: Number(data.lessonNumber),
+        name: data.name,
+        detail: data.detail || "",
+        videoUrl: dataUpload, // sau này sẽ upload video lên server
+        documentUrl: data.document ? "https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf" : "",
+        assignmentUrl: data.assignment ? "https://example.com/assignment1.docx" : "",
+        duration: Math.round(videoRef?.current?.duration || 0),  // Lấy thời lượng video nếu có;
+        chapterId: chapterId,
+      }
+
+      console.log(createData)
 
       const res = await FetchServerPostApi(API.LESSON.ROOT, createData, "/admin/course")
       if (res.status === 200) {

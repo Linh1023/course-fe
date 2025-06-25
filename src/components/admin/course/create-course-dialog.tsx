@@ -71,29 +71,32 @@ export function CreateCourseDialog({ listCategory, setIsLoading, fetchData }: Cr
   };
 
   const onSubmit = async (data: CreateCourseSchema) => {
-    if (!data.video) {
-      toast.error("Tạo bài học thất bại, vui lòng thử lại sau")
-      return
-    }
 
-    const dataUpload = await uploadVideo(data.video[0])
-    if (dataUpload === null) {
-      toast.error("Tạo khóa học thất bại, vui lòng thử lại sau")
-      return
-    }
-
-
-    const dataFormmatted: CreateCourseRequest = {
-      name: data.name,
-      detail: data.detail || "",
-      categoryId: data.categoryId,
-      price: Number(data.price), // Chuyển đổi giá sang số
-      imageUrl: data.image ? "https://files.fullstack.edu.vn/f8-prod/courses/13/13.png" : "", // Sau nay sẽ upload lên server
-      videoUrl: dataUpload, // Sau nay sẽ upload lên server
-    }
-
-    console.log("Data to submit:", dataFormmatted)
     startTransition(async () => {
+
+      if (!data.video) {
+        toast.error("Tạo bài học thất bại, vui lòng thử lại sau")
+        return
+      }
+
+      const dataUpload = await uploadVideo(data.video[0])
+      if (dataUpload === null) {
+        toast.error("Tạo khóa học thất bại, vui lòng thử lại sau")
+        return
+      }
+
+
+      const dataFormmatted: CreateCourseRequest = {
+        name: data.name,
+        detail: data.detail || "",
+        categoryId: data.categoryId,
+        price: Number(data.price), // Chuyển đổi giá sang số
+        imageUrl: data.image ? "https://files.fullstack.edu.vn/f8-prod/courses/13/13.png" : "", // Sau nay sẽ upload lên server
+        videoUrl: dataUpload, // Sau nay sẽ upload lên server
+      }
+
+      console.log("Data to submit:", dataFormmatted)
+
       const res = await FetchServerPostApi(API.COURSE.ROOT, dataFormmatted, "/admin/course")
       if (res.status === 200) {
         fetchData()

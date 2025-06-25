@@ -73,23 +73,27 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
 
   const onSubmit = async (input: UpdateCourseSchema) => {
 
-    if (input.video && input.video.length > 0) {
-      const videourl = await uploadVideo(input.video[0])
-      urlVideo.current = videourl
-    }
 
-    const dataFormatted: UpdateCourseRequest = {
-      name: input.name,
-      detail: input.detail ?? "",
-      categoryId: input.categoryId,
-      price: Number(input.price), // Convert formatted price to number
-      imageUrl: input.image ? "update url image" : course.imageUrl,
-      videoUrl: urlVideo.current,
-      status: input.status as "active" | "inactive",
-    }
-    console.log(dataFormatted)
 
     startUpdateTransition(async () => {
+      
+      if (input.video && input.video.length > 0) {
+        const videourl = await uploadVideo(input.video[0])
+        urlVideo.current = videourl
+      }
+
+      const dataFormatted: UpdateCourseRequest = {
+        name: input.name,
+        detail: input.detail ?? "",
+        categoryId: input.categoryId,
+        price: Number(input.price), // Convert formatted price to number
+        imageUrl: input.image ? "update url image" : course.imageUrl,
+        videoUrl: urlVideo.current,
+        status: input.status as "active" | "inactive",
+      }
+      console.log(dataFormatted)
+
+
       const res = await FetchServerPutApi(
         `${API.COURSE.ROOT}/${course.id}`, dataFormatted)
       if (res.status === 200) {

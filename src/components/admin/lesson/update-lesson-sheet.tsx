@@ -72,25 +72,26 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, ...props }:
   const onSubmit = async (input: UpdateLessonSchema) => {
 
 
-
-    if (input.video && input.video.length > 0) {
-      const videourl = await uploadVideo(input.video[0])
-      urlVideo.current = videourl
-    }
-
-    const updateData: UpdateLessonRequest = {
-      lessonNumber: Number(input.lessonNumber),
-      name: input.name,
-      detail: input.detail || "",
-      videoUrl: urlVideo.current, // sau này sẽ upload video lên server
-      documentUrl: input.document ? "https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf" : lesson.documentUrl,
-      assignmentUrl: input.assignment ? "https://example.com/assignment1.docx" : lesson.assigmentUrl,
-      duration: Math.floor(videoRef?.current?.duration || lesson.duration),  // Lấy thời lượng video nếu có;
-      status: input.status
-    }
-    console.log(JSON.parse(JSON.stringify(updateData)))
-    console.log(`${API.LESSON.ROOT}/${lesson.id}`)
     startUpdateTransition(async () => {
+
+      if (input.video && input.video.length > 0) {
+        const videourl = await uploadVideo(input.video[0])
+        urlVideo.current = videourl
+      }
+
+      const updateData: UpdateLessonRequest = {
+        lessonNumber: Number(input.lessonNumber),
+        name: input.name,
+        detail: input.detail || "",
+        videoUrl: urlVideo.current, // sau này sẽ upload video lên server
+        documentUrl: input.document ? "https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf" : lesson.documentUrl,
+        assignmentUrl: input.assignment ? "https://example.com/assignment1.docx" : lesson.assigmentUrl,
+        duration: Math.floor(videoRef?.current?.duration || lesson.duration),  // Lấy thời lượng video nếu có;
+        status: input.status
+      }
+      console.log(JSON.parse(JSON.stringify(updateData)))
+      console.log(`${API.LESSON.ROOT}/${lesson.id}`)
+
       const res = await FetchServerPutApi(
         `${API.LESSON.ROOT}/${lesson.id}`, updateData)
       if (res.status === 200) {
@@ -222,7 +223,7 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, ...props }:
                       />
 
                     </>)}
-                    
+
                     <FormMessage />
                   </FormItem>
                 )}
