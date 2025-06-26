@@ -1,4 +1,5 @@
 // src/components/client/profile/CourseCard.tsx
+import { randomQueryString } from '@/utils/random_query';
 import Link from 'next/link';
 import React from 'react';
 
@@ -26,7 +27,7 @@ const CourseCard: React.FC<CourseCardProps> = React.memo(({ course, isProgress }
   };
 
   return (
-    <Link href={`/course/${course.id}`}>
+    <Link href={`/course/${course.id}?${randomQueryString()}`}>
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer">
         <div className="aspect-video bg-gray-200 overflow-hidden">
           <img

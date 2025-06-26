@@ -73,10 +73,8 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
 
   const onSubmit = async (input: UpdateCourseSchema) => {
 
-
-
     startUpdateTransition(async () => {
-      
+
       if (input.video && input.video.length > 0) {
         const videourl = await uploadVideo(input.video[0])
         urlVideo.current = videourl

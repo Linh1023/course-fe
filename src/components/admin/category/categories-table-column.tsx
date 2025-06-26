@@ -22,7 +22,7 @@ import { toast } from "sonner"
 
 interface getColumnsProps {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
-   fetchData: () => Promise<void>
+  fetchData: () => Promise<void>
 }
 
 export function getColumns({ setIsLoading, fetchData }: getColumnsProps): ColumnDef<Category>[] {
