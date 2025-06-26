@@ -125,7 +125,6 @@ export const FetchServerGetApiNoToken = async (api: string) => {
   try {
     const res = await fetch(api, {
       method: "GET", // Đúng phương thức
-      cache: "no-store", // Không sử dụng cache
       headers: {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json", // Đặt Content-Type là JSON
