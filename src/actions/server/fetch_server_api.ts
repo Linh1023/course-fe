@@ -130,6 +130,7 @@ export const FetchServerGetApiNoToken = async (api: string) => {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json", // Đặt Content-Type là JSON
       },
+      cache: 'no-store',
     });
 
     const data = await res.json();
@@ -153,7 +154,6 @@ export const FetchServerGetApiRangeNoToken = async (api: string, range:any) => {
   } catch (error) {
   }
 }
-
 
 // Ham fetch get api khi can access token tu dong
 export const FetchServerGetApi = async (api: string, path = "") => {
@@ -359,6 +359,7 @@ export const serverGetApi = async (api: string) => {
         "Content-Type": "application/json", // Đặt Content-Type là JSON
         Authorization: `Bearer ${await getToken("access_token")}`, // Set Authorization header
       },
+      cache: 'no-store',
     });
 
     const data = await res.json();

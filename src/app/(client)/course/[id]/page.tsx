@@ -1,12 +1,13 @@
 "use server"
 
-import { FetchServerGetApiNoToken } from "@/actions/server/fetch_server_api"
+import { FetchServerGetApi, FetchServerGetApiNoToken } from "@/actions/server/fetch_server_api"
 import API from "@/api/api"
 import CourseInfoSection from "@/components/client/course/course_info"
 import CourseInfoSkeleton from "@/components/client/course/course_info_skeleton"
 import CourseSidebarSection from "@/components/client/course/course_sidebar"
 import SidebarSkeleton from "@/components/client/course/sidebar_skeleton"
 import MyConnect from "@/components/client/share/MyConnect"
+import { randomQueryString } from "@/utils/random_query"
 import { redirect } from "next/navigation"
 
 interface CoursePageProps {

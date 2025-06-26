@@ -82,7 +82,7 @@ export function UsersTable() {
 
 
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo(() => getColumns(setIsLoading, fetchData), []);
+  const columns = React.useMemo(() => getColumns(setIsLoading, fetchData), [fetchData]);
 
   const filterFields: DataTableFilterField<User>[] = [
     {

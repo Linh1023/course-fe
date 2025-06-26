@@ -66,7 +66,7 @@ export const authentication = async (req: NextRequest): Promise<AuthResult> => {
     const refreshToken = req.cookies.get("refresh_token")?.value;
 
 
-    console.log("vao day ne 1")
+ 
     const accessTokenRequest: AccessTokenRequest = {
         accessToken: accessToken
     }
@@ -84,16 +84,16 @@ export const authentication = async (req: NextRequest): Promise<AuthResult> => {
             response: null
         };
     }
-    console.log("vao day ne 2")
+
     // neu access token khong co va co refreshToken 
     if (accessToken === undefined) {
-        console.log("vao day ne 1 hehehehe")
+  
         // xin cap lai access token
         return refreshTokenInMiddleware(refreshTokenRequest)
     }
     // truong hop co access token
     else if (accessToken != undefined) {
-        console.log("vao day ne 3")
+   
         // kiem tra accessToken co hop le khong
         const data: AuthenticationResponse | null = await introspectAccessTokenInMiddleware(accessTokenRequest)
         // accessToken khong hop le thi xin cap lai refresh token
@@ -115,12 +115,6 @@ export const authentication = async (req: NextRequest): Promise<AuthResult> => {
         }
         // accessToken hop le 
         else {
-            console.log("vao day ne 4", {
-
-                isAuthentication: true,
-                role: data.role,
-                response: null
-            })
             return {
                 isAuthentication: true,
                 role: data.role,

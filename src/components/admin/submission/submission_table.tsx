@@ -85,7 +85,7 @@ export function SubmissionTable() {
 
 
   // cái này là từng dòng dữ liệu của bảng kể cả header
-  const columns = React.useMemo(() => getSubmissionColumns(setIsLoading, fetchData), [])
+  const columns = React.useMemo(() => getSubmissionColumns(setIsLoading, fetchData), [fetchData])
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.

@@ -74,17 +74,14 @@ export function CreateCourseDialog({ listCategory, setIsLoading, fetchData }: Cr
 
     startTransition(async () => {
 
-      if (!data.video) {
-        toast.error("Tạo bài học thất bại, vui lòng thử lại sau")
-        return
+      let dataUpload = null
+      if (data.video) {
+        dataUpload = await uploadVideo(data.video[0])
+        if (dataUpload === null) {
+          toast.error("Tạo khóa học thất bại, vui lòng thử lại sau")
+          return
+        }
       }
-
-      const dataUpload = await uploadVideo(data.video[0])
-      if (dataUpload === null) {
-        toast.error("Tạo khóa học thất bại, vui lòng thử lại sau")
-        return
-      }
-
 
       const dataFormmatted: CreateCourseRequest = {
         name: data.name,
