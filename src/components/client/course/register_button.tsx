@@ -5,6 +5,8 @@ import { LoaderIcon } from "@/components/share/loading-icon";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCurrentAccountContext } from "@/context/current_account_context";
+import { set, setQuarter } from "date-fns";
+import { Facebook } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -21,6 +23,7 @@ export const RegisterButton = ({ setOpen, courseId }: RegisterButtonProps) => {
 
   useEffect(() => {
     const fetchRegistration = async () => {
+      setIsFetching(true);
       if (!currentAccount) {
         setIsFetching(false);
         return;
@@ -85,12 +88,66 @@ export const RegisterButton = ({ setOpen, courseId }: RegisterButtonProps) => {
         <Button disabled className="w-full bg-gray-300 text-gray-600 cursor-not-allowed">
           Đã đăng ký (chờ xác nhận)
         </Button>
-        <Button className="w-full bg-blue-100 text-blue-700 hover:bg-blue-200" onClick={() => {
-          window.open("https://www.facebook.com/tran.cuong.737360", "_blank");
-        }}>Liên hệ để thanh toán</Button>
+
         <Button className="bg-[#FE4444] hover:bg-[#F87171] w-full" onClick={handleCancelRegisterCourse} disabled={cancelLoading || loading}>
           {cancelLoading ? <div className="flex items-center gap-2"><LoaderIcon className="mr-1.5 size-4 animate-spin"
             aria-hidden="true" /> Đang hủy đăng ký...</div> : "Hủy đăng ký"}</Button>
+        <span>Liên hệ để thanh toán</span>
+        <div className="flex w-full justify-center items-center gap-4">
+          <div className="group">
+            <a
+              href="https://www.facebook.com/tran.cuong.737360"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center p-3 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            >
+              <Facebook className="w-10 h-10 text-white" />
+            </a>
+          </div>
+          <div className="group">
+            <a
+              href="https://zalo.me/0865275183"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-16 h-16 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            >
+              <span className="text-white font-bold text-xl">Zalo</span>
+            </a>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  if (registration?.status === "inactive") {
+    return (
+      <>
+        <Button disabled className="w-full bg-gray-300 text-gray-600 cursor-not-allowed">
+          Đã bị từ chối đăng ký
+        </Button>
+        <span>Liên hệ để biết thêm thông tin</span>
+        <div className="flex w-full justify-center items-center gap-4">
+          <div className="group">
+            <a
+              href="https://www.facebook.com/tran.cuong.737360"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center p-3 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            >
+              <Facebook className="w-10 h-10 text-white" />
+            </a>
+          </div>
+          <div className="group">
+            <a
+              href="https://zalo.me/0865275183"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-16 h-16 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            >
+              <span className="text-white font-bold text-xl">Zalo</span>
+            </a>
+          </div>
+        </div>
       </>
     )
   }

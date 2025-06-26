@@ -6,7 +6,7 @@ export const createCourseSchema = z.object({
     .trim()
     .min(1, "Tên khóa học không được để trống")
     .max(255, "Tên khóa học không được quá 255 ký tự"),
-  categoryId: z.string().uuid("Danh mục là bắt buộc"),
+  categoryId: z.string().default(""),
   price: z
     .string()
     .transform((val) => {
@@ -25,7 +25,7 @@ export const createCourseSchema = z.object({
     .custom<FileList>()
     .refine((files) => files?.length === 1, "Vui lòng chọn 1 video")
     .refine((files) => files &&
-      files.length === 1 && ["video/mp4"].includes(files[0]?.type), "Chỉ cho phép video MP4").optional(),
+      files.length === 1 && ["video/mp4"].includes(files[0]?.type), "Chỉ cho phép video MP4"),
 });
 
 export type CreateCourseSchema = z.input<typeof createCourseSchema>
@@ -36,7 +36,7 @@ export const updateCourseSchema = z.object({
     .trim()
     .min(1, "Tên khóa học không được để trống")
     .max(255, "Tên khóa học không được quá 255 ký tự"),
-  categoryId: z.string().uuid("Danh mục là bắt buộc"),
+  categoryId: z.string().default(""),
   price: z
     .string()
     .transform((val) => {

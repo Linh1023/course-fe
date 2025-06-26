@@ -7,8 +7,8 @@ import React from "react"
 
 
 const CoursePage = async () => {
-  
-  const categoryPromise = FetchServerGetApi(API.CATEGORY.ROOT + `?status=active`, "/admin/course");
+
+  const categoryPromise = FetchServerGetApi(API.CATEGORY.ROOT + `?status=active.inactive`, "/admin");
   return (
     <div className="flex flex-col gap-4">
       <div className="h-[100px] flex items-center justify-between gap-2">

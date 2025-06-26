@@ -14,7 +14,7 @@ const HomePage = async () => {
 
   let data_hot: CourseCardResponse[] = [];
   let data_newset: CourseCardResponse[] = [];
-  let data_my_lesson:CourseCardResponse[] = []
+  let data_my_lesson: CourseCardResponse[] = []
 
   if (res_hot && res_hot.status == 200) {
     data_hot = res_hot.result;
@@ -26,12 +26,12 @@ const HomePage = async () => {
   if (res_my_lesson && res_my_lesson.status == 200) {
     data_my_lesson = res_my_lesson.result;
   }
-  
+
 
   return (
     <>
       <HomeWrapper data_hot={data_hot} data_newest={data_newset}
-      data_my_lesson = {data_my_lesson}
+        data_my_lesson={data_my_lesson}
       />
       <MyConnect />
     </>
