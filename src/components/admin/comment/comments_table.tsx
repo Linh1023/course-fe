@@ -89,7 +89,7 @@ export function CommentsTable() {
 
 
   // Memoize the columns so they don't re-render on every render
-  const columns = useMemo(() => getCommentColumns(setIsLoading, fetchData), []);
+  const columns = useMemo(() => getCommentColumns(setIsLoading, fetchData), [fetchData]);
 
 
   /**

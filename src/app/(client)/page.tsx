@@ -4,7 +4,6 @@ import { FetchServerGetApi, FetchServerGetApiNoRediect, FetchServerGetApiNoToken
 import API from "@/api/api";
 import HomeWrapper from "@/components/client/home/home_wrapper";
 import MyConnect from "@/components/client/share/MyConnect";
-import { console } from "node:inspector";
 
 const HomePage = async () => {
   const res_hot = await FetchServerGetApiNoToken(API.COURSE.COURSE_FILTER + "?sort=hot&page=1&size=4");
@@ -14,7 +13,10 @@ const HomePage = async () => {
 
   let data_hot: CourseCardResponse[] = [];
   let data_newset: CourseCardResponse[] = [];
-  let data_my_lesson:CourseCardResponse[] = []
+  let data_my_lesson: CourseCardResponse[] = []
+
+
+
 
   if (res_hot && res_hot.status == 200) {
     data_hot = res_hot.result;
@@ -26,12 +28,13 @@ const HomePage = async () => {
   if (res_my_lesson && res_my_lesson.status == 200) {
     data_my_lesson = res_my_lesson.result;
   }
-  
+
+
 
   return (
     <>
       <HomeWrapper data_hot={data_hot} data_newest={data_newset}
-      data_my_lesson = {data_my_lesson}
+        data_my_lesson={data_my_lesson}
       />
       <MyConnect />
     </>
