@@ -42,7 +42,7 @@ interface UpdateCategorySheetProps
 }
 
 export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoading, ...props }: UpdateCategorySheetProps) {
-  const [previewImage, setPreviewImage] = React.useState<string | null>(null)
+  const [previewImage, setPreviewImage] = React.useState<string | null>(`${API.IMAGE.VIEW}/${course.imageUrl}`)
   const [previewVideo, setPreviewVideo] = React.useState<string | null>(null)
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
   const form = useForm<UpdateCourseSchema>({
@@ -59,11 +59,24 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
   })
 
   const urlVideo = React.useRef(course.videoUrl)
+    const urlImage = React.useRef(course.imageUrl)
   const uploadVideo = async (file: any) => {
     const formData = new FormData();
     formData.append("file", file); // key phải đúng là "file"
 
     const res = await FetchServerPostApiNoJsonBody(API.VIDEO.UP_LOAD, formData)
+    if (res && res.status === 200) {
+      return res.result
+    } else {
+      return null
+    }
+  };
+
+  const uploadImage = async (file: any) => {
+    const formData = new FormData();
+    formData.append("file", file); // key phải đúng là "file"
+
+    const res = await FetchServerPostApiNoJsonBody(API.IMAGE.UP_LOAD, formData)
     if (res && res.status === 200) {
       return res.result
     } else {
@@ -80,12 +93,23 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
         urlVideo.current = videourl
       }
 
+      if (input.image && input.image[0]) {
+        const dataImage = await uploadImage(input.image[0])
+        if (dataImage === null) {
+          toast.error("Tạo khóa học thất bại, vui lòng thử lại sau")
+          return
+        }
+       urlImage.current = dataImage
+      } 
+
+
+
       const dataFormatted: UpdateCourseRequest = {
         name: input.name,
         detail: input.detail ?? "",
         categoryId: input.categoryId || "",
         price: Number(input.price), // Convert formatted price to number
-        imageUrl: input.image ? "update url image" : course.imageUrl,
+        imageUrl:  urlImage.current,
         videoUrl: urlVideo.current,
         status: input.status as "active" | "inactive",
       }
@@ -122,7 +146,7 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
 
   React.useEffect(() => {
     if (course.imageUrl) {
-      setPreviewImage(course.imageUrl)
+      setPreviewImage(`${API.IMAGE.VIEW}/${course.imageUrl}`)
     }
     if (course.videoUrl) {
       setPreviewVideo(course.videoUrl)

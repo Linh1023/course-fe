@@ -61,6 +61,7 @@ import { LoaderIcon } from "@/components/share/loading-icon";
 import { useQuerySearchClientContext } from "@/context/query_search_client_context";
 import { updateQueryStringManually } from "@/utils/handle_query";
 import { FetchClientGetApiNoToken } from "@/actions/client/fetch_client_api";
+import nProgress from "nprogress";
 type CourseType = {
   id: string;
   name: string;
@@ -202,7 +203,7 @@ const Navigation = () => {
           setQuerySearch(newQuerySearch)
         }
       } else {
-
+     
 
         const newQuerySearch = `keyword=${keyword.trim()}&page=1&size=12`
         if (newQuerySearch != querySearch) {
@@ -210,7 +211,7 @@ const Navigation = () => {
         }
         params.set("keyword", keyword.trim());
         params.set("page", "1");
-        startLoadingSpiner();
+         nProgress.start()
         console.log("hihi", `/search?${params.toString()}`)
         router.push(`/search?${params.toString()}`);
 
