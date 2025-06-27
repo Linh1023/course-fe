@@ -55,22 +55,34 @@ export function getColumns(): ColumnDef<CourseEnrollmentAdmin>[] {
         <DataTableColumnHeader column={column} title="Tên học viên" />
       ),
       cell: ({ row }) => (
-        <span className="max-w-[10rem] truncate font-medium">
-          {row.getValue("accountName")}
-        </span>
+        <a
+          className="hover:underline"
+          href={`/admin/user/${row.getValue("accountId")}`}
+        >
+          <span className="max-w-[10rem] truncate font-medium">
+            {row.getValue("accountName")}
+          </span>
+        </a>
       ),
     },
+    { accessorKey: "accountId", header: () => null, cell: () => null },
     {
       accessorKey: "courseName",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Tên khóa học" />
       ),
       cell: ({ row }) => (
-        <span className="max-w-[10rem] truncate font-medium">
-          {row.getValue("courseName")}
-        </span>
+        <a
+          className="hover:underline"
+          href={`/admin/course/${row.getValue("courseId")}`}
+        >
+          <span className="max-w-[10rem] truncate font-medium">
+            {row.getValue("courseName")}
+          </span>
+        </a>
       ),
     },
+    { accessorKey: "courseId", header: () => null, cell: () => null },
     {
       accessorKey: "status",
       header: ({ column }) => (
@@ -92,6 +104,23 @@ export function getColumns(): ColumnDef<CourseEnrollmentAdmin>[] {
           </div>
         );
       },
+    },
+    {
+      accessorKey: "enrolledAt",
+      header: () => "Ngày đăng ký",
+      cell: ({ row }) => 
+          <div className="flex space-x-2">
+            <span className="max-w-[10rem] truncate font-medium">
+              {new Date(row.getValue("enrolledAt")).toLocaleDateString("vi-VN", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
+          </div>
+        
     },
     {
       id: "actions",

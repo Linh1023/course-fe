@@ -61,9 +61,9 @@ export function CourseTrailerDialog({ course }: CourseTrailerDialogProps) {
             {course?.name}
           </DialogDescription>
         </DialogHeader>
-        <div className="mt-2 w-full rounded shadow">
+        <div className="mt-2 w-full max-h-[70vh] rounded shadow">
           <TrailerPlayer
-            fileName={course?.videoUrl ??  ""}
+            fileName={course?.videoUrl ?? ""}
           />
         </div>
       </DialogContent>

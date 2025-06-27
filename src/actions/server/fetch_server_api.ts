@@ -127,12 +127,13 @@ export const FetchServerGetApiNoToken = async (api: string) => {
       method: "GET", // Đúng phương thức
       headers: {
         Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json", // Đặt Content-Type là JSON
+        "Content-Type": "application/json", 
       },
       cache: 'no-store',
     });
 
     const data = await res.json();
+    
     return data;
   } catch (error) {
   }

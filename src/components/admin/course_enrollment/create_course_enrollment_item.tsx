@@ -78,7 +78,7 @@ export function CreateCourseEnrollmentItem({
       />
       <div className="absolute z-[10000] w-full">
         {showSuggestions && results.length > 0 && (
-          <ul className="mt-1 max-h-60 overflow-y-auto rounded-md border bg-white shadow">
+          <ul className="mt-1 max-h-60 overflow-y-auto rounded-md border bg-white dark:bg-black  shadow">
             {results.map((item) => (
               <li
                 key={item.id}
@@ -87,7 +87,7 @@ export function CreateCourseEnrollmentItem({
                   setQuery(item[displayField]);
                   setShowSuggestions(false);
                 }}
-                className="cursor-pointer px-3 py-2 hover:bg-gray-100"
+                className="cursor-pointer px-3 py-2 hover:bg-gray-100 dark:hover:bg-slate-600"
               >
                 {item[displayField]}
               </li>
