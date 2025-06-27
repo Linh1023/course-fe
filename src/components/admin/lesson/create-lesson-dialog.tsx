@@ -59,6 +59,19 @@ export function CreateLessonDialog({ chapterId, setIsLoading, fetchData }: Creat
 
   };
 
+  const uploadDocuments = async (file: any) => {
+    const formData = new FormData();
+    formData.append("file", file); // key phải đúng là "file"
+
+
+    const res = await FetchServerPostApiNoJsonBody(API.DOCUMENT.UP_LOAD, formData)
+    if (res && res.status === 200) {
+      return res.result
+    } else {
+      return null
+    }
+  }
+
 
 
   const onSubmit = async (data: CreateLessonSchema) => {
@@ -72,13 +85,32 @@ export function CreateLessonDialog({ chapterId, setIsLoading, fetchData }: Creat
         return
       }
 
+      let dataDocument = null
+      if (data.document && data.document[0]) {
+        dataDocument = await uploadDocuments(data.document[0])
+        if (dataDocument === null) {
+          toast.error("Tạo bài học thất bại, vui lòng thử lại sau")
+          return
+        }
+      }
+
+
+     let dataAssignment= null
+      if (data.assignment && data.assignment[0]) {
+        dataAssignment = await uploadDocuments(data.assignment[0])
+        if (dataAssignment === null) {
+          toast.error("Tạo bài học thất bại, vui lòng thử lại sau")
+          return
+        }
+      }
+
       const createData: CreateLessonRequest = {
         lessonNumber: Number(data.lessonNumber),
         name: data.name,
         detail: data.detail || "",
         videoUrl: dataUpload, // sau này sẽ upload video lên server
-        documentUrl: data.document ? "https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf" : "",
-        assignmentUrl: data.assignment ? "https://example.com/assignment1.docx" : "",
+        documentUrl: dataDocument,
+        assignmentUrl: dataAssignment,
         duration: Math.round(videoRef?.current?.duration || 0),  // Lấy thời lượng video nếu có;
         chapterId: chapterId,
       }

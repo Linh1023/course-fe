@@ -9,6 +9,7 @@ interface CourseListProps {
   layout?: 'grid' | 'list'
   seeMoreLink?: string
   isProgress?: boolean
+  
 }
 
 const CourseList: React.FC<CourseListProps> = ({

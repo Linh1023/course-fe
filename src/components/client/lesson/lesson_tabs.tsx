@@ -1,5 +1,5 @@
 "use client"
-import { FetchServerPostApi } from "@/actions/server/fetch_server_api"
+import { FetchServerGetApi, FetchServerGetApiBlob, FetchServerPostApi, FetchServerPostApiNoJsonBody } from "@/actions/server/fetch_server_api"
 import API from "@/api/api"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,6 +14,9 @@ import { usePathname } from "next/navigation"
 import { useSubmittedClientContext } from "@/context/submitted_client_context"
 import CommentLessonSection from "./comment_lesson_section"
 import { LoaderIcon } from "@/components/share/loading-icon"
+import { UploadedFilePreview } from "@/components/share/upload-file-preview"
+import { FetchClientGetApiBlob } from "@/actions/client/fetch_client_api"
+import { getMimeType } from "@/utils/getMimeType"
 interface Props {
     lessonResponse: LessonClientDetailResponse
 
@@ -28,6 +31,11 @@ const LessonTabs = (props: Props) => {
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [isLoadingSubmitted, setIsLoadingSubmitted] = useState(false)
 
+    const [assigmentBlob, setAssigmentBlob] = useState<any>("")
+    const [submissionBlob, setSubmssionBlob] = useState<any>("")
+
+
+    const [submissionName, setSubmissionName] = useState<any>(lessonResponse.submissionUrl)
 
     const pathName = usePathname()
     const parts = pathName.split('/');
@@ -51,19 +59,82 @@ const LessonTabs = (props: Props) => {
     }, [])
 
 
+
+    useEffect(() => {
+        const fetch = async () => {
+            console.log("lay bai tap ne")
+            const res = await FetchClientGetApiBlob(`${API.DOCUMENT.DOWNLOAD}/${encodeURIComponent(lessonResponse.assignmentUrl)}`)
+            if (res) {
+                const mimeType = getMimeType(lessonResponse.assignmentUrl);
+                const blob = new Blob([res], { type: mimeType });
+                const objectUrl = await URL.createObjectURL(blob); // 👈 tạo URL thực từ Blob
+                setAssigmentBlob(objectUrl)
+            }
+        }
+
+        if (lessonResponse.assignmentUrl) {
+            fetch()
+        }
+
+    }, [])
+
+
+
+
+    useEffect(() => {
+
+        if (lessonResponse.assignmentUrl  && lessonResponse.submissionUrl) {
+            fetch(lessonResponse.submissionUrl)
+        }
+
+    }, [])
+
+    const fetch = async (name: string) => {
+          console.log("lay bai lam ne")
+        const res = await FetchClientGetApiBlob(`${API.DOCUMENT.DOWNLOAD}/${encodeURIComponent(name)}`)
+        if (res) {
+            const mimeType = getMimeType(name);
+            const blob = new Blob([res], { type: mimeType });
+            const objectUrl = URL.createObjectURL(blob);
+            setSubmssionBlob(objectUrl);
+        }
+    }
+
+    const uploadDocuments = async (file: any) => {
+        const formData = new FormData();
+        formData.append("file", file); // key phải đúng là "file"
+
+
+        const res = await FetchServerPostApiNoJsonBody(API.DOCUMENT.UP_LOAD, formData)
+        if (res && res.status === 200) {
+            return res.result
+        } else {
+            return null
+        }
+    }
+
     const handleSubmission = async () => {
         if (file) {
             setIsLoadingSubmitted(true)
+
+
+
+            const dataDocument = await uploadDocuments(file)
+            if (dataDocument === null) {
+                toast.error("Nộp bài thất bại vui lòng thử lại sau")
+                return
+            }
+            setSubmissionName(dataDocument)
             const req: SubmissionClientRequest = {
                 lessonId: lessonResponse.id,
-                submissionUrl: "https://url"
+                submissionUrl: dataDocument
             }
 
             const res = await FetchServerPostApi(API.SUBMISSON.SUBMISSION, req);
             if (res && res.status === 200) {
                 toast.success("Nộp bài thành công")
                 setIsSubmitted(true)
-
+                await fetch(dataDocument)
                 setSubmitted(prev =>
                     prev.includes(currentLessonId) ? prev : [...prev, currentLessonId]
                 );
@@ -152,7 +223,12 @@ const LessonTabs = (props: Props) => {
                         <span className="text-[16px] font-bold">Bài tập của bài học</span>
 
                         <div className="mt-[10px]">
-                            <span>{lessonResponse.assignmentUrl}</span> <br />
+                            {/* <span>{lessonResponse.assignmentUrl}</span> <br /> */}
+
+                            <UploadedFilePreview
+                                fileUrl={assigmentBlob}
+                                fileName={lessonResponse.assignmentUrl}
+                            />
                         </div>
                     </div>
 
@@ -162,18 +238,25 @@ const LessonTabs = (props: Props) => {
                         <span className="text-[16px] font-bold">Nộp bài tập</span>
                     </div>
 
-                    <Input
-                        placeholder="Nộp bài tập" className="mt-[20px] h-[80px]" type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={(e) => { handleFileChange(e); }}
-                        disabled={isSubmitted === true || submitted.includes(currentLessonId)}
 
-                    />
-                    {(isSubmitted || submitted.includes(currentLessonId)) && (
+
+                    {(isSubmitted || submitted.includes(currentLessonId)) ? (
                         <>
+                            <UploadedFilePreview
+                                fileUrl={submissionBlob}
+                                fileName={submissionName}
+                            />
                             <span className="text-green-600 font-bold flex items-center"> <Check className="mr-[10px]" /> Đã nộp bài tập</span>
                         </>
-                    )}
+                    ) : (<>
+                        <Input
+                            placeholder="Nộp bài tập" className="mt-[20px] h-[80px]" type="file"
+                            accept=".pdf,.doc,.docx"
+                            onChange={(e) => { handleFileChange(e); }}
+
+
+                        />
+                    </>)}
 
                     {isEmptyInputSubmiss && (
                         <>

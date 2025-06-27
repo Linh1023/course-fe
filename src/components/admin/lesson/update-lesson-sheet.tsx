@@ -32,20 +32,26 @@ import { updateLessonSchema, UpdateLessonSchema } from "@/validation/lessonSchem
 import { UploadedFilePreview } from "@/components/share/upload-file-preview"
 import { getFileNameFromUrl } from "@/utils/url"
 import VideoPlayer from "@/components/client/video/video_player"
+import { getMimeType } from "@/utils/getMimeType"
+import { FetchClientGetApiBlob } from "@/actions/client/fetch_client_api"
 
 interface UpdateLessonSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
   lesson: Lesson
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   fetchData: () => void
+  open: boolean,
+  onOpenChange: (v: boolean) => void
 }
 
-export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, ...props }: UpdateLessonSheetProps) {
+export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, open, onOpenChange }: UpdateLessonSheetProps) {
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
   const [previewVideo, setPreviewVideo] = React.useState<string | null>(null)
   const [previewDocument, setPreviewDocument] = React.useState<{ url: string; name: string } | null>(null)
   const [previewAssignment, setPreviewAssignment] = React.useState<{ url: string; name: string } | null>(null)
   const urlVideo = React.useRef(lesson.videoUrl)
+  const [assigmentBlob, setAssigmentBlob] = React.useState<any>(null)
+
   const videoRef = React.useRef<HTMLVideoElement>(null)
   const form = useForm<UpdateLessonSchema>({
     resolver: zodResolver(updateLessonSchema),
@@ -69,8 +75,45 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, ...props }:
     }
   };
 
-  const onSubmit = async (input: UpdateLessonSchema) => {
 
+  const uploadDocuments = async (file: any) => {
+    const formData = new FormData();
+    formData.append("file", file); // key phải đúng là "file"
+
+
+    const res = await FetchServerPostApiNoJsonBody(API.DOCUMENT.UP_LOAD, formData)
+    if (res && res.status === 200) {
+      return res.result
+    } else {
+      return null
+    }
+  }
+
+
+  React.useEffect(() => {
+
+
+    const fetch = async () => {
+      try {
+         await FetchClientGetApiBlob(`${API.DOCUMENT.DOWNLOAD}/${encodeURIComponent(lesson.assignmentUrl)}`);
+     
+      } catch (e) {
+        console.error("Lỗi khi fetch assignment:", e);
+      }
+
+
+    }
+
+    if (open && lesson.assignmentUrl) {
+      console.log("lesson.assignmentUrl >>> ", lesson.assignmentUrl)
+      fetch()
+    }
+
+  }, [open])
+
+
+
+  const onSubmit = async (input: UpdateLessonSchema) => {
 
     startUpdateTransition(async () => {
 
@@ -79,13 +122,34 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, ...props }:
         urlVideo.current = videourl
       }
 
+
+      let dataDocument = null
+      if (input.document && input.document[0]) {
+        dataDocument = await uploadDocuments(input.document[0])
+        if (dataDocument === null) {
+          toast.error("Cập nhật bài học thất bại, vui lòng thử lại sau")
+          return
+        }
+      }
+
+
+      let dataAssignment = null
+      if (input.assignment && input.assignment[0]) {
+        dataAssignment = await uploadDocuments(input.assignment[0])
+        if (dataAssignment === null) {
+          toast.error("Cập nhật bài học thất bại, vui lòng thử lại sau")
+          return
+        }
+      }
+
+
       const updateData: UpdateLessonRequest = {
         lessonNumber: Number(input.lessonNumber),
         name: input.name,
         detail: input.detail || "",
         videoUrl: urlVideo.current, // sau này sẽ upload video lên server
-        documentUrl: input.document ? "https://www.antennahouse.com/hubfs/xsl-fo-sample/pdf/basic-link-1.pdf" : lesson.documentUrl,
-        assignmentUrl: input.assignment ? "https://example.com/assignment1.docx" : lesson.assigmentUrl,
+        documentUrl: dataDocument,
+        assignmentUrl: dataAssignment,
         duration: Math.floor(videoRef?.current?.duration || lesson.duration),  // Lấy thời lượng video nếu có;
         status: input.status
       }
@@ -97,7 +161,7 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, ...props }:
       if (res.status === 200) {
         fetchData()
         toast.success("Cập nhật thành công!")
-        props.onOpenChange?.(false)
+        onOpenChange(false)
         setIsLoading(true)
       }
       else {
@@ -136,7 +200,7 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, ...props }:
   }
 
   React.useEffect(() => {
-    if (!props.open) {
+    if (!open) {
       form.reset()
       setPreviewVideo(null)
       setPreviewDocument(null)
@@ -144,14 +208,14 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, ...props }:
     } else {
       setPreviewVideo(lesson.videoUrl)
       const documentFile = getFileNameFromUrl(lesson.documentUrl) || "";
-      const assignmentFile = getFileNameFromUrl(lesson.assigmentUrl) || "";
+      const assignmentFile = getFileNameFromUrl(lesson.assignmentUrl) || "";
       if (lesson.documentUrl) setPreviewDocument({ url: lesson.documentUrl, name: documentFile })
-      if (lesson.assigmentUrl) setPreviewAssignment({ url: lesson.assigmentUrl, name: assignmentFile })
+      if (lesson.assignmentUrl) setPreviewAssignment({ url: lesson.assignmentUrl, name: assignmentFile })
     }
-  }, [props.open])
+  }, [open])
 
   return (
-    <Sheet {...props}>
+    <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="flex flex-col gap-6 sm:max-w-md">
         <SheetHeader className="text-left">
           <SheetTitle>Cập nhật bài học</SheetTitle>
@@ -239,9 +303,12 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, ...props }:
                       accept=".pdf,.docx"
                       onChange={(e) => handleFileChange(e.target.files || undefined, "document")}
                     />
-                    {previewDocument && (
+                    {previewDocument ? (
                       <UploadedFilePreview fileUrl={previewDocument.url} fileName={previewDocument.name} />
-                    )}
+                    ) : (<>
+                      {/* <UploadedFilePreview fileUrl={assigmentBlob} fileName={dataAssignment.current} /> */}
+
+                    </>)}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -257,9 +324,12 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, ...props }:
                       accept=".pdf,.docx"
                       onChange={(e) => handleFileChange(e.target.files || undefined, "assignment")}
                     />
-                    {previewAssignment && (
+                    {previewAssignment ? (
                       <UploadedFilePreview fileUrl={previewAssignment.url} fileName={previewAssignment.name} />
-                    )}
+                    ) : (<>
+
+                      {/* <UploadedFilePreview fileUrl={assigmentBlob} fileName={lesson.assignmentUrl} />  */}
+                    </>)}
                     <FormMessage />
                   </FormItem>
                 )}
