@@ -70,6 +70,18 @@ export function CreateCourseDialog({ listCategory, setIsLoading, fetchData }: Cr
     }
   };
 
+  const uploadImage = async (file: any) => {
+    const formData = new FormData();
+    formData.append("file", file); // key phải đúng là "file"
+
+    const res = await FetchServerPostApiNoJsonBody(API.IMAGE.UP_LOAD, formData)
+    if (res && res.status === 200) {
+      return res.result
+    } else {
+      return null
+    }
+  };
+
   const onSubmit = async (data: CreateCourseSchema) => {
 
     startTransition(async () => {
@@ -83,12 +95,18 @@ export function CreateCourseDialog({ listCategory, setIsLoading, fetchData }: Cr
         }
       }
 
+      const dataImage = await uploadImage(data.image[0])
+      if (dataImage === null) {
+        toast.error("Tạo khóa học thất bại, vui lòng thử lại sau")
+        return
+      }
+
       const dataFormmatted: CreateCourseRequest = {
         name: data.name,
         detail: data.detail || "",
         categoryId: data.categoryId || "",
         price: Number(data.price), // Chuyển đổi giá sang số
-        imageUrl: data.image ? "https://files.fullstack.edu.vn/f8-prod/courses/13/13.png" : "", // Sau nay sẽ upload lên server
+        imageUrl: dataImage, // Sau nay sẽ upload lên server
         videoUrl: dataUpload, // Sau nay sẽ upload lên server
       }
       console.log(dataFormmatted, "dataFormmatted")

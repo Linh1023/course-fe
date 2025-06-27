@@ -83,7 +83,7 @@ const LessonTabs = (props: Props) => {
 
     useEffect(() => {
 
-        if (lessonResponse.assignmentUrl  && lessonResponse.submissionUrl) {
+        if ( lessonResponse.submissionUrl) {
             fetch(lessonResponse.submissionUrl)
         }
 

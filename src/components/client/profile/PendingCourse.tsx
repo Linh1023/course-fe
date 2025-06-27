@@ -38,8 +38,8 @@ const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
                 <p className="text-md text-red-500 font-bold truncate mb-2">
                     {course.price.toLocaleString('vi-VN')}đ
                 </p>
-                <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${course.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                    {course.status === 'active' ? 'Đang chờ duyệt' : course.status}
+                <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${course.status === 'pending' ? 'bg-green-100 text-green-800' : 'bg-red-400 text-white'}`}>
+                    {course.status === 'pending' ? 'Đang chờ duyệt' : 'Đã bị từ chối'}
                 </span>
             </div>
         </div>

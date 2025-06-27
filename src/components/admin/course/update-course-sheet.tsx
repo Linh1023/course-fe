@@ -42,7 +42,7 @@ interface UpdateCategorySheetProps
 }
 
 export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoading, ...props }: UpdateCategorySheetProps) {
-  const [previewImage, setPreviewImage] = React.useState<string | null>(null)
+  const [previewImage, setPreviewImage] = React.useState<string | null>(`${API.IMAGE.VIEW}/${course.imageUrl}`)
   const [previewVideo, setPreviewVideo] = React.useState<string | null>(null)
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
   const form = useForm<UpdateCourseSchema>({
@@ -122,7 +122,7 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
 
   React.useEffect(() => {
     if (course.imageUrl) {
-      setPreviewImage(course.imageUrl)
+      setPreviewImage(`${API.IMAGE.VIEW}/${course.imageUrl}`)
     }
     if (course.videoUrl) {
       setPreviewVideo(course.videoUrl)
@@ -229,7 +229,7 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
                         alt="Preview"
                         className="mt-2 w-40 rounded shadow"
                       />
-                    )}
+                    ) }
                     <FormMessage />
                   </FormItem>
                 )}

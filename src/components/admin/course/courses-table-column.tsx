@@ -19,6 +19,7 @@ import { toast } from "sonner"
 import { UpdateCourseSheet } from "./update-course-sheet"
 import { DeleteCoursesDialog } from "./delete-course-dialog"
 import Link from "next/link"
+import API from "@/api/api"
 
 interface getColumnsProps {
   listCategory: Category[]
@@ -60,7 +61,7 @@ export function getColumns({ listCategory, setIsLoading, fetchData }: getColumns
         return (
           <div className="flex space-x-2">
             <span className="max-w-[5rem]">
-              <img src={row.getValue("imageUrl")} alt="" />
+              <img src={ `${API.IMAGE.VIEW}/${row.getValue("imageUrl")}` } alt="" />
             </span>
           </div>
         )

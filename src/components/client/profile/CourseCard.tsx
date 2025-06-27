@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import NProgress from 'nprogress'
+import API from '@/api/api';
 interface CourseCardProps {
   course: CourseCardResponse;
   isProgress?: boolean;
@@ -43,7 +44,7 @@ const CourseCard: React.FC<CourseCardProps> = React.memo(({ course, isProgress }
     >
       <div className="aspect-video bg-gray-200 overflow-hidden">
         <img
-          src={course.imageUrl || '/placeholder-course.jpg'}
+          src={`${API.IMAGE.VIEW}/${course.imageUrl}`}
           alt={course.name}
           className="w-full h-full object-cover"
         />

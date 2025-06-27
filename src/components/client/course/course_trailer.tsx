@@ -18,6 +18,7 @@ import { PlayCircleIcon } from "lucide-react"
 
 import { useEffect, useState } from "react"
 import TrailerPlayer from "../video/trailer_player"
+import API from "@/api/api"
 
 interface CourseTrailerDialogProps {
   course: CourseClientResponse | null
@@ -37,7 +38,7 @@ export function CourseTrailerDialog({ course }: CourseTrailerDialogProps) {
                   className="absolute inset-0 bg-cover bg-center"
                   style={{
                     backgroundImage:
-                      course ? `url("${course.imageUrl}")` : "https://files.fullstack.edu.vn/f8-prod/courses/21/63e1bcbaed1dd.png",
+                      course ? `url("${`${API.IMAGE.VIEW}/${course.imageUrl}`}")` : "https://files.fullstack.edu.vn/f8-prod/courses/21/63e1bcbaed1dd.png",
                   }}
                 />
 
