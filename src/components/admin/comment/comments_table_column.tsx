@@ -46,6 +46,7 @@ export function getCommentColumns(
       enableSorting: false,
       enableHiding: false,
     },
+    { accessorKey: "lessonId", header: () => <div className="p-0"></div>, cell: () => null },
     {
       accessorKey: "lessonName",
       header: ({ column }) => (
@@ -53,29 +54,37 @@ export function getCommentColumns(
       ),
       cell: ({ row }) => {
         return (
-          <div className="flex space-x-2">
+          <a
+          className="hover:underline"
+          href={`/admin/comment?lessonName=${row.getValue("lessonName")}`}
+        >
             <span className="max-w-[10rem] truncate font-medium">
               {row.getValue("lessonName")}
             </span>
-          </div>
+          </a>
         );
       },
     },
+    { accessorKey: "courseId", header: () => null, cell: () => null },
     {
       accessorKey: "authorName",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Tên học viên" />
+        <DataTableColumnHeader column={column} title="Tên người đăng" />
       ),
       cell: ({ row }) => {
         return (
-          <div className="flex space-x-2">
+          <a
+          className="hover:underline"
+          href={`/admin/user/${row.getValue("accountId")}`}
+        >
             <span className="max-w-[31.25rem] truncate font-medium">
               {row.getValue("authorName")}
             </span>
-          </div>
+          </a>
         );
       },
     },
+    { accessorKey: "authorId", header: () => null, cell: () => null },
     {
       accessorKey: "content",
       header: ({ column }) => (
