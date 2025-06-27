@@ -6,7 +6,7 @@ interface Lesson {
   videoUrl: string;
   duration: number;
   documentUrl: string;
-  assigmentUrl: string;
+  assignmentUrl: string;
   chapterId: number;
   status: "active" | "inactive";
 }

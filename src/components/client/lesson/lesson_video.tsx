@@ -16,8 +16,8 @@ const LessonVideo = (props: Props) => {
         <>
 
             <DropdownMenuSeparator className="mt-[10px] mb-[10px] bg-gray-200 h-[1px]" />
-            <div className="w-full h-[500px] border-[1px] border-gray-300 mt-[20px] mb-[10px]" >
-                <div className="w-full h-[497px]">
+            <div className="w-full h-[500px] border-[1px] border-gray-300 mt-[20px] mb-[10px] rounded-xl" >
+                <div className="w-full h-[490px]">
                     <VideoPlayer
                         fileName={lessonResponse.videoUrl}
                       

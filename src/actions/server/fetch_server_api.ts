@@ -180,6 +180,32 @@ export const FetchServerGetApi = async (api: string, path = "") => {
 }
 
 
+// Ham fetch get api khi can access token tu dong
+export const FetchServerGetApiBlob = async (api: string) => {
+  try {
+
+    const access_token = await getToken("access_token")
+
+    if (access_token === undefined) {
+      await refreshToken()
+    }
+
+    let data = await serverGetApiBlob(api);
+
+    if (!data) {
+      await refreshToken()
+      data = await serverGetApiBlob(api);
+    }
+
+   
+    return data;
+
+  } catch (error) {
+    redirect('/login');
+  }
+}
+
+
 export const FetchServerGetApiRange = async (api: string, range:any) => {
   try {
 
@@ -361,6 +387,26 @@ export const serverGetApi = async (api: string) => {
     });
 
     const data = await res.json();
+    return data;
+  } catch (error) {
+  }
+}
+
+// ham fetch get api mac dinh
+export const serverGetApiBlob = async (api: string) => {
+
+  try {
+    const res = await fetch(api, {
+      method: "GET", // Đúng phương thức
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json", // Đặt Content-Type là JSON
+        Authorization: `Bearer ${await getToken("access_token")}`, // Set Authorization header
+      },
+      cache: 'no-store',
+    });
+
+    const data = await res.blob();
     return data;
   } catch (error) {
   }

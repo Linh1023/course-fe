@@ -5,6 +5,7 @@ import CHAPTER_API from "./endpoints/chapter";
 import COMMENT_API from "./endpoints/comment";
 import COURSE_API from "./endpoints/course";
 import COURSE_ENROLLMENT_API from "./endpoints/course_enrollment";
+import DOCUMENT_API from "./endpoints/document";
 import LESSON_API from "./endpoints/lesson";
 import LESSON_PROGRESS_API from "./endpoints/lesson_progress";
 import PROFILE_API from "./endpoints/profile";
@@ -27,7 +28,8 @@ const API = {
   PROFILE:PROFILE_API,
   SUBMISSON:SUBMISSION_API,
   STATISTIC:STATISTIC_API,
-  VIDEO:VIDEO_API
+  VIDEO:VIDEO_API,
+  DOCUMENT:DOCUMENT_API,
 };
 
 export default API;

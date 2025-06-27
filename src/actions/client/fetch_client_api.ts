@@ -97,6 +97,28 @@ export const FetchClientGetApi = async (api: string) => {
     }
 }
 
+export const FetchClientGetApiBlob = async (api: string) => {
+    try {
+
+        const access_token = await getToken("access_token") 
+
+        if (access_token === undefined) {
+            await refreshToken()
+        }
+
+        let data = await clientGetApiBlob(api);
+
+        if (data ) {
+            await refreshToken()
+            data = await clientGetApiBlob(api);
+        }
+        return  data;
+
+    } catch (error) {
+        window.location.href = '/login';
+    }
+}
+
 
 
 // Ham fetch post tu dong
@@ -220,12 +242,33 @@ export const clientGetApi = async (api: string) => {
             method: "GET", // Đúng phương thức
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json", // Đặt Content-Type là JSON
                 Authorization: `Bearer ${await getToken("access_token")}`, // Set Authorization header
             },
         });
 
         const data = await res.json();
+        return data;
+    } catch (error) {
+    }
+}
+
+export const clientGetApiBlob = async (api: string) => {
+
+    try {
+        const res = await fetch(api, {
+            method: "GET", // Đúng phương thức
+            headers: {
+                Accept: "*/*",
+ 
+                Authorization: `Bearer ${await getToken("access_token")}`, // Set Authorization header
+            },
+        });
+
+        if (!res.ok) {
+           return
+        } 
+
+        const data = await res.blob();
         return data;
     } catch (error) {
     }
