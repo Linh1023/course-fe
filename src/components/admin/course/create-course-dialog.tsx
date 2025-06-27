@@ -86,13 +86,12 @@ export function CreateCourseDialog({ listCategory, setIsLoading, fetchData }: Cr
       const dataFormmatted: CreateCourseRequest = {
         name: data.name,
         detail: data.detail || "",
-        categoryId: data.categoryId,
+        categoryId: data.categoryId || "",
         price: Number(data.price), // Chuyển đổi giá sang số
         imageUrl: data.image ? "https://files.fullstack.edu.vn/f8-prod/courses/13/13.png" : "", // Sau nay sẽ upload lên server
         videoUrl: dataUpload, // Sau nay sẽ upload lên server
       }
-
-      console.log("Data to submit:", dataFormmatted)
+      console.log(dataFormmatted, "dataFormmatted")
 
       const res = await FetchServerPostApi(API.COURSE.ROOT, dataFormmatted, "/admin/course")
       if (res.status === 200) {
@@ -175,7 +174,7 @@ export function CreateCourseDialog({ listCategory, setIsLoading, fetchData }: Cr
                       <SelectContent>
                         <SelectGroup>
                           {listCategory.map(cat => (
-                            <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                            <SelectItem key={cat.id} value={cat.id}>{`${cat.name} ${cat.status === "inactive" ? "(Không hoạt động)" : ""}`}</SelectItem>
                           ))}
                         </SelectGroup>
                       </SelectContent>

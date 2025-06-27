@@ -15,7 +15,6 @@ export default function TrailerPlayer({ fileName }: { fileName: string }) {
 
     return (
         <video ref={videoRef} controls className="w-full  h-full"
-
             controlsList="nodownload"
         />
     );

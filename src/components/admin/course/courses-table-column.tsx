@@ -23,9 +23,9 @@ import Link from "next/link"
 interface getColumnsProps {
   listCategory: Category[]
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
-   fetchData: () => Promise<void>
+  fetchData: () => Promise<void>
 }
-export function getColumns({ listCategory, setIsLoading,fetchData }: getColumnsProps): ColumnDef<Course>[] {
+export function getColumns({ listCategory, setIsLoading, fetchData }: getColumnsProps): ColumnDef<Course>[] {
   return [
     {
       id: "select",
@@ -50,6 +50,23 @@ export function getColumns({ listCategory, setIsLoading,fetchData }: getColumnsP
       ),
       enableSorting: false,
       enableHiding: false,
+    },
+    {
+      accessorKey: "imageUrl",
+      header: ({ column }) => (
+        <DataTableColumnHeader className="text-xs overflow-hidden" column={column} title="Ảnh khóa học" />
+      ),
+      cell: ({ row }) => {
+        return (
+          <div className="flex space-x-2">
+            <span className="max-w-[5rem]">
+              <img src={row.getValue("imageUrl")} alt="" />
+            </span>
+          </div>
+        )
+      },
+      enableHiding: false,
+      enableSorting: false,
     },
     {
       accessorKey: "name",
@@ -91,7 +108,7 @@ export function getColumns({ listCategory, setIsLoading,fetchData }: getColumnsP
         return (
           <div className="flex space-x-2">
             <span className="max-w-[10rem] truncate font-medium">
-              {category ? category.name : "Không có danh mục"}
+              {category ? `${category.name} ${category.status === "inactive" ? "(Không hoạt động)" : ""}` : "Không có danh mục"}
             </span>
           </div>
         )
@@ -151,7 +168,7 @@ export function getColumns({ listCategory, setIsLoading,fetchData }: getColumnsP
               onOpenChange={setShowUpdateCourseSheet}
               listCategory={listCategory}
               course={row.original}
-              fetchData = {fetchData}
+              fetchData={fetchData}
             />
             <DeleteCoursesDialog
               setIsLoading={setIsLoading}

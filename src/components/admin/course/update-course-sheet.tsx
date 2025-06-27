@@ -83,7 +83,7 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
       const dataFormatted: UpdateCourseRequest = {
         name: input.name,
         detail: input.detail ?? "",
-        categoryId: input.categoryId,
+        categoryId: input.categoryId || "",
         price: Number(input.price), // Convert formatted price to number
         imageUrl: input.image ? "update url image" : course.imageUrl,
         videoUrl: urlVideo.current,
@@ -179,7 +179,7 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
                       <SelectContent>
                         <SelectGroup>
                           {listCategory.map(cat => (
-                            <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                            <SelectItem key={cat.id} value={cat.id}>{`${cat.name} ${cat.status === "inactive" ? "(Không hoạt động)" : ""}`}</SelectItem>
                           ))}
                         </SelectGroup>
                       </SelectContent>
