@@ -1,4 +1,8 @@
+import { FetchClientGetApiBlob } from "@/actions/client/fetch_client_api"
+import API from "@/api/api"
+import { getMimeType } from "@/utils/getMimeType"
 import { FileTextIcon, FileIcon } from "lucide-react"
+import { toast } from "sonner"
 
 interface UploadedFilePreviewProps {
   fileUrl: string
@@ -6,6 +10,9 @@ interface UploadedFilePreviewProps {
 }
 
 export function UploadedFilePreview({ fileUrl, fileName }: UploadedFilePreviewProps) {
+  const isBlob = fileUrl.startsWith("blob:")
+  const fileExt = fileName?.split(".").pop() || ""
+
   const getIconByExtension = (ext: string) => {
     switch (ext.toLowerCase()) {
       case "pdf":
@@ -20,13 +27,44 @@ export function UploadedFilePreview({ fileUrl, fileName }: UploadedFilePreviewPr
     }
   }
 
-  const fileExt = fileName.split(".").pop() || ""
+  const handleClick = async (e: React.MouseEvent) => {
+    e.preventDefault()
+
+    if (isBlob) {
+      window.open(fileUrl, "_blank")
+      return
+    }
+
+    try {
+      const blob = await FetchClientGetApiBlob(`${API.DOCUMENT.DOWNLOAD}/${fileName != "" ? fileName : fileUrl}`);
+      if (!blob) {
+        toast.error("Không thể tải file. Vui lòng thử lại sau.")
+        return
+      }
+
+      const mimeType = getMimeType(fileExt)
+
+      if (mimeType === "application/pdf") {
+        const blobUrl = URL.createObjectURL(new Blob([blob], { type: mimeType }))
+        window.open(blobUrl, "_blank")
+      } else {
+        // Tải về
+        const blobUrl = URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = blobUrl
+        a.download = fileName
+        a.click()
+        URL.revokeObjectURL(blobUrl)
+      }
+    } catch (err) {
+      toast.error("Đã xảy ra lỗi khi tải file.")
+    }
+  }
 
   return (
     <a
       href={fileUrl}
-      target="_blank"
-      rel="noopener noreferrer"
+      onClick={handleClick}
       className="flex items-center gap-2 border p-2 rounded hover:bg-accent transition-colors"
     >
       {getIconByExtension(fileExt)}
