@@ -24,7 +24,7 @@ const CourseList: React.FC<CourseListProps> = ({
       ? 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'
       : 'flex flex-col gap-4'
   const { querySearch, setQuerySearch } = useQuerySearchClientContext()
-  // console.log('courses', courses)
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">

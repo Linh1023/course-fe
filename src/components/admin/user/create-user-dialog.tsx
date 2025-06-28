@@ -276,7 +276,7 @@ export function CreateUserDialog({ setIsLoading, fetchData }: CreateUserDialogPr
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="avatarUrl"
               render={({ field }) => (
@@ -293,7 +293,7 @@ export function CreateUserDialog({ setIsLoading, fetchData }: CreateUserDialogPr
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             <FormField
               control={form.control}
               name="birthday"

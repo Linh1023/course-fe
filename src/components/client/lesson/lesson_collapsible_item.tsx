@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { usePathname, useRouter } from "next/navigation"
 import { useLoadingContext } from "@/context/loading_context"
 import { formatTime } from "@/utils/format_time"
+import { randomQueryString } from "@/utils/random_query"
 interface Props {
     lessonSidebarResponse: LessonSidebarResponse
 
@@ -18,13 +19,13 @@ const LessonCollapsibleItem = (props: Props) => {
     const pathName = usePathname()
     const parts = pathName.split('/');
     const lessonId = parts[2];
-    // const handleLesson = () => {
-    //     startLoadingSpiner()
-    //     if (lessonId === lessonSidebarResponse.id) {
-    //         stopLoadingSpiner()
-    //     }
-    //     router.push(`/lesson/${lessonSidebarResponse.id}`)
-    // }
+    const handleLesson = () => {
+      
+        if (lessonId != lessonSidebarResponse.id) {
+            router.push(`/lesson/${lessonSidebarResponse.id}?${randomQueryString()}`)
+        }
+      
+    }
     return (
         <>
             <div className={`
@@ -36,7 +37,7 @@ const LessonCollapsibleItem = (props: Props) => {
                     : 'hover:bg-gradient-to-r hover:from-slate-50 hover:to-blue-50'
                 }
 `}
-                // onClick={() => { handleLesson() }}
+                onClick={() => { handleLesson() }}
             >
                 {/* Left side - Checkbox and lesson name */}
                 <div className="flex items-center flex-1 min-w-0">

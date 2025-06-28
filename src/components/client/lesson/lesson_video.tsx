@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu"
 import { BookCheck, Play } from "lucide-react"
 import VideoPlayer from "../video/video_player"
+import { formatTime } from "@/utils/format_time"
 interface Props {
     lessonResponse: LessonClientDetailResponse
 }
@@ -15,12 +16,12 @@ const LessonVideo = (props: Props) => {
     return (
         <>
 
-            <DropdownMenuSeparator className="mt-[10px] mb-[10px] bg-gray-200 h-[1px]" />
-            <div className="w-full h-[500px] border-[1px] border-gray-300 mt-[20px] mb-[10px] rounded-xl" >
-                <div className="w-full h-[490px]">
+            <DropdownMenuSeparator className=" bg-gray-200 h-[1px]" />
+            <div className="w-full h-[500px] video-div border-[1px] border-gray-300  mb-[10px] rounded-xl" >
+                <div className="w-full h-[490px] video-class">
                     <VideoPlayer
                         fileName={lessonResponse.videoUrl}
-                      
+
                     />
                 </div>
             </div>
@@ -45,10 +46,11 @@ const LessonVideo = (props: Props) => {
                                 </h2>
 
                                 {/* Lesson metadata */}
-                                <div className="flex items-center gap-4 text-sm text-gray-600">
+                                <div className="flex items-center gap-4 text-[15px] text-gray-600">
                                     <span className="flex items-center gap-1">
-                                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                        Video bài học
+                                        <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+                                        {formatTime(lessonResponse.duration
+                                        )}
                                     </span>
                                 </div>
                             </div>

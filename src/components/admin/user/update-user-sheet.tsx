@@ -239,7 +239,7 @@ export function UpdateUserSheet({ user,fetchData, setIsLoading, ...props }: Upda
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="avatarUrl"
               render={({ field }) => (
@@ -256,7 +256,7 @@ export function UpdateUserSheet({ user,fetchData, setIsLoading, ...props }: Upda
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             <FormField
               control={form.control}
               name="birthday"

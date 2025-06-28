@@ -67,7 +67,7 @@ const AccountCenter: React.FC<AccountCenterProps> = ({
   const [successMessage, setSuccessMessage] = useState<string | null>(null); // Thông báo thành công
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // Thông báo lỗi
 
-  console.log('Current Account', currentAccount);
+
 
   const securityItems = [
     {

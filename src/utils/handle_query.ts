@@ -1,9 +1,5 @@
 export function updateQueryStringManually(query: string, key: string, value?: string): string {
 
-  // console.log("query updateQueryStringManually>>> ", query)
-  // console.log("key updateQueryStringManually>>> ", key)
-  // console.log("value updateQueryStringManually>>> ", value)
-
   const pairs = query.split('&').filter(Boolean); // loại bỏ phần tử rỗng
   let updated = false;
 
