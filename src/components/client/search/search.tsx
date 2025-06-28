@@ -107,7 +107,7 @@ const Search = () => {
     const params = new URLSearchParams(querySearch);
     const keyword = params.get("keyword") ?? "";
     setnameSearch(keyword);
-    console.log("Keyword >>> ", keyword)
+
     const category = params.get("category") ?? "";
     setSelectedCategory(category);
     const sort = params.get("sort") ?? ""
@@ -137,8 +137,7 @@ const Search = () => {
         setResearch(submissions.result);
         setTotalPages(submissions.totalPages);
 
-        //  Chỉ chạy nếu không bị huỷ
-        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+     
         router.replace(`${pathName}?${querySearch}`, {
           scroll: false,
         });

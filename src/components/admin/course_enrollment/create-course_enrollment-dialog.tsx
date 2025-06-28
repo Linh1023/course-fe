@@ -58,7 +58,6 @@ export const CreateCourseEnrollmentDialog = ({
         API.COURSE_ENROLLMENT.CREATE_COURSE_ENROLLMENT,
         input
       ); // Updated to correct endpoint
-      
       if (res.status === 200) {
         fetchData();
         form.reset();

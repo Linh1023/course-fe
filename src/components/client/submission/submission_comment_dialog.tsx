@@ -57,7 +57,7 @@ export function SubmissionCommentDialog(props: DeleteSubmissionsDialogProps) {
                     </DialogHeader>
                 </div>
 
-                <div className="p-2 space-y-5">
+                <div className="p-2 space-y-2">
                     {/* Course and Lesson Info */}
                     <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
                         <div className="flex items-start gap-3">

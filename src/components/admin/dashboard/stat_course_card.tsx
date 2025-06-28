@@ -1,5 +1,6 @@
 "use client"
 
+import API from "@/api/api"
 import { useTheme } from "next-themes"
 
 interface Props {
@@ -16,7 +17,7 @@ const StatCourseCard = (props: Props) => {
             <div className="w-[90px] h-[60px] bg-blue-100 rounded-lg flex-shrink-0">
                 <img
                  className="w-full h-full object-cover"
-                src={course.imgUrl} 
+                src={  `${API.IMAGE.VIEW}/${course.imgUrl}`} 
                 alt={course.name}
                 />
             </div>

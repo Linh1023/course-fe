@@ -51,7 +51,7 @@ export function DataTablePagination({
 
     const newQuerySearch = updateQueryStringManually(querySearch, "page", currentPage.toString())
     setQuerySearch(newQuerySearch)
-    console.log("newQuerySearch >>> ", newQuerySearch)
+
 
   }, [table.getState().pagination.pageIndex]);
 

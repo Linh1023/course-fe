@@ -83,8 +83,8 @@ const LessonCollapsible = (props: Props) => {
                     <CollapsibleContent>
                         <div className="p-3 bg-gray-50/50 space-y-2">
                             {chapterSidebarResponse?.lessons?.map((lesson, index) => (
-                                <Link
-                                    href={`/lesson/${lesson.id}`}
+                                <div
+                                    // href={`/lesson/${lesson.id}`}
                                     key={lesson.id || index}
                                     className="
                             transform transition-all duration-200 ease-in-out
@@ -98,7 +98,7 @@ const LessonCollapsible = (props: Props) => {
                                         lessonSidebarResponse={lesson}
                                         clickedLessons={clickedLessons}
                                     />
-                                </Link>
+                                </div>
                             ))}
 
                             {/* Empty state */}

@@ -107,7 +107,7 @@ const Navigation = () => {
         );
 
         if (res && res.status === 200) {
-          // console.log("Search suggestions:", res);
+      
           setSuggestions(res.result || []);
           setPage(res.totalPages || 0);
         } else {
@@ -212,7 +212,7 @@ const Navigation = () => {
         params.set("keyword", keyword.trim());
         params.set("page", "1");
          nProgress.start()
-        console.log("hihi", `/search?${params.toString()}`)
+  
         router.push(`/search?${params.toString()}`);
 
 

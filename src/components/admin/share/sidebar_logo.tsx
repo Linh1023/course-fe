@@ -13,12 +13,12 @@ export function SidebarLogo() {
         <SidebarMenuButton asChild className="h-12">
           <Link href={"/admin"} className="flex items-center ps-2.5 ">
             <img
-              src="https://flowbite.com/docs/images/logo.svg"
-              className="h-6 me-3 sm:h-7"
+              src="https://res.cloudinary.com/moment-images/logo_demo1_xzxrxd"
+              className="h-[40px] w-[40px] rounded-[100px]"
               alt="Flowbite Logo"
             />
             <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
-              Top Watching
+              Quản lý
             </span>
           </Link>
         </SidebarMenuButton>

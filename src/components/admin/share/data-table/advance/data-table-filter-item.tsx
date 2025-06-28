@@ -68,7 +68,6 @@ export function DataTableFilterItem<TData>({
         searchParams
       )
 
-      // console.log("querySearch data table filter >>> ", querySearch)
       const newQuerySearchTemporary = updateQueryStringManually(querySearch, selectedOption.value.toString(), filterValues.join("."))
       const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
       if (newQuerySearch != querySearch) {
@@ -94,7 +93,6 @@ export function DataTableFilterItem<TData>({
 
 
 
-      // console.log("querySearch data table filter >>> ", querySearch)
       const newQuerySearchTemporary = updateQueryStringManually(querySearch, selectedOption.value.toString(), debounceValue)
       const newQuerySearch = updateQueryStringManually(newQuerySearchTemporary, "page", "1")
 

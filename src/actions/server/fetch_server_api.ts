@@ -356,7 +356,6 @@ export const serverPostPutApi = async (api: string, bodyData: any, methodReq: st
 }
 
 export const serverPostPutApiNoJsonBody = async (api: string, bodyData: any, methodReq: string) => {
-  console.log("body data >>> ", bodyData)
   try {
     const res = await fetch(api, {
       method: methodReq, // Đúng phương thức

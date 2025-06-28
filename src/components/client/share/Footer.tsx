@@ -2,7 +2,6 @@
 import { Facebook, Youtube } from "lucide-react"
 import { usePathname } from "next/navigation"
 import React, { useState } from "react"
-import ZaloDialog from "./zalo_dialog"
 
 
 const Footer = () => {

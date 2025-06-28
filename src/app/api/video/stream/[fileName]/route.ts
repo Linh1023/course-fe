@@ -17,8 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { fileName: st
     // Trả lại response dưới dạng streaming
     const headers = new Headers();
     backendRes.headers.forEach((value, key) => headers.set(key, value));
-    
-    console.log("fileName >>> ", fileName);
+
 
     return new Response(backendRes.body, {
         status: backendRes.status,

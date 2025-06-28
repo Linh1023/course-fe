@@ -63,8 +63,7 @@ export default function LearningCourses() {
         setCourses(submissions.result);
         setTotalPages(submissions.totalPages);
 
-        //  Chỉ chạy nếu không bị huỷ
-        console.log("fetch >>> ", `${pathName}?${querySearch}`);
+  
         router.replace(`${pathName}?${querySearch}`, {
           scroll: false,
         });
