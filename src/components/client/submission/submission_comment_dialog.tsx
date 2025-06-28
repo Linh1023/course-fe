@@ -40,30 +40,6 @@ export function SubmissionCommentDialog(props: DeleteSubmissionsDialogProps) {
 
     const { submission, isOpen, setIsOpen } = props
 
-    const [submissionBlob, setSubmssionBlob] = useState<any>("")
-    const [isLoadingSubmission, setIsLoadingSubmission] = useState(false)
-
-
-    useEffect(() => {
-        const fetch = async () => {
-
-            const res = await FetchClientGetApiBlob(`${API.DOCUMENT.DOWNLOAD}/${encodeURIComponent(submission.submissionUrl)}`)
-            if (res) {
-                const mimeType = getMimeType(submission.submissionUrl);
-                const blob = new Blob([res], { type: mimeType });
-                const objectUrl = await URL.createObjectURL(blob); // 👈 tạo URL thực từ Blob
-                setSubmssionBlob(objectUrl)
-            }
-            setIsLoadingSubmission(false)
-        }
-
-        if (submission.submissionUrl && isOpen) {
-            setIsLoadingSubmission(true)
-            fetch()
-        }
-
-    }, [isOpen])
-
 
     return (
         // thêm open={isOpen} và onOpenChange={setIsOpen}  để nó nhận được sự kiện đóng mở dialog
@@ -112,18 +88,12 @@ export function SubmissionCommentDialog(props: DeleteSubmissionsDialogProps) {
                             <div className="flex-1">
                                 <h3 className="font-medium text-gray-800 mb-1">File bài làm</h3>
                                 <div className="flex items-center gap-2">
-                                    {!isLoadingSubmission ? (<>
+                                
                                         <UploadedFilePreview
-                                            fileUrl={submissionBlob}
+                                            fileUrl={""}
                                             fileName={submission.submissionUrl}
                                         />
-                                    </>)
-                                        : (<>
-                                            <LoaderIcon
-                                                className="mr-1.5 size-9 animate-spin"
-                                                aria-hidden="true"
-                                            />
-                                        </>)}
+                                   
 
                                 </div>
                             </div>
