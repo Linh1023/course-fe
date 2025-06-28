@@ -26,6 +26,8 @@ export function getCourseProgressColumns(
                     </div>
                 )
             },
+            enableSorting: false,
+            enableHiding: false,
         },
 
         {
@@ -61,6 +63,8 @@ export function getCourseProgressColumns(
                     </div>
                 )
             },
+            enableSorting: false,
+            enableHiding: false,
         },
 
 
@@ -89,6 +93,8 @@ export function getCourseProgressColumns(
                     </>
                 )
             },
+            enableSorting: false,
+            enableHiding: false,
         },
 
         {
@@ -105,6 +111,8 @@ export function getCourseProgressColumns(
                     </div>
                 )
             },
+            enableSorting: false,
+            enableHiding: false,
         },
     ]
 }

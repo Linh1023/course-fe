@@ -27,21 +27,18 @@ const LessonTabs = (props: Props) => {
     const [file, setFile] = useState<File | null>(null);
     const bottomRef = useRef<HTMLDivElement>(null)
     const [isEmptyInputSubmiss, setIsEmptyInputSubmiss] = useState(false)
-    const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext()
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [isLoadingSubmitted, setIsLoadingSubmitted] = useState(false)
 
-    const [assigmentBlob, setAssigmentBlob] = useState<any>("")
-    const [submissionBlob, setSubmssionBlob] = useState<any>("")
+    const [previewSubmisison, setPreviewSubmission] = useState<{ url: string; name: string } | null>({url : lessonResponse.submissionUrl, name: lessonResponse.submissionUrl})
 
-
-    const [submissionName, setSubmissionName] = useState<any>(lessonResponse.submissionUrl)
 
     const pathName = usePathname()
     const parts = pathName.split('/');
     const currentLessonId = parts[2];
 
     const { submitted, setSubmitted } = useSubmittedClientContext()
+
 
 
     const handleScroll = () => {
@@ -58,47 +55,6 @@ const LessonTabs = (props: Props) => {
         }
     }, [])
 
-
-
-    useEffect(() => {
-        const fetch = async () => {
-            console.log("lay bai tap ne")
-            const res = await FetchClientGetApiBlob(`${API.DOCUMENT.DOWNLOAD}/${encodeURIComponent(lessonResponse.assignmentUrl)}`)
-            if (res) {
-                const mimeType = getMimeType(lessonResponse.assignmentUrl);
-                const blob = new Blob([res], { type: mimeType });
-                const objectUrl = await URL.createObjectURL(blob); // 👈 tạo URL thực từ Blob
-                setAssigmentBlob(objectUrl)
-            }
-        }
-
-        if (lessonResponse.assignmentUrl) {
-            fetch()
-        }
-
-    }, [])
-
-
-
-
-    useEffect(() => {
-
-        if ( lessonResponse.submissionUrl) {
-            fetch(lessonResponse.submissionUrl)
-        }
-
-    }, [])
-
-    const fetch = async (name: string) => {
-          console.log("lay bai lam ne")
-        const res = await FetchClientGetApiBlob(`${API.DOCUMENT.DOWNLOAD}/${encodeURIComponent(name)}`)
-        if (res) {
-            const mimeType = getMimeType(name);
-            const blob = new Blob([res], { type: mimeType });
-            const objectUrl = URL.createObjectURL(blob);
-            setSubmssionBlob(objectUrl);
-        }
-    }
 
     const uploadDocuments = async (file: any) => {
         const formData = new FormData();
@@ -124,7 +80,7 @@ const LessonTabs = (props: Props) => {
                 toast.error("Nộp bài thất bại vui lòng thử lại sau")
                 return
             }
-            setSubmissionName(dataDocument)
+   
             const req: SubmissionClientRequest = {
                 lessonId: lessonResponse.id,
                 submissionUrl: dataDocument
@@ -134,7 +90,7 @@ const LessonTabs = (props: Props) => {
             if (res && res.status === 200) {
                 toast.success("Nộp bài thành công")
                 setIsSubmitted(true)
-                await fetch(dataDocument)
+                // await fetch(dataDocument)
                 setSubmitted(prev =>
                     prev.includes(currentLessonId) ? prev : [...prev, currentLessonId]
                 );
@@ -155,6 +111,11 @@ const LessonTabs = (props: Props) => {
         const file = event.target.files?.[0];
 
         setFile(file)
+        const url = URL.createObjectURL(file)
+        setPreviewSubmission({
+            url: url,
+            name: file.name,
+        })
         setIsEmptyInputSubmiss(false)
     }
 
@@ -178,7 +139,7 @@ const LessonTabs = (props: Props) => {
                     >Bài tập</TabsTrigger> */}
 
                     {
-                        lessonResponse.assignmentUrl !== null && (<>
+                        lessonResponse.assignmentUrl && (<>
                             <TabsTrigger value="submission"
                                 className="data-[state=active]:bg-[#fe4444] data-[state=active]:text-white text-black"
                                 onClick={() => { handleScroll() }}
@@ -189,8 +150,18 @@ const LessonTabs = (props: Props) => {
                 </TabsList>
                 <TabsContent value="content" className=" bg-[#f1f5f9] p-4 rounded-md">
                     <div >
-                        <div className="mb-[20px]">
+                        {lessonResponse.documentUrl && (<>
+                            <div>
+                                <span className="text-[16px] font-bold">Tài liệu của bài học : </span>
+                                <UploadedFilePreview
+                                    fileUrl={""}
+                                    fileName={lessonResponse.documentUrl}
+                                />
+                            </div>
+                        </>)}
 
+
+                        <div className="mb-[20px]">
                             <span >{lessonResponse.detail}</span> <br />
                         </div>
 
@@ -203,7 +174,12 @@ const LessonTabs = (props: Props) => {
                                     className="text-blue-600 underline hover:text-blue-800"
                                 > https://www.facebook.com/tran.cuong.737360</a>
                             </li>
-                            <li className="mt-[20px]">Zalo : 0963717300</li>
+                            <li>
+                                Zalo :
+                                <a href="https://zalo.me/0865275183"
+                                    target="_blank" className="mt-[20px] text-blue-600 underline hover:text-blue-800"> 0865 275 183</a>
+                            </li>
+
                         </ul>
                     </div>
                 </TabsContent>
@@ -212,83 +188,87 @@ const LessonTabs = (props: Props) => {
                     <CommentLessonSection lessonId={lessonResponse.id} />
                 </TabsContent>
 
-                {/* <TabsContent value="assignment" className=" bg-[#f1f5f9] p-4 rounded-md">
-                    <span className="text-[16px] font-bold">Bài tập được giao</span>
-                    <br />
-                    <span>{lessonResponse.assignmentUrl}</span>
-                </TabsContent> */}
+                {lessonResponse.assignmentUrl && (
+                    <>
+                        <TabsContent value="submission" className=" bg-[#f1f5f9] p-4 rounded-md">
+                            <div >
+                                <span className="text-[16px] font-bold">Bài tập của bài học</span>
 
-                <TabsContent value="submission" className=" bg-[#f1f5f9] p-4 rounded-md">
-                    <div >
-                        <span className="text-[16px] font-bold">Bài tập của bài học</span>
+                                <div className="mt-[10px]">
+                                    {/* <span>{lessonResponse.assignmentUrl}</span> <br /> */}
+                                    {
+                                        <UploadedFilePreview
+                                            fileUrl={""}
+                                            fileName={lessonResponse.assignmentUrl}
+                                        />
+                                    }
+                                </div>
+                            </div>
 
-                        <div className="mt-[10px]">
-                            {/* <span>{lessonResponse.assignmentUrl}</span> <br /> */}
+                            <DropdownMenuSeparator className="mt-[10px] mb-[10px] bg-gray-200 h-[1px]" />
 
-                            <UploadedFilePreview
-                                fileUrl={assigmentBlob}
-                                fileName={lessonResponse.assignmentUrl}
-                            />
-                        </div>
-                    </div>
-
-                    <DropdownMenuSeparator className="mt-[10px] mb-[10px] bg-gray-200 h-[1px]" />
-
-                    <div className="flex  justify-center">
-                        <span className="text-[16px] font-bold">Nộp bài tập</span>
-                    </div>
+                            <div className="flex  justify-center">
+                                <span className="text-[16px] font-bold">Nộp bài tập</span>
+                            </div>
 
 
 
-                    {(isSubmitted || submitted.includes(currentLessonId)) ? (
-                        <>
-                            <UploadedFilePreview
-                                fileUrl={submissionBlob}
-                                fileName={submissionName}
-                            />
-                            <span className="text-green-600 font-bold flex items-center"> <Check className="mr-[10px]" /> Đã nộp bài tập</span>
-                        </>
-                    ) : (<>
-                        <Input
-                            placeholder="Nộp bài tập" className="mt-[20px] h-[80px]" type="file"
-                            accept=".pdf,.doc,.docx"
-                            onChange={(e) => { handleFileChange(e); }}
+                            {(isSubmitted || submitted.includes(currentLessonId)) ? (
+                                <>
+                                    {
+                                        previewSubmisison && (<>
+                                            <UploadedFilePreview
+                                                fileUrl={previewSubmisison.url}
+                                                fileName={previewSubmisison.name}
+                                            />
+                                        </>)
+                                    }
+                                    <span className="text-green-600 font-bold flex items-center"> <Check className="mr-[10px]" /> Đã nộp bài tập</span>
+                                </>
+                            ) : (<>
+                                <Input
+                                    placeholder="Nộp bài tập" className="mt-[20px] h-[80px]" type="file"
+                                    accept=".pdf,.doc,.docx"
+                                    onChange={(e) => { handleFileChange(e); }}
+                                    disabled={isLoadingSubmitted}
+                                />
+                            </>)}
+
+                            {isEmptyInputSubmiss && (
+                                <>
+                                    <span className="text-red-500 font-bold">Vui lòng chọn file để nộp bài</span>
+                                </>
+                            )}
+
+                            {isSubmitted === false && !submitted.includes(currentLessonId) && (
+
+                                <div className="flex  justify-center">
+
+                                    <Button className="mt-[20px] bg-[#fe4444] hover:bg-[#f87171]"
+                                        onClick={() => { handleSubmission() }}
+                                        disabled={isLoadingSubmitted}
+                                    >
+                                        {isLoadingSubmitted && (
+                                            <LoaderIcon
+                                                className="mr-1.5 size-4 animate-spin"
+                                                aria-hidden="true"
+                                            />
+                                        )}
+                                        Nộp bài
+
+                                    </Button>
+
+                                </div>
 
 
-                        />
-                    </>)}
-
-                    {isEmptyInputSubmiss && (
-                        <>
-                            <span className="text-red-500 font-bold">Vui lòng chọn file để nộp bài</span>
-                        </>
-                    )}
-
-                    {isSubmitted === false && !submitted.includes(currentLessonId) && (
-
-                        <div className="flex  justify-center">
-
-                            <Button className="mt-[20px] bg-[#fe4444] hover:bg-[#f87171]"
-                                onClick={() => { handleSubmission() }}
-                            >
-                                {isLoadingSubmitted && (
-                                    <LoaderIcon
-                                        className="mr-1.5 size-4 animate-spin"
-                                        aria-hidden="true"
-                                    />
-                                )}
-                                Nộp bài
-
-                            </Button>
-
-                        </div>
-
-
-                    )}
+                            )}
 
 
 
-                </TabsContent>
+                        </TabsContent>
+                    </>
+                )}
+
             </Tabs>
             <div ref={bottomRef} />
         </>

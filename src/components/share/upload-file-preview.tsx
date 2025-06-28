@@ -2,6 +2,7 @@ import { FetchClientGetApiBlob } from "@/actions/client/fetch_client_api"
 import API from "@/api/api"
 import { getMimeType } from "@/utils/getMimeType"
 import { FileTextIcon, FileIcon } from "lucide-react"
+import nProgress from "nprogress"
 import { toast } from "sonner"
 
 interface UploadedFilePreviewProps {
@@ -29,7 +30,6 @@ export function UploadedFilePreview({ fileUrl, fileName }: UploadedFilePreviewPr
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault()
-
     if (isBlob) {
       window.open(fileUrl, "_blank")
       return
