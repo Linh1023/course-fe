@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/tooltip"
 import { PlayCircleIcon } from "lucide-react"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import TrailerPlayer from "../video/trailer_player"
 import API from "@/api/api"
 
@@ -25,6 +25,21 @@ interface CourseTrailerDialogProps {
 }
 export function CourseTrailerDialog({ course }: CourseTrailerDialogProps) {
   const [open, setOpen] = useState(false)
+
+  if (!course?.videoUrl || course?.videoUrl === "") {
+    return (
+      <div className="relative w-full h-48 rounded-lg overflow-hidden">
+        {/* Background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              course ? `url("${`${API.IMAGE.VIEW}/${course.imageUrl}`}")` : "https://files.fullstack.edu.vn/f8-prod/courses/21/63e1bcbaed1dd.png",
+          }}
+        />
+      </div>
+    )
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

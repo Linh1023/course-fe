@@ -32,7 +32,7 @@ const CourseCard: React.FC<CourseCardProps> = React.memo(({ course, isProgress }
 
   const handleRedirect = () => {
     NProgress.start()
-    router.push(`/course/${course.id} ?${randomQueryString()}`)
+    router.push(`/course/${course.id}?${randomQueryString()}`)
   }
 
   return (

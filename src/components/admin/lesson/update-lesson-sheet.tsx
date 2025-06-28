@@ -30,10 +30,7 @@ import API from "@/api/api"
 import { toast } from "sonner"
 import { updateLessonSchema, UpdateLessonSchema } from "@/validation/lessonSchema"
 import { UploadedFilePreview } from "@/components/share/upload-file-preview"
-import { getFileNameFromUrl } from "@/utils/url"
 import VideoPlayer from "@/components/client/video/video_player"
-import { getMimeType } from "@/utils/getMimeType"
-import { FetchClientGetApiBlob } from "@/actions/client/fetch_client_api"
 
 interface UpdateLessonSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
@@ -89,30 +86,6 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, open, onOpe
     }
   }
 
-
-  React.useEffect(() => {
-
-
-    const fetch = async () => {
-      try {
-         await FetchClientGetApiBlob(`${API.DOCUMENT.DOWNLOAD}/${encodeURIComponent(lesson.assignmentUrl)}`);
-     
-      } catch (e) {
-        console.error("Lỗi khi fetch assignment:", e);
-      }
-
-
-    }
-
-    if (open && lesson.assignmentUrl) {
-      console.log("lesson.assignmentUrl >>> ", lesson.assignmentUrl)
-      fetch()
-    }
-
-  }, [open])
-
-
-
   const onSubmit = async (input: UpdateLessonSchema) => {
 
     startUpdateTransition(async () => {
@@ -147,9 +120,9 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, open, onOpe
         lessonNumber: Number(input.lessonNumber),
         name: input.name,
         detail: input.detail || "",
-        videoUrl: urlVideo.current, // sau này sẽ upload video lên server
-        documentUrl: dataDocument,
-        assignmentUrl: dataAssignment,
+        videoUrl: urlVideo.current ? urlVideo.current : lesson.videoUrl, // sau này sẽ upload video lên server
+        documentUrl: dataDocument ? dataDocument : lesson.documentUrl, // upload tài liệu lên server
+        assignmentUrl: dataAssignment ? dataAssignment : lesson.assignmentUrl, // upload bài tập lên server
         duration: Math.floor(videoRef?.current?.duration || lesson.duration),  // Lấy thời lượng video nếu có;
         status: input.status
       }
@@ -207,10 +180,8 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, open, onOpe
       setPreviewAssignment(null)
     } else {
       setPreviewVideo(lesson.videoUrl)
-      const documentFile = getFileNameFromUrl(lesson.documentUrl) || "";
-      const assignmentFile = getFileNameFromUrl(lesson.assignmentUrl) || "";
-      if (lesson.documentUrl) setPreviewDocument({ url: lesson.documentUrl, name: documentFile })
-      if (lesson.assignmentUrl) setPreviewAssignment({ url: lesson.assignmentUrl, name: assignmentFile })
+      if (lesson.documentUrl) setPreviewDocument({ url: lesson.documentUrl, name: lesson.documentUrl })
+      if (lesson.assignmentUrl) setPreviewAssignment({ url: lesson.assignmentUrl, name: lesson.assignmentUrl })
     }
   }, [open])
 
