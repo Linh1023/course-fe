@@ -19,9 +19,12 @@ import { TrashIcon } from "lucide-react"
 import { LoaderIcon } from "@/components/share/loading-icon"
 import API from "@/api/api"
 import { FetchServerDeleteApi } from "@/actions/server/fetch_server_api"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { FetchClientGetApiBlob } from "@/actions/client/fetch_client_api"
+import { getMimeType } from "@/utils/getMimeType"
+import { UploadedFilePreview } from "@/components/share/upload-file-preview"
 
 
 interface DeleteSubmissionsDialogProps
@@ -36,6 +39,30 @@ interface DeleteSubmissionsDialogProps
 export function SubmissionCommentDialog(props: DeleteSubmissionsDialogProps) {
 
     const { submission, isOpen, setIsOpen } = props
+
+    const [submissionBlob, setSubmssionBlob] = useState<any>("")
+    const [isLoadingSubmission, setIsLoadingSubmission] = useState(false)
+
+
+    useEffect(() => {
+        const fetch = async () => {
+
+            const res = await FetchClientGetApiBlob(`${API.DOCUMENT.DOWNLOAD}/${encodeURIComponent(submission.submissionUrl)}`)
+            if (res) {
+                const mimeType = getMimeType(submission.submissionUrl);
+                const blob = new Blob([res], { type: mimeType });
+                const objectUrl = await URL.createObjectURL(blob); // 👈 tạo URL thực từ Blob
+                setSubmssionBlob(objectUrl)
+            }
+            setIsLoadingSubmission(false)
+        }
+
+        if (submission.submissionUrl && isOpen) {
+            setIsLoadingSubmission(true)
+            fetch()
+        }
+
+    }, [isOpen])
 
 
     return (
@@ -54,7 +81,7 @@ export function SubmissionCommentDialog(props: DeleteSubmissionsDialogProps) {
                     </DialogHeader>
                 </div>
 
-                <div className="p-6 space-y-5">
+                <div className="p-2 space-y-5">
                     {/* Course and Lesson Info */}
                     <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
                         <div className="flex items-start gap-3">
@@ -70,6 +97,35 @@ export function SubmissionCommentDialog(props: DeleteSubmissionsDialogProps) {
                                     <span className="mx-2 text-gray-400">•</span>
                                     <span>{submission.lessonName}</span>
                                 </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Score Section */}
+                    <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="font-medium text-gray-800 mb-1">File bài làm</h3>
+                                <div className="flex items-center gap-2">
+                                    {!isLoadingSubmission ? (<>
+                                        <UploadedFilePreview
+                                            fileUrl={submissionBlob}
+                                            fileName={submission.submissionUrl}
+                                        />
+                                    </>)
+                                        : (<>
+                                            <LoaderIcon
+                                                className="mr-1.5 size-9 animate-spin"
+                                                aria-hidden="true"
+                                            />
+                                        </>)}
+
+                                </div>
                             </div>
                         </div>
                     </div>

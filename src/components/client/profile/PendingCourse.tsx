@@ -7,6 +7,8 @@ import PaginationCourse from "./PaginationCourse";
 import { LoaderIcon } from "@/components/share/loading-icon";
 import { FetchServerGetApi } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
+import { randomQueryString } from "@/utils/random_query";
+import nProgress from "nprogress";
 
 // Type cho Course từ API mới
 interface Course {
@@ -22,8 +24,16 @@ interface Course {
 
 // Component Card cho mỗi khóa học
 const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
+    const router = useRouter()
+    const handleRedirect = () => {
+        nProgress.start()
+        router.push(`/course/${course.id}?${randomQueryString()}`)
+    }
+
     return (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer"
+         onClick={() => { handleRedirect() }}
+        >
             <div className="aspect-video bg-gray-200 overflow-hidden flex items-center justify-center">
                 <img
                     src={course.imageUrl || '/placeholder-course.jpg'}
