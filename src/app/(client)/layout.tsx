@@ -1,6 +1,5 @@
 import Footer from "@/components/client/share/Footer";
 import MyConnect from "@/components/client/share/MyConnect";
-import Navbar from "@/components/client/share/navbar";
 import { Navigation } from "@/components/client/share/navigation";
 import { QuerySearchClientProvider } from "@/context/query_search_client_context";
 

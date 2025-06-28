@@ -110,42 +110,42 @@ export const SidebarUser = () => {
 
             <DropdownMenuSeparator />
             <DropdownMenuGroup >
-              <Link href={"/"}>
+              <a href={"/"}>
                 <DropdownMenuItem className="cursor-pointer">
                   <House />
                   Trang chủ
                 </DropdownMenuItem>
-              </Link>
+              </a>
 
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               
-              <Link href={"/profile"}>
+              <a href={"/profile"}>
                 <DropdownMenuItem className="cursor-pointer">
                   <CircleUserRound />
                   Thông tin cá nhân
                 </DropdownMenuItem>
-              </Link>
+              </a>
 
-              <Link href={"/setting"}>
+              <a href={"/setting"}>
                 <DropdownMenuItem className="cursor-pointer">
                   <Settings />
                   Cài đặt
                 </DropdownMenuItem>
-              </Link>
+              </a>
 
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
 
 
-            <DropdownMenuItem className="cursor-pointer"
+            {/* <DropdownMenuItem className="cursor-pointer"
               onClick={() => { handleLogout() }}
             >
               <LogOut />
               Đăng xuất
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
 
 
           </DropdownMenuContent>

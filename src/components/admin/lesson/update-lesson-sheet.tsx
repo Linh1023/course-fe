@@ -126,8 +126,7 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, open, onOpe
         duration: Math.floor(videoRef?.current?.duration || lesson.duration),  // Lấy thời lượng video nếu có;
         status: input.status
       }
-      console.log(JSON.parse(JSON.stringify(updateData)))
-      console.log(`${API.LESSON.ROOT}/${lesson.id}`)
+
 
       const res = await FetchServerPutApi(
         `${API.LESSON.ROOT}/${lesson.id}`, updateData)

@@ -156,6 +156,13 @@
     width: 45px;
   }
 
+  .video-div{
+    height: 100%;
+  }
+
+  .video-class{
+    height:  100%;
+  }
 
 }
 
@@ -164,7 +171,7 @@
   .search-reponsive {
     position: static;
   }
-  
+
 }
 
 

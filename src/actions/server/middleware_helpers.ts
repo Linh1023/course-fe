@@ -77,7 +77,6 @@ export const authentication = async (req: NextRequest): Promise<AuthResult> => {
 
     // neu khong co access token va refresh token
     if (accessToken === undefined && refreshToken === undefined) {
-        console.log("vao day ne 222222222")
         return {
             isAuthentication: false,
             role: "guest",

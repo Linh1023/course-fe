@@ -80,7 +80,7 @@ export function DataTableColumnHeader<TData, TValue>({
                 aria-label="Sort ascending"
                 onClick={() => {
 
-                  console.log("sort 1 >>> Asc", column.id)
+
                   setColumnName(column.id)
                   setSortOrder("asc")
 
@@ -96,7 +96,7 @@ export function DataTableColumnHeader<TData, TValue>({
               <DropdownMenuItem
                 aria-label="Sort descending"
                 onClick={() => {
-                  console.log("sort 1 >>> Desc", column.id)
+
                   setColumnName(column.id)
                   setSortOrder("desc")
                   column.toggleSorting(true)

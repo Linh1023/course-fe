@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 import CommentSection from "./comment_lesson_section"
 import { usePathname } from "next/navigation"
-import { useSubmittedClientContext } from "@/context/submitted_client_context"
+
 import CommentLessonSection from "./comment_lesson_section"
 import { LoaderIcon } from "@/components/share/loading-icon"
 import { UploadedFilePreview } from "@/components/share/upload-file-preview"
@@ -27,7 +27,7 @@ const LessonTabs = (props: Props) => {
     const [file, setFile] = useState<File | null>(null);
     const bottomRef = useRef<HTMLDivElement>(null)
     const [isEmptyInputSubmiss, setIsEmptyInputSubmiss] = useState(false)
-    const [isSubmitted, setIsSubmitted] = useState(false)
+    const [isSubmitted, setIsSubmitted] = useState(lessonResponse.submissionUrl ? true : false)
     const [isLoadingSubmitted, setIsLoadingSubmitted] = useState(false)
 
     const [previewSubmisison, setPreviewSubmission] = useState<{ url: string; name: string } | null>({url : lessonResponse.submissionUrl, name: lessonResponse.submissionUrl})
@@ -37,7 +37,6 @@ const LessonTabs = (props: Props) => {
     const parts = pathName.split('/');
     const currentLessonId = parts[2];
 
-    const { submitted, setSubmitted } = useSubmittedClientContext()
 
 
 
@@ -45,15 +44,7 @@ const LessonTabs = (props: Props) => {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
 
-    useEffect(() => {
-
-        if (lessonResponse.submissionUrl != null) {
-            setIsSubmitted(true)
-            setSubmitted(prev =>
-                prev.includes(currentLessonId) ? prev : [...prev, currentLessonId]
-            );
-        }
-    }, [])
+ 
 
 
     const uploadDocuments = async (file: any) => {
@@ -91,9 +82,7 @@ const LessonTabs = (props: Props) => {
                 toast.success("Nộp bài thành công")
                 setIsSubmitted(true)
                 // await fetch(dataDocument)
-                setSubmitted(prev =>
-                    prev.includes(currentLessonId) ? prev : [...prev, currentLessonId]
-                );
+          
 
             } else {
                 toast.error("Lỗi")
@@ -213,7 +202,7 @@ const LessonTabs = (props: Props) => {
 
 
 
-                            {(isSubmitted || submitted.includes(currentLessonId)) ? (
+                            {(isSubmitted ) ? (
                                 <>
                                     {
                                         previewSubmisison && (<>
@@ -240,7 +229,7 @@ const LessonTabs = (props: Props) => {
                                 </>
                             )}
 
-                            {isSubmitted === false && !submitted.includes(currentLessonId) && (
+                            {isSubmitted === false  && (
 
                                 <div className="flex  justify-center">
 

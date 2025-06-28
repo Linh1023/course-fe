@@ -36,7 +36,7 @@ const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
         >
             <div className="aspect-video bg-gray-200 overflow-hidden flex items-center justify-center">
                 <img
-                    src={course.imageUrl || '/placeholder-course.jpg'}
+                    src={`${API.IMAGE.VIEW}/${course.imageUrl}`}
                     alt={course.name}
                     className="w-full h-full object-cover"
                 />

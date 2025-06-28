@@ -6,7 +6,6 @@ export async function GET(req: Request) {
     const api = searchParams.get('api');
     searchParams.delete('api');
 
-    const data = await FetchServerGetApi(api + `?${searchParams}`);
-    console.log("data", data);
+    const data = await FetchServerGetApi(api + `?${searchParams}`)
     return new Response(JSON.stringify(data));
 }
