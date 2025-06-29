@@ -56,6 +56,7 @@ export function CourseEnrollmentTable() {
         setDataResult(submissions.result);
         setTotalPages(submissions.totalPages);
 
+        //  Chỉ chạy nếu không bị huỷ
         router.replace(`${pathName}?${querySearch}`, {
           scroll: false,
         });

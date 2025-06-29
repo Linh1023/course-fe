@@ -97,7 +97,7 @@ export const CreateCourseEnrollmentDialog = ({
                   <FormLabel>Khóa học</FormLabel>
                   <FormControl>
                     <CreateCourseEnrollmentItem
-                      apiEndpoint={API.COURSE.COURSE_FILTER}
+                      endpointType={'courseId'}
                       placeholder="Tìm khóa học..."
                       onSelect={(item) => field.onChange(item.id)}
                       displayField="name"
@@ -115,7 +115,7 @@ export const CreateCourseEnrollmentDialog = ({
                   <FormLabel>Tài khoản</FormLabel>
                   <FormControl>
                     <CreateCourseEnrollmentItem
-                      apiEndpoint={API.ACCOUNT.ROOT}
+                      endpointType="accountId"
                       placeholder="Tìm tài khoản..."
                       onSelect={(item) => field.onChange(item.id)}
                       displayField="name"
