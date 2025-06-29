@@ -43,7 +43,7 @@ const Footer = () => {
             <h4 className="font-semibold text-2xl mb-2">Liên hệ</h4>
             <p>Số điện thoại: 0865 275 183</p>
             <p>Email: trancuongtn82@gmail.com</p>
-            <p>Địa chỉ: Bình Hưng Hòa A, Tân Phú, Thành Phố Hồ Chí Minh</p>
+            <p>Địa chỉ: 76/84 Lê Văn Phan , Tân Phú, TPHCM</p>
           </div>
 
           {/* About us */}

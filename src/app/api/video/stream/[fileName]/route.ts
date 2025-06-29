@@ -1,8 +1,10 @@
 import { FetchServerGetApiRange } from '@/actions/server/fetch_server_api';
 import API from '@/api/api';
+import { usePathname, useRouter } from 'next/navigation';
 import { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest, { params }: { params: { fileName: string } }) {
+  
     const fileName = params.fileName;
 
 

@@ -10,12 +10,37 @@ export async function middleware(request: NextRequest) {
     // Kiểm tra xem yêu cầu có phải là yêu cầu call api
     const isHTMLRequest = request.headers.get('accept')?.includes('text/x-component');
 
+    console.log("🔥 Middleware is working >>>", request.nextUrl.pathname);
+
     // Nếu yêu cầu là call api thì bỏ qua
     if (isHTMLRequest) {
         return NextResponse.next();
     }
 
     const auth = await authentication(request);
+
+    console.log("vo api ne >>> ", currentPath)
+    if (currentPath.startsWith("/api/video/stream")) {
+
+        const referer = request.headers.get("referer");
+
+        // Nếu không có referer (nghĩa là người dùng nhập URL trực tiếp vào trình duyệt)
+        // hoặc referer không đến từ trang web của bạn
+        if (!referer) {
+            return NextResponse.redirect(new URL('/', request.url))
+        }
+
+        // Nếu có referer hợp lệ, tiếp tục cho phép
+        return NextResponse.next();
+       
+    }
+
+
+
+
+
+
+
     if (currentPath === "/login" && auth.isAuthentication === true) {
         return NextResponse.redirect(new URL('/', request.url))
     }
@@ -55,6 +80,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
+        '/api/video/stream/:file*',
         '/((?!api|_next/static|_next/image|images|favicon.ico|sitemap.xml|robots.txt|manifest.json).*)',
     ],
 

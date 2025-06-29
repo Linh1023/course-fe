@@ -145,6 +145,7 @@ const LessonTabs = (props: Props) => {
                                 <UploadedFilePreview
                                     fileUrl={""}
                                     fileName={lessonResponse.documentUrl}
+                                    api = {API.DOCUMENT.DOWNLOAD_DOCUMENT}
                                 />
                             </div>
                         </>)}
@@ -189,6 +190,7 @@ const LessonTabs = (props: Props) => {
                                         <UploadedFilePreview
                                             fileUrl={""}
                                             fileName={lessonResponse.assignmentUrl}
+                                            api = {API.DOCUMENT.DOWNLOAD_ASSIGNMENT}
                                         />
                                     }
                                 </div>
@@ -209,6 +211,7 @@ const LessonTabs = (props: Props) => {
                                             <UploadedFilePreview
                                                 fileUrl={previewSubmisison.url}
                                                 fileName={previewSubmisison.name}
+                                                 api = {API.DOCUMENT.DOWNLOAD_SUBMISSION}
                                             />
                                         </>)
                                     }
