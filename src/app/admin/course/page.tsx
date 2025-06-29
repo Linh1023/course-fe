@@ -2,7 +2,6 @@ import { FetchServerGetApi } from "@/actions/server/fetch_server_api"
 import API from "@/api/api"
 import { CoursesTable } from "@/components/admin/course/courses-table"
 import { DataTableSkeleton } from "@/components/admin/share/data-table/data-table-skeleton"
-import { ReadonlyURLSearchParams } from "next/navigation"
 import React from "react"
 
 

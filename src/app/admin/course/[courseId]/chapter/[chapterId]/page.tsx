@@ -14,7 +14,7 @@ export interface ChapterPageProps {
     chapterId: number;
   }
 }
-const ChapterPage = ({params }: ChapterPageProps) => {
+const ChapterPage = ({ params }: ChapterPageProps) => {
 
   const chapterId = params.chapterId;
 
@@ -30,8 +30,8 @@ const ChapterPage = ({params }: ChapterPageProps) => {
         </Link>
         <h1 className="text-xl font-semibold">Quản lý bài học của chương</h1>
       </div>
-  
-        <LessonsTable chapterId={chapterId}  />
+
+      <LessonsTable courseId={params.courseId} chapterId={chapterId} />
 
     </div>
 
