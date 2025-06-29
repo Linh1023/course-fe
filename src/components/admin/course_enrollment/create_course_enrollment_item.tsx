@@ -54,11 +54,14 @@ export function CreateCourseEnrollmentItem({
       try {
         let endpoint;
         if (endpointType == "accountId")
-          endpoint = `${API.ACCOUNT.ROOT}?username=${debounceQuery}&page=1&size=5`;
+          if (!debounceQuery.includes(" "))
+            endpoint = `${API.ACCOUNT.ROOT}?username=${debounceQuery}&page=1&size=5`;
+          else
+            endpoint = `${API.ACCOUNT.ROOT}?name=${debounceQuery}&page=1&size=5`;
         else
           endpoint = `${API.COURSE.COURSE_FILTER}?keyword=${debounceQuery}&page=1&size=5`;
 
-        console.log(endpoint)
+        console.log(endpoint);
         const data = await FetchServerGetApi(endpoint);
 
         setResults(data.result ?? []);
@@ -92,13 +95,19 @@ export function CreateCourseEnrollmentItem({
                 key={item.id}
                 onClick={() => {
                   onSelect(item);
-                  setQuery(endpointType == "accountId"?item["name"]+ " ("+item["username"]+")":item["name"]);
+                  setQuery(
+                    endpointType == "accountId"
+                      ? item["name"] + " (" + item["username"] + ")"
+                      : item["name"]
+                  );
                   setShowSuggestions(false);
                   setHasSelected(true);
                 }}
                 className="cursor-pointer px-3 py-2 hover:bg-gray-100 dark:hover:bg-slate-600"
               >
-                {endpointType == "accountId"?`${item["name"]} (${item["username"]})`:item["name"]}
+                {endpointType == "accountId"
+                  ? `${item["name"]} (${item["username"]})`
+                  : item["name"]}
               </li>
             ))}
           </ul>
