@@ -77,7 +77,7 @@ export function CourseEnrollmentTable() {
   };
 
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo(() => getColumns(), []);
+  const columns = React.useMemo(() => getColumns(setIsLoading, fetchData), [fetchData]);
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
