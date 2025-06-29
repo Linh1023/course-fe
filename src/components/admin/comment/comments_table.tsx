@@ -105,7 +105,7 @@ export function CommentsTable() {
   const filterFields: DataTableFilterField<CommentAdmin>[] = [
     {
       value: "authorName",
-      label: "Người dùng",
+      label: "Tên người đăng",
       placeholder: "Tìm kiếm người dùng",
     },
     {
@@ -117,6 +117,11 @@ export function CommentsTable() {
       value: "lessonName",
       label: "Tên bài học",
       placeholder: "Tìm kiếm tên bài học",
+    },
+    {
+      value: "courseName",
+      label: "Tên khóa học",
+      placeholder: "Tìm kiếm tên khóa học",
     },
   ];
   // TODO: Replace with actual data fetching logic

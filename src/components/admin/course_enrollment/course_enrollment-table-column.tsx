@@ -31,23 +31,29 @@ const statusMap = {
   },
 } as const;
 
-const updateStatus = async (newStatus: "active" | "inactive", id: string) => {
-  try {
-    const res = await FetchClientPutApi(
-      API.COURSE_ENROLLMENT.ADMIN_CHANGE_STATUS,
-      { status: newStatus, courseEnrollmentId: Number(id) }
-    );
 
-    if (res.status != 200) throw new Error("Update failed");
-    else {
-      toast.success("Cập nhật trạng thái thành công");
+export function getColumns(
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  fetchData: () => Promise<void>
+): ColumnDef<CourseEnrollmentAdmin>[] {
+  const updateStatus = async (newStatus: "active" | "inactive", id: string) => {
+   setIsLoading(true)
+    try {
+      
+      const res = await FetchClientPutApi(
+        API.COURSE_ENROLLMENT.ADMIN_CHANGE_STATUS,
+        { status: newStatus, courseEnrollmentId: Number(id) }
+      );
+  
+      if (res.status != 200) throw new Error("Update failed");
+      else {
+        toast.success("Cập nhật trạng thái thành công");
+        fetchData()
+      }
+    } catch (err) {
+      toast.error("Không thể cập nhật trạng thái");
     }
-  } catch (err) {
-    toast.error("Không thể cập nhật trạng thái");
-  }
-};
-
-export function getColumns(): ColumnDef<CourseEnrollmentAdmin>[] {
+  };
   return [
     {
       accessorKey: "accountName",

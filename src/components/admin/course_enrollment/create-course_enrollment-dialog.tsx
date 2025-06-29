@@ -100,7 +100,6 @@ export const CreateCourseEnrollmentDialog = ({
                       endpointType={'courseId'}
                       placeholder="Tìm khóa học..."
                       onSelect={(item) => field.onChange(item.id)}
-                      displayField="name"
                     />
                   </FormControl>
                   <FormMessage />
@@ -116,9 +115,8 @@ export const CreateCourseEnrollmentDialog = ({
                   <FormControl>
                     <CreateCourseEnrollmentItem
                       endpointType="accountId"
-                      placeholder="Tìm tài khoản..."
+                      placeholder="Tìm tài khoản theo username..."
                       onSelect={(item) => field.onChange(item.id)}
-                      displayField="name"
                     />
                   </FormControl>
                   <FormMessage />

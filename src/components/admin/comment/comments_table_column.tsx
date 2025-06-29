@@ -46,6 +46,25 @@ export function getCommentColumns(
       enableSorting: false,
       enableHiding: false,
     },
+    { accessorKey: "courseId", header: () => <div className="p-0"></div>, cell: () => null },
+    {
+      accessorKey: "courseName",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Tên khóa học" />
+      ),
+      cell: ({ row }) => {
+        return (
+          <a
+          className="hover:underline"
+          href={`/admin/comment?courseName=${row.getValue("courseName")}`}
+        >
+            <span className="max-w-[10rem] truncate font-medium">
+              {row.getValue("courseName")}
+            </span>
+          </a>
+        );
+      },
+    },
     { accessorKey: "lessonId", header: () => <div className="p-0"></div>, cell: () => null },
     {
       accessorKey: "lessonName",
@@ -162,11 +181,11 @@ export function getCommentColumns(
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
                 <DropdownMenuItem>
-                  <Link
+                  <a
                     href={`/lesson/${row.original.lessonId}?comment=${row.original.id}`}
                   >
                     Xem chi tiết
-                  </Link>
+                  </a>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
