@@ -8,9 +8,10 @@ import { toast } from "sonner"
 interface UploadedFilePreviewProps {
   fileUrl: string
   fileName: string
+  api:string
 }
 
-export function UploadedFilePreview({ fileUrl, fileName }: UploadedFilePreviewProps) {
+export function UploadedFilePreview({ fileUrl, fileName, api }: UploadedFilePreviewProps) {
   const isBlob = fileUrl.startsWith("blob:")
   const fileExt = fileName?.split(".").pop() || ""
 
@@ -36,7 +37,7 @@ export function UploadedFilePreview({ fileUrl, fileName }: UploadedFilePreviewPr
     }
 
     try {
-      const blob = await FetchClientGetApiBlob(`${API.DOCUMENT.DOWNLOAD}/${fileName != "" ? fileName : fileUrl}`);
+      const blob = await FetchClientGetApiBlob(`${api}/${fileName != "" ? fileName : fileUrl}`);
       if (!blob) {
         toast.error("Không thể tải file. Vui lòng thử lại sau.")
         return

@@ -20,10 +20,12 @@ import Link from "next/link"
 import { UpdateLessonSheet } from "./update-lesson-sheet"
 import { DeleteLessonsDialog } from "./delete-lesson-dialog"
 import { formatTime } from "@/utils/format_time"
+import API from "@/api/api"
+import { API_HOST } from "@/utils/env"
 
 interface getColumnsProps {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
-   fetchData: () => Promise<void>
+  fetchData: () => Promise<void>
 }
 
 export function getColumns({ setIsLoading, fetchData }: getColumnsProps): ColumnDef<Lesson>[] {
@@ -76,12 +78,22 @@ export function getColumns({ setIsLoading, fetchData }: getColumnsProps): Column
         return (
           <div className="flex space-x-2">
             <span className="max-w-[10rem] truncate font-medium">
-              {row.getValue("name")}
+              <a href={`/lesson/${row.getValue("id")}`}>{row.getValue("name") }</a>  
             </span>
           </div>
         )
       },
     },
+
+    {
+      accessorKey: "id",
+      header: () => null,
+      cell: () => null,
+      enableColumnFilter: false,
+      enableSorting: false,
+      enableHiding: true,
+    },
+
     {
       accessorKey: "detail",
       header: ({ column }) => (
@@ -147,7 +159,7 @@ export function getColumns({ setIsLoading, fetchData }: getColumnsProps): Column
               open={showUpdateLessonSheet}
               onOpenChange={setShowUpdateLessonSheet}
               lesson={row.original}
-              fetchData= {fetchData}
+              fetchData={fetchData}
             />
             <DeleteLessonsDialog
               setIsLoading={setIsLoading}

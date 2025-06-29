@@ -264,7 +264,7 @@ export function CreateLessonDialog({ chapterId, setIsLoading, fetchData }: Creat
                       onChange={(e) => handleFileChange(e.target.files || undefined, "document")}
                     />
                     {previewDocument && (
-                      <UploadedFilePreview fileUrl={previewDocument.url} fileName={previewDocument.name} />
+                      <UploadedFilePreview fileUrl={previewDocument.url} fileName={previewDocument.name} api = {API.DOCUMENT.DOWNLOAD} />
                     )}
                     <FormMessage />
                   </FormItem>
@@ -282,7 +282,7 @@ export function CreateLessonDialog({ chapterId, setIsLoading, fetchData }: Creat
                       onChange={(e) => handleFileChange(e.target.files || undefined, "assignment")}
                     />
                     {previewAssignment && (
-                      <UploadedFilePreview fileUrl={previewAssignment.url} fileName={previewAssignment.name} />
+                      <UploadedFilePreview fileUrl={previewAssignment.url} fileName={previewAssignment.name} api = {API.DOCUMENT.DOWNLOAD} />
                     )}
                     <FormMessage />
                   </FormItem>

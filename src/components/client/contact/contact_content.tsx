@@ -132,7 +132,7 @@ const MyContact = () => {
               <h3 className="text-xl font-bold text-gray-800 mb-4">Địa Chỉ</h3>
               <div className="flex-1">
                 <p className="text-gray-600">
-                  Bình Hưng Hòa A, Tân Phú, Thành Phố Hồ Chí Minh
+                  76/84 Lê Văn Phan , Tân Phú, TPHCM
                 </p>
               </div>
             </div>
@@ -145,6 +145,7 @@ const MyContact = () => {
             Kết Nối Qua Mạng Xã Hội
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            
             <div className="text-center group">
               <div className="bg-red-500 text-white py-4 px-8 rounded-t-2xl">
                 <h3 className="text-xl font-bold">Facebook</h3>

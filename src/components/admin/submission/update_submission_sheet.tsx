@@ -177,6 +177,7 @@ export function UpdateSubmissionSheet(props: Props) {
                     <UploadedFilePreview
                       fileUrl={""}
                       fileName={submission.submissionUrl}
+                      api={API.DOCUMENT.DOWNLOAD}
                     />
                   </FormControl>
                   <FormMessage />

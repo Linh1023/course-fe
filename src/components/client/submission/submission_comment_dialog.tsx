@@ -92,9 +92,9 @@ export function SubmissionCommentDialog(props: DeleteSubmissionsDialogProps) {
                                         <UploadedFilePreview
                                             fileUrl={""}
                                             fileName={submission.submissionUrl}
+                                            api = {API.DOCUMENT.DOWNLOAD_SUBMISSION}
                                         />
                                    
-
                                 </div>
                             </div>
                         </div>

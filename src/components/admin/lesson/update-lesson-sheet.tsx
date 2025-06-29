@@ -274,7 +274,7 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, open, onOpe
                       onChange={(e) => handleFileChange(e.target.files || undefined, "document")}
                     />
                     {previewDocument ? (
-                      <UploadedFilePreview fileUrl={previewDocument.url} fileName={previewDocument.name} />
+                      <UploadedFilePreview fileUrl={previewDocument.url} fileName={previewDocument.name} api = {API.DOCUMENT.DOWNLOAD}/>
                     ) : (<>
                       {/* <UploadedFilePreview fileUrl={assigmentBlob} fileName={dataAssignment.current} /> */}
 
@@ -295,7 +295,7 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, open, onOpe
                       onChange={(e) => handleFileChange(e.target.files || undefined, "assignment")}
                     />
                     {previewAssignment ? (
-                      <UploadedFilePreview fileUrl={previewAssignment.url} fileName={previewAssignment.name} />
+                      <UploadedFilePreview fileUrl={previewAssignment.url} fileName={previewAssignment.name}   api = {API.DOCUMENT.DOWNLOAD}/>
                     ) : (<>
 
                       {/* <UploadedFilePreview fileUrl={assigmentBlob} fileName={lesson.assignmentUrl} />  */}
