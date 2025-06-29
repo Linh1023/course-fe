@@ -6,6 +6,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { type ColumnDef } from "@tanstack/react-table";
@@ -31,23 +32,30 @@ const statusMap = {
   },
 } as const;
 
-const updateStatus = async (newStatus: "active" | "inactive", id: string) => {
-  try {
-    const res = await FetchClientPutApi(
-      API.COURSE_ENROLLMENT.ADMIN_CHANGE_STATUS,
-      { status: newStatus, courseEnrollmentId: Number(id) }
-    );
+export function getColumns(
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  fetchData: () => Promise<void>
+): ColumnDef<CourseEnrollmentAdmin>[] {
+  const updateStatus = async (
+    newStatus: "active" | "inactive" | "deleted",
+    id: string
+  ) => {
+    setIsLoading(true);
+    try {
+      const res = await FetchClientPutApi(
+        API.COURSE_ENROLLMENT.ADMIN_CHANGE_STATUS,
+        { status: newStatus, courseEnrollmentId: Number(id) }
+      );
 
-    if (res.status != 200) throw new Error("Update failed");
-    else {
-      toast.success("Cập nhật trạng thái thành công");
+      if (res.status != 200) throw new Error("Update failed");
+      else {
+        toast.success("Cập nhật trạng thái thành công");
+        fetchData();
+      }
+    } catch (err) {
+      toast.error("Không thể cập nhật trạng thái");
     }
-  } catch (err) {
-    toast.error("Không thể cập nhật trạng thái");
-  }
-};
-
-export function getColumns(): ColumnDef<CourseEnrollmentAdmin>[] {
+  };
   return [
     {
       accessorKey: "accountName",
@@ -108,19 +116,19 @@ export function getColumns(): ColumnDef<CourseEnrollmentAdmin>[] {
     {
       accessorKey: "enrolledAt",
       header: () => "Ngày đăng ký",
-      cell: ({ row }) => 
-          <div className="flex space-x-2">
-            <span className="max-w-[10rem] truncate font-medium">
-              {new Date(row.getValue("enrolledAt")).toLocaleDateString("vi-VN", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </span>
-          </div>
-        
+      cell: ({ row }) => (
+        <div className="flex space-x-2">
+          <span className="max-w-[10rem] truncate font-medium">
+            {new Date(row.getValue("enrolledAt")).toLocaleDateString("vi-VN", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+        </div>
+      ),
     },
     {
       id: "actions",
@@ -166,7 +174,7 @@ export function getColumns(): ColumnDef<CourseEnrollmentAdmin>[] {
                   Duyệt
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="dark:bg-slate-500 dark:text-white bg-red-100 hover:bg-red-200 text-red-800 mt-1"
+                  className=" bg-red-100 hover:bg-red-200 text-red-800"
                   onSelect={async () =>
                     await updateStatus("inactive", row.original.id)
                   }
@@ -175,6 +183,15 @@ export function getColumns(): ColumnDef<CourseEnrollmentAdmin>[] {
                 </DropdownMenuItem>
               </>
             )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className=" bg-red-100 hover:bg-red-200 text-red-800"
+              onSelect={async () =>
+                await updateStatus("deleted", row.original.id)
+              }
+            >
+              Xóa
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ),
