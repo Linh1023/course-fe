@@ -13,9 +13,9 @@ export default function AdminLayout({
     
       <ThemeProvider
         attribute="class"
-        defaultTheme="system"
+        defaultTheme="light"
         enableSystem
-        disableTransitionOnChange
+        // disableTransitionOnChange
       >
         <SidebarProvider>
           <AppSidebar />

@@ -25,6 +25,7 @@ export function CreateCourseEnrollmentItem({
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const [hasSelected, setHasSelected] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -41,7 +42,7 @@ export function CreateCourseEnrollmentItem({
   }, []);
 
   useEffect(() => {
-    if (query.trim() === "") {
+    if (hasSelected || query.trim() === "") {
       setResults([]);
       setShowSuggestions(false);
       return;
@@ -73,7 +74,10 @@ export function CreateCourseEnrollmentItem({
       <Input
         placeholder={placeholder}
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          setHasSelected(false);
+        }}
         autoComplete="off"
       />
       <div className="absolute z-[10000] w-full">
@@ -86,6 +90,7 @@ export function CreateCourseEnrollmentItem({
                   onSelect(item);
                   setQuery(item[displayField]);
                   setShowSuggestions(false);
+                  setHasSelected(true);
                 }}
                 className="cursor-pointer px-3 py-2 hover:bg-gray-100 dark:hover:bg-slate-600"
               >

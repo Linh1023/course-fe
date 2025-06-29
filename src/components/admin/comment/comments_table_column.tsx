@@ -65,7 +65,7 @@ export function getCommentColumns(
         );
       },
     },
-    { accessorKey: "courseId", header: () => null, cell: () => null },
+    { accessorKey: "authorId", header: () => null, cell: () => null },
     {
       accessorKey: "authorName",
       header: ({ column }) => (
@@ -75,7 +75,7 @@ export function getCommentColumns(
         return (
           <a
           className="hover:underline"
-          href={`/admin/user/${row.getValue("accountId")}`}
+          href={`/admin/user/${row.getValue("authorId")}`}
         >
             <span className="max-w-[31.25rem] truncate font-medium">
               {row.getValue("authorName")}
@@ -84,7 +84,6 @@ export function getCommentColumns(
         );
       },
     },
-    { accessorKey: "authorId", header: () => null, cell: () => null },
     {
       accessorKey: "content",
       header: ({ column }) => (
