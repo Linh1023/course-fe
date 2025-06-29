@@ -1,19 +1,20 @@
 "use client";
 
 import { FetchServerGetApi } from "@/actions/server/fetch_server_api";
+import API from "@/api/api";
 import { LoaderIcon } from "@/components/share/loading-icon";
 import { Input } from "@/components/ui/input";
 import { useEffect, useRef, useState } from "react";
 
 interface CreateCourseEnrollmentItemProps {
-  apiEndpoint: string;
+  endpointType: string;
   placeholder: string;
   onSelect: (item: any) => void;
   displayField: string;
 }
 
 export function CreateCourseEnrollmentItem({
-  apiEndpoint,
+  endpointType,
   placeholder,
   onSelect,
   displayField,
@@ -52,9 +53,20 @@ export function CreateCourseEnrollmentItem({
     timeoutRef.current = setTimeout(async () => {
       setLoading(true);
       try {
-        const data = await FetchServerGetApi(
-          `${apiEndpoint}?keyword=${encodeURIComponent(query)}&page=1&size=5`
-        );
+        let endpoint;
+        console.log(endpointType == "accountId");
+        if (endpointType == "accountId")
+          endpoint = `${API.ACCOUNT.ROOT}?keyword=${encodeURIComponent(
+            query
+          )}&username=${encodeURIComponent(query)}&page=1&size=5`;
+        else
+          endpoint = `${API.COURSE.COURSE_FILTER}?name=${encodeURIComponent(
+            query
+          )}&page=1&size=5`;
+        const data = await FetchServerGetApi(endpoint);
+
+        console.log(endpoint);
+
         setResults(data.result ?? []);
         setShowSuggestions(true);
       } catch (err) {
@@ -67,7 +79,7 @@ export function CreateCourseEnrollmentItem({
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [query, apiEndpoint]);
+  }, [query, endpointType]);
 
   return (
     <div className="relative" ref={wrapperRef}>
@@ -80,7 +92,7 @@ export function CreateCourseEnrollmentItem({
         }}
         autoComplete="off"
       />
-      <div className="absolute z-[10000] w-full">
+      <div className="absolute z-[10000] w-full top-full left-0 bg-white shadow-lg rounded-md  overflow-y-auto mt-1">
         {showSuggestions && results.length > 0 && (
           <ul className="mt-1 max-h-60 overflow-y-auto rounded-md border bg-white dark:bg-black  shadow">
             {results.map((item) => (
@@ -100,11 +112,9 @@ export function CreateCourseEnrollmentItem({
           </ul>
         )}
         {loading && (
-          <div className="w-full flex justify-center">
-            <LoaderIcon
-              className="mr-1.5 size-9 animate-spin"
-              aria-hidden="true"
-            ></LoaderIcon>
+          <div className="flex items-center gap-2 px-4 py-2 text-sm text-gray-500">
+            <LoaderIcon className="animate-spin size-4" />
+            Đang tìm kiếm...
           </div>
         )}
       </div>
