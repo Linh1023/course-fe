@@ -309,6 +309,7 @@ export const FetchClientGetApiSignalNoToken = async (api: string, signal: AbortS
         const data = await res.json();
         return data;
     } catch (error) {
+        throw error;
     }
 
 }
