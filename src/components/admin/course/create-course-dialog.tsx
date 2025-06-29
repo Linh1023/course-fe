@@ -109,7 +109,7 @@ export function CreateCourseDialog({ listCategory, setIsLoading, fetchData }: Cr
         imageUrl: dataImage, // Sau nay sẽ upload lên server
         videoUrl: dataUpload, // Sau nay sẽ upload lên server
       }
-      console.log(dataFormmatted, "dataFormmatted")
+
 
       const res = await FetchServerPostApi(API.COURSE.ROOT, dataFormmatted, "/admin/course")
       if (res.status === 200) {

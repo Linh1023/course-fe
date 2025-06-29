@@ -20,6 +20,7 @@ import { Ellipsis } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { UpdateSubmissionSheet } from "./update_submission_sheet"
+import { formatDateTime } from "@/utils/format_time"
 export function getSubmissionColumns(
 
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
@@ -157,7 +158,7 @@ export function getSubmissionColumns(
         return (
           <div className="flex space-x-2">
             <span className="max-w-[31.25rem] truncate font-medium">
-              {row.getValue("submittedAt")}
+              {formatDateTime(row.getValue("submittedAt"))  }
             </span>
           </div>
         )

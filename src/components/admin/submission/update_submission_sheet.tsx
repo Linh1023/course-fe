@@ -34,6 +34,7 @@ import { FetchServerPutApi } from "@/actions/server/fetch_server_api"
 import { updateSubmissionSchema, UpdateSubmissionSchema } from "@/validation/submission_schema"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { UploadedFilePreview } from "@/components/share/upload-file-preview"
 
 
 interface Props
@@ -43,8 +44,8 @@ interface Props
   showUpdateSubmissionSheet: boolean;
   setShowUpdateSubmissionSheet: (v: boolean) => void;
 
-  setIsLoading:(v: boolean) => void;  
- fetchData:()=>void
+  setIsLoading: (v: boolean) => void;
+  fetchData: () => void
 }
 
 export function UpdateSubmissionSheet(props: Props) {
@@ -52,7 +53,7 @@ export function UpdateSubmissionSheet(props: Props) {
 
 
   const [isUpdatePending, startUpdateTransition] = React.useState(false)
-  const { submission, showUpdateSubmissionSheet, setShowUpdateSubmissionSheet,setIsLoading ,fetchData} = props;
+  const { submission, showUpdateSubmissionSheet, setShowUpdateSubmissionSheet, setIsLoading, fetchData } = props;
 
   const form = useForm<UpdateSubmissionSchema>({
     resolver: zodResolver(updateSubmissionSchema),
@@ -83,17 +84,17 @@ export function UpdateSubmissionSheet(props: Props) {
         score: input.score,
         comment: input.comment ?? "",
       }
-      const res = await FetchServerPutApi( `${API.SUBMISSON.SUBMISSION}/${submission.id}`  , req, "/admin/submission")
+      const res = await FetchServerPutApi(`${API.SUBMISSON.SUBMISSION}/${submission.id}`, req, "/admin/submission")
       if (res && res.status === 200) {
         toast.success("Thao tác thành công")
         fetchData()
         setShowUpdateSubmissionSheet(false)
-       setIsLoading(true
+        setIsLoading(true
         )
       } else {
         toast.error("Lỗi")
       }
-       startUpdateTransition(false)
+      startUpdateTransition(false)
     }
 
     fetchSaveSubmission()
@@ -173,12 +174,9 @@ export function UpdateSubmissionSheet(props: Props) {
                 <FormItem>
                   <FormLabel>File bài làm</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="File bài làm"
-                      className="resize-none"
-                      type="text"
-                      readOnly
-                      {...field}
+                    <UploadedFilePreview
+                      fileUrl={""}
+                      fileName={submission.submissionUrl}
                     />
                   </FormControl>
                   <FormMessage />

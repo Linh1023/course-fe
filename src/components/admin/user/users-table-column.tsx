@@ -18,6 +18,7 @@ import { DeleteUsersDialog } from "./delete-users-dialog"
 import { Ellipsis } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link";
+import { formatDateTime } from "@/utils/format_time"
 
 export function getColumns(
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
@@ -106,7 +107,7 @@ export function getColumns(
       cell: ({ row }) => (
         <div className="flex space-x-2">
           <span className="max-w-[10rem] truncate font-medium">
-            {new Date(row.getValue("createdAt")).toLocaleDateString("vi-VN")}
+            { formatDateTime(row.getValue("createdAt"))}
           </span>
         </div>
       ),

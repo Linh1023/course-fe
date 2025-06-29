@@ -9,6 +9,8 @@ import { usePathname, useRouter } from "next/navigation";
 import API from "@/api/api";
 import { useLoadingContext } from "@/context/loading_context";
 import { FetchServerGetApi, FetchServerPostApi } from "@/actions/server/fetch_server_api";
+import { randomQueryString } from "@/utils/random_query";
+import nProgress from "nprogress";
 
 
 export default function LessonClientLayout({ children }: { children: React.ReactNode }) {
@@ -87,16 +89,16 @@ export default function LessonClientLayout({ children }: { children: React.React
             if (lessonIndex !== -1) {
 
                 if (lessonIndex > 0) {
-                    startLoadingSpiner()
+                    nProgress.start()
                     // Lùi về bài trước trong cùng chương
                     const prevLessonId = chapter.lessons[lessonIndex - 1].id;
-                    router.push(`/lesson/${prevLessonId}`);
+                    router.push(`/lesson/${prevLessonId}?${randomQueryString()}`);
                 } else if (i > 0) {
-                    startLoadingSpiner()
+                    nProgress.start()
                     // Lùi về chương trước, bài cuối cùng
                     const prevChapter = courseInfoResponse.chapters[i - 1];
                     const prevLessonId = prevChapter.lessons[prevChapter.lessons.length - 1].id;
-                    router.push(`/lesson/${prevLessonId}`);
+                    router.push(`/lesson/${prevLessonId}?${randomQueryString()}`);
 
                 }
                 found = true;
@@ -105,7 +107,7 @@ export default function LessonClientLayout({ children }: { children: React.React
         }
 
         if (!found) {
-            console.warn("Lesson not found in any chapter.");
+         
         }
     };
 
@@ -123,17 +125,17 @@ export default function LessonClientLayout({ children }: { children: React.React
             if (lessonIndex !== -1) {
 
                 if (lessonIndex < chapter.lessons.length - 1) {
-                    startLoadingSpiner()
+                    nProgress.start()
                     // Tới bài tiếp theo trong cùng chương
                     const nextLessonId = chapter.lessons[lessonIndex + 1].id;
-                    router.push(`/lesson/${nextLessonId}`);
+                    router.push(`/lesson/${nextLessonId}?${randomQueryString()}`);
 
                 } else if (i < courseInfoResponse.chapters.length - 1) {
-                    startLoadingSpiner()
+                     nProgress.start()
                     // Tới chương kế tiếp, bài đầu tiên
                     const nextChapter = courseInfoResponse.chapters[i + 1];
                     const nextLessonId = nextChapter.lessons[0].id;
-                    router.push(`/lesson/${nextLessonId}`);
+                    router.push(`/lesson/${nextLessonId}?${randomQueryString()}`);
 
                 }
                 found = true;
@@ -142,7 +144,7 @@ export default function LessonClientLayout({ children }: { children: React.React
         }
 
         if (!found) {
-            console.warn("Lesson not found in any chapter.");
+       
         }
     };
 
@@ -163,8 +165,8 @@ export default function LessonClientLayout({ children }: { children: React.React
 
                     <main className="flex-1 overflow-y-auto h-[calc(100dvh-132px)] ">
                         <div className="p-2">
-                            <div className="mb-2">
-                                <div className="bg-white rounded-lg p-4 shadow-sm">
+                            <div className="">
+                                <div className="bg-white rounded-lg p-2 shadow-sm">
                                     <span className="font-semibold flex items-center gap-3 text-lg text-gray-800">
                                         <div className="bg-indigo-100 p-2 rounded-lg">
                                             <BookCheck className="text-indigo-600 w-5 h-5" />
@@ -186,7 +188,7 @@ export default function LessonClientLayout({ children }: { children: React.React
                         {/* Background gradient overlay */}
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-50/50 via-white/80 to-purple-50/50"></div>
 
-                        <div className="relative flex items-center justify-between p-4  mx-auto">
+                        <div className="relative flex items-center justify-between p-2  mx-auto">
 
                             {/* Left side - Chapter info */}
                             <div className="flex items-center min-w-0 flex-1 mr-6">

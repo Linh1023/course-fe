@@ -77,7 +77,6 @@ const MyContact = () => {
       setResult("Gửi thành công! Chúng tôi sẽ liên hệ lại với bạn sớm nhất.");
       (event.target as HTMLFormElement).reset();
     } else {
-      console.log("Error", data);
       setResult(data.message || "Có lỗi xảy ra, vui lòng thử lại.");
     }
   };

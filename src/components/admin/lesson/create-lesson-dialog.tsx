@@ -115,7 +115,7 @@ export function CreateLessonDialog({ chapterId, setIsLoading, fetchData }: Creat
         chapterId: chapterId,
       }
 
-      console.log(createData)
+
 
       const res = await FetchServerPostApi(API.LESSON.ROOT, createData, "/admin/course")
       if (res.status === 200) {

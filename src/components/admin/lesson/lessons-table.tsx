@@ -59,7 +59,7 @@ export function LessonsTable({ courseId, chapterId }: LessonsTableProps) {
         setDataResult(lessons.result);
         setTotalPages(lessons.totalPages);
 
-        //  Chỉ chạy nếu không bị huỷ
+
         router.replace(`${pathName}?${querySearch}`, {
           scroll: false,
         });

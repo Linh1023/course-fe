@@ -3,7 +3,7 @@
 import API from "@/api/api";
 import { Button } from "../../ui/button";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { setAccessToken, setRefreshToken } from "@/actions/server/token_store";
 import { FetchServerPostApiNoToken } from "@/actions/server/fetch_server_api";
 import { useRouter, usePathname, useSearchParams, redirect } from "next/navigation";
@@ -18,6 +18,7 @@ import { LoginGoogleAction, LoginWithCode } from "@/actions/server/login_google_
 import { useCurrentAccountContext } from "@/context/current_account_context";
 import { LoginServerAction } from "@/actions/server/login_action";
 import { useLoadingContext } from "@/context/loading_context";
+import { Eye, EyeOff } from "lucide-react";
 
 interface LoginFormProps {
   redirectUrl?: string;
@@ -36,6 +37,8 @@ const LoginForm = ({ redirectUrl, onSuccess }: LoginFormProps) => {
   const [errorLogin, setErrorLogin] = useState(false)
 
   const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext()
+
+  const [showPassword, setShowPassword] = useState(false)
 
 
   // cho nay de khi bi loi
@@ -100,6 +103,14 @@ const LoginForm = ({ redirectUrl, onSuccess }: LoginFormProps) => {
   }, [])
 
 
+  const togglePasswordVisibility = () => {
+    if (showPassword) {
+      setShowPassword(false)
+    } else {
+      setShowPassword(true)
+    }
+  };
+
   return (
     <>
 
@@ -148,11 +159,29 @@ const LoginForm = ({ redirectUrl, onSuccess }: LoginFormProps) => {
                   <div className="flex items-center">
                     <Label htmlFor="password">Mật khẩu</Label>
                   </div>
-                  <Input id="password" type="password" required
-                    placeholder="Mật khẩu"
-                    value={password}
-                    onChange={(e) => { setPassword(e.target.value); setErrorLogin(false) }}
-                  />
+                  <div className="relative">
+                    <Input id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      placeholder="Mật khẩu"
+                      value={password}
+                      onChange={(e) => { setPassword(e.target.value); setErrorLogin(false) }}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => togglePasswordVisibility()}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </Button>
+                  </div>
+
                 </div>
 
                 <Button type="submit" className="w-full bg-red-500 hover:bg-red-400"

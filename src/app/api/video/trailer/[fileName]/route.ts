@@ -5,7 +5,6 @@ import { NextRequest } from 'next/server';
 export async function GET(req: NextRequest, { params }: { params: { fileName: string } }) {
     const fileName = params.fileName;
 
-  console.log("fileName >>> ", fileName);
     const range = req.headers.get('range'); // lấy header Range
 
     const backendRes = await FetchServerGetApiRangeNoToken(`${API.VIDEO.TRAILER}/${fileName}`, range)

@@ -7,6 +7,8 @@ import PaginationCourse from "./PaginationCourse";
 import { LoaderIcon } from "@/components/share/loading-icon";
 import { FetchServerGetApi } from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
+import { randomQueryString } from "@/utils/random_query";
+import nProgress from "nprogress";
 
 // Type cho Course từ API mới
 interface Course {
@@ -22,11 +24,19 @@ interface Course {
 
 // Component Card cho mỗi khóa học
 const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
+    const router = useRouter()
+    const handleRedirect = () => {
+        nProgress.start()
+        router.push(`/course/${course.id}?${randomQueryString()}`)
+    }
+
     return (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer"
+         onClick={() => { handleRedirect() }}
+        >
             <div className="aspect-video bg-gray-200 overflow-hidden flex items-center justify-center">
                 <img
-                    src={course.imageUrl || '/placeholder-course.jpg'}
+                    src={`${API.IMAGE.VIEW}/${course.imageUrl}`}
                     alt={course.name}
                     className="w-full h-full object-cover"
                 />
@@ -39,7 +49,7 @@ const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
                     {course.price.toLocaleString('vi-VN')}đ
                 </p>
                 <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${course.status === 'pending' ? 'bg-green-100 text-green-800' : 'bg-red-400 text-white'}`}>
-                    {course.status === 'pending' ? 'Đang chờ duyệt' : 'Đã bị từ chối'}
+                    {course.status === 'pending' ? 'Chờ duyệt' : 'Đã bị từ chối'}
                 </span>
             </div>
         </div>
@@ -100,7 +110,7 @@ export default function PendingCourses() {
             if (err.name === 'AbortError') {
                 return;
             } else {
-                console.error('Lỗi khi fetch pending courses:', err);
+                console.error('Lỗi khi tải khóa học:', err);
             }
         } finally {
             if (!abortController.signal.aborted) {

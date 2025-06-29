@@ -113,7 +113,6 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
         videoUrl: urlVideo.current,
         status: input.status as "active" | "inactive",
       }
-      console.log(dataFormatted)
 
 
       const res = await FetchServerPutApi(

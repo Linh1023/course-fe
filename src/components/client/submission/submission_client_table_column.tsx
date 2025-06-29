@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge"
 import { DataTableColumnHeader } from "@/components/admin/share/data-table/data-table-column-header"
 import { SubmissionCommentDialog } from "./submission_comment_dialog"
 import { set } from "date-fns"
+import { formatDateTime } from "@/utils/format_time"
 
 export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse>[] {
     return [
@@ -133,7 +134,7 @@ export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse
                 return (
                     <div className="flex space-x-2">
                         <span className="max-w-[31.25rem] truncate font-medium">
-                            {row.getValue("submittedAt")}
+                            {formatDateTime(row.getValue("submittedAt"))  }
                         </span>
                     </div>
                 )

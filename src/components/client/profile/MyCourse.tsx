@@ -22,8 +22,7 @@ const tabs = [
 
 export default function MyCourse() {
   const [isMobile, setIsMobile] = React.useState(false);
-
-
+  const [activeTab, setActiveTab] = React.useState("inProgress");
 
   React.useEffect(() => {
     const checkMobile = () => {
@@ -45,16 +44,25 @@ export default function MyCourse() {
 
         {/* Mobile Tab */}
         <div className="border-b">
-          <div className="px-4">
-            <button className="py-3 text-sm font-medium text-blue-600 border-b-2 border-blue-600">
-              Đang học
-            </button>
+          <div className="px-4 flex gap-4">
+            {tabs.map((tab) => (
+              <button
+                key={tab.value}
+                onClick={() => setActiveTab(tab.value)}
+                className={`py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === tab.value
+                  ? "text-blue-600 border-blue-600"
+                  : "text-gray-500 border-transparent"
+                  }`}
+              >
+                {tab.name}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Mobile Content */}
         <div className="p-4">
-          <LearningCourses />
+          {activeTab === "inProgress" ? <LearningCourses /> : <PendingCourses />}
         </div>
       </div>
     );

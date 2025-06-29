@@ -45,12 +45,9 @@ export function DeleteSubmissionsDialog(props: DeleteSubmissionsDialogProps) {
 
   const handleDeteledSubmissions = async () => {
     setIsLoadingButton(true)
-    // await new Promise(resolve => setTimeout(resolve, 1000));
-
-    console.log("submissions >>> ", submissions)
 
     for (const submission of submissions) {
-      console.log(submission.id);
+
       await FetchServerDeleteApi(`${API.SUBMISSON.SUBMISSION}/${submission.id}`)
     }
  
