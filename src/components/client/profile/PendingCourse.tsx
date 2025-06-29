@@ -49,7 +49,7 @@ const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
                     {course.price.toLocaleString('vi-VN')}đ
                 </p>
                 <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${course.status === 'pending' ? 'bg-green-100 text-green-800' : 'bg-red-400 text-white'}`}>
-                    {course.status === 'pending' ? 'Đang chờ duyệt' : 'Đã bị từ chối'}
+                    {course.status === 'pending' ? 'Chờ duyệt' : 'Đã bị từ chối'}
                 </span>
             </div>
         </div>
@@ -110,7 +110,7 @@ export default function PendingCourses() {
             if (err.name === 'AbortError') {
                 return;
             } else {
-                console.error('Lỗi khi fetch pending courses:', err);
+                console.error('Lỗi khi tải khóa học:', err);
             }
         } finally {
             if (!abortController.signal.aborted) {
