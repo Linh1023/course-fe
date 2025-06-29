@@ -119,10 +119,11 @@ export const CommentCourseItem = ({
 
     setReplies((prev) => [optimisticComment, ...prev]);
     setNewReplyContent("");
-    setShowReplies(true)
+    setShowReplies(true);
 
     const res = await FetchServerPostApi(API.COMMENT.COMMENT, {
       courseId,
+      commentParentId: mainComment.id, // Gán ID của bình luận cha
       content,
     });
 
@@ -201,7 +202,11 @@ export const CommentCourseItem = ({
 
             <div className="flex items-center gap-2">
               <div className="text-xs text-gray-500 dark:text-gray-400">
-                {formatTimeShort(mainComment.createdAt)}
+                {mainComment.createdAt == "" ? (
+                  <LoaderIcon className="mr-1.5 size-4   animate-spin" />
+                ) : (
+                  formatTimeShort(mainComment.createdAt)
+                )}
               </div>
 
               {currentAccount && mainComment.createdAt != "" && (
@@ -291,7 +296,7 @@ export const CommentCourseItem = ({
                   .reverse()
                   .map((reply) => (
                     <CommentCourseItem
-                      key={reply.id}
+                      key={reply.id + reply.authorId}
                       comment={reply}
                       level={level + 1}
                       courseId={courseId}
