@@ -11,6 +11,7 @@ import { FetchClientGetApiNoToken, FetchClientGetApiSignalNoToken } from "@/acti
 import { useDebounce } from "@/hooks/use-debounce";
 import { updateQueryStringManually } from "@/utils/handle_query";
 import { useQuerySearchClientContext } from "@/context/query_search_client_context";
+import { SvgSearch } from "../share/svgSearch";
 
 const Search = () => {
   // const router = useRouter();
@@ -137,7 +138,7 @@ const Search = () => {
         setResearch(submissions.result);
         setTotalPages(submissions.totalPages);
 
-     
+
         router.replace(`${pathName}?${querySearch}`, {
           scroll: false,
         });
@@ -167,9 +168,13 @@ const Search = () => {
   return (
     <div className="p-4 h-full min-h-[55vh] mt-4 mb-8 flex flex-col lg:flex-row gap-6">
       {/* Main content */}
+
+
+      {/* Bộ lọc và sắp xếp nằm trên cùng */}
       <div className="w-full lg:w-4/5">
-        {/* Bộ lọc và sắp xếp nằm trên cùng */}
-        <div className="mb-4 space-y-2 lg:hidden">
+
+
+        {/* <div className="mb-4 space-y-2 lg:hidden">
           <div className="flex items-center gap-3 flex-wrap">
             <div className="text-sm font-medium text-gray-600">Sắp xếp:</div>
             <button
@@ -207,7 +212,81 @@ const Search = () => {
               </button>
             ))}
           </div>
+        </div> */}
+
+
+        <div className="mb-6 space-y-4 lg:hidden">
+          {/* Sort Section */}
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-4 flex-wrap">
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                </svg>
+                <span className="text-sm font-semibold text-gray-700">Sắp xếp</span>
+              </div>
+
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={() => handleSortChange("newest")}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 ${sortType === "newest"
+                      ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-200"
+                      : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200"
+                    }`}
+                >
+                  <span className="flex items-center gap-1">
+                    ✨ Mới nhất
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => handleSortChange("hot")}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 ${sortType === "hot"
+                      ? "bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg shadow-red-200"
+                      : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200"
+                    }`}
+                >
+                  <span className="flex items-center gap-1">
+                    🔥 Hot
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Category Section */}
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+                <span className="text-sm font-semibold text-gray-700">Danh mục</span>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => handleCategorySelect(category.id)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 ${selectedCategory === category.id
+                        ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-200"
+                        : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200 hover:border-gray-300"
+                      }`}
+                  >
+                    <span className="flex items-center gap-1">
+                      {selectedCategory === category.id && "✓ "}
+                      {category.name}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
+
+
+
 
         {/* Danh sách khóa học */}
         <div className="space-y-8">
@@ -232,6 +311,7 @@ const Search = () => {
 
           ) : (
             <CourseList
+              svg={<SvgSearch size={45} />}
               title={`Kết quả tìm kiếm ${nameSearch != "" ? `'${nameSearch}'` : ""}`}
               courses={research}
               layout="grid"
@@ -266,7 +346,7 @@ const Search = () => {
       </div>
 
       {/* Sidebar chỉ hiện trên desktop */}
-      <nav className="hidden lg:block w-1/5 bg-white border border-gray-200 p-4 rounded-xl shadow-md sticky top-24 h-fit lg:h-full">
+      {/* <nav className="hidden lg:block w-1/5 bg-white border border-gray-200 p-4 rounded-xl shadow-md sticky top-24 h-fit lg:h-full">
         <div className="flex items-center gap-3 flex-wrap pb-2">
           <div className="text-sm font-medium text-gray-600">Sắp xếp:</div>
           <button
@@ -313,7 +393,111 @@ const Search = () => {
             </label>
           ))}
         </div>
+      </nav> */}
+
+
+      <nav className="hidden lg:block w-1/5 bg-gradient-to-br from-white via-gray-50 to-white border border-gray-200/60 p-6 rounded-2xl shadow-lg backdrop-blur-sm sticky top-24 h-fit lg:h-full transition-all duration-300 hover:shadow-xl">
+        {/* Sort Section */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1 h-4 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></div>
+            <div className="text-sm font-semibold text-gray-700 tracking-wide">Sắp xếp</div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              onClick={() => handleSortChange("newest")}
+              className={`group relative px-4 py-2 rounded-xl border text-sm font-medium transition-all duration-200 transform hover:scale-105 ${sortType === "newest"
+                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white border-blue-500 shadow-lg shadow-blue-500/25"
+                : "text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:text-gray-800"
+                }`}
+            >
+              <span className="relative z-10">Mới nhất</span>
+              {sortType === "newest" && (
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-500 rounded-xl blur opacity-30 group-hover:opacity-40 transition-opacity"></div>
+              )}
+            </button>
+
+            <button
+              onClick={() => handleSortChange("hot")}
+              className={`group relative px-4 py-2 rounded-xl border text-sm font-medium transition-all duration-200 transform hover:scale-105 ${sortType === "hot"
+                ? "bg-gradient-to-r from-red-500 to-pink-500 text-white border-red-500 shadow-lg shadow-red-500/25"
+                : "text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:text-gray-800"
+                }`}
+            >
+              <span className="relative z-10">🔥 Hot</span>
+              {sortType === "hot" && (
+                <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-pink-400 rounded-xl blur opacity-30 group-hover:opacity-40 transition-opacity"></div>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Categories Section */}
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-1 h-4 bg-gradient-to-b from-red-500 to-pink-500 rounded-full"></div>
+            <h2 className="text-lg font-bold text-gray-800 tracking-wide">
+              Danh mục khóa học
+            </h2>
+          </div>
+
+          <div className="relative">
+            {/* Gradient overlay for scroll indication */}
+            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-b from-white to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none"></div>
+
+            <div className="space-y-2 pr-2">
+              {categories.map((category, index) => (
+                <label
+                  key={category.id}
+                  className={`group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all duration-200 transform hover:scale-[1.02] ${selectedCategory === category.id
+                    ? "bg-gradient-to-r from-red-50 to-pink-50 text-red-600 font-semibold border border-red-200 shadow-md"
+                    : "hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 text-gray-700 border border-transparent hover:border-gray-200"
+                    }`}
+                  style={{
+                    animationDelay: `${index * 50}ms`
+                  }}
+                >
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      name="category"
+                      value={category.id}
+                      checked={selectedCategory === category.id}
+                      onChange={() => handleCategorySelect(category.id)}
+                      className={`form-radio w-4 h-4 transition-all duration-200 ${selectedCategory === category.id
+                        ? "text-red-500 ring-red-500 ring-offset-2"
+                        : "text-gray-400 hover:text-red-400"
+                        }`}
+                    />
+                    {selectedCategory === category.id && (
+                      <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-20"></div>
+                    )}
+                  </div>
+
+                  <span className="text-sm  flex-1 group-hover:text-gray-800 transition-colors line-clamp-2">
+                    {category.name}
+                  </span>
+
+                  {selectedCategory === category.id && (
+                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                  )}
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Decorative elements */}
+        <div className="absolute top-4 right-4 w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full opacity-20 blur-xl"></div>
+        <div className="absolute bottom-4 left-4 w-12 h-12 bg-gradient-to-br from-red-100 to-pink-100 rounded-full opacity-20 blur-lg"></div>
       </nav>
+
+
+
+
+
     </div>
   );
 };

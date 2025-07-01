@@ -415,7 +415,7 @@ const Navigation = () => {
                           </Link>
                         )}
 
-                        <Link href={"/profile"}>
+                        <Link href={"/profile/course?page=1"}>
                           <div className="dropdown-item-custom">
                             <CircleUserRound className="mr-[15px]" /> Trang cá
                             nhân
@@ -600,7 +600,7 @@ const Navigation = () => {
                               )}
 
                               <Link
-                                href={"/profile"}
+                                href={"/profile/course?page=1"}
                                 className="rounded-md p-3 transition-colors hover:bg-muted/70"
                               >
                                 <div className="flex">
@@ -610,7 +610,7 @@ const Navigation = () => {
                                   </p>
                                 </div>
                               </Link>
-
+                              
                               <Link
                                 href={"/setting"}
                                 className="rounded-md p-3 transition-colors hover:bg-muted/70"

@@ -10,16 +10,16 @@ import { useRouter, usePathname } from "next/navigation";
 
 const tabs = [
     {
-        name: "Thông tin cá nhân",
-        value: "profile",
-        icon: User,
-        link: "/profile"
-    },
-    {
         name: "Khóa học của tôi",
         value: "courses",
         icon: ListVideo,
         link: "/profile/course?page=1"
+    },
+    {
+        name: "Thông tin cá nhân",
+        value: "profile",
+        icon: User,
+        link: "/profile"
     },
     {
         name: "Bài tập của tôi",
@@ -91,8 +91,8 @@ export default function ProfileClientLayout({ children }: { children: React.Reac
                         >
                             <button
                                 className={`w-full py-3 px-2 text-xs font-medium transition-colors relative ${getActiveTab() === tab.value
-                                        ? 'text-blue-600 border-b-2 border-blue-600'
-                                        : 'text-gray-600 hover:text-gray-900'
+                                    ? 'text-blue-600 border-b-2 border-blue-600'
+                                    : 'text-gray-600 hover:text-gray-900'
                                     }`}
                             >
                                 <div className="flex flex-col items-center gap-1">
