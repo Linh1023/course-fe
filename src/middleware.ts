@@ -49,7 +49,7 @@ export async function middleware(request: NextRequest) {
     if (courseMatch && auth.isAuthentication) {
 
         const courseId = courseMatch[1]
-        const resLessonProgress = await FetchServerGetApi(`${API.LESSON_PROGRESS.LAST_VIEWED_LESSON}/${courseId}`);
+        const resLessonProgress = await FetchServerGetApi(`${API.LESSON_PROGRESS.LAST_VIEWED_LESSON}/${courseId}`, undefined, false);
         if (resLessonProgress && resLessonProgress.status === 200) {
             const lessonProgress: LessonProgressResponse = resLessonProgress.result;
             if (lessonProgress != null && lessonProgress.lessonId != null) {

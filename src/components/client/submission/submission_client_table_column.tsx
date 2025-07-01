@@ -26,6 +26,38 @@ import { formatDateTime } from "@/utils/format_time"
 export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse>[] {
     return [
 
+          {
+            id: "actions",
+            cell: function Cell({ row }) {
+
+                const [isOpen, setIsOpen] =
+                    React.useState(false)
+
+                return (
+                    <>
+                        <SubmissionCommentDialog
+                            isOpen={isOpen}
+                            setIsOpen={setIsOpen}
+                            submission={row.original}
+                        />
+                        <Button
+                            aria-label="Open menu"
+                            variant="ghost"
+                            className="flex size-8 p-0 data-[state=open]:bg-muted"
+                            onClick={
+                                () => { setIsOpen(true) }
+                            }
+                        >
+                            {/* <Ellipsis className="size-4" aria-hidden="true" /> */}
+
+                            <div className="bg-gray-200 p-1 rounded-[5px] font-bold">Chi tiết</div>
+
+                        </Button>
+                    </>
+                )
+            },
+        },
+
         {
             accessorKey: "courseName",
             header: ({ column }) => (
@@ -62,40 +94,6 @@ export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse
             enableSorting: false,
             enableHiding: false,
         },
-
-        // {
-        //   accessorKey: "submissionUrl",
-        //   header: ({ column }) => (
-        //     <DataTableColumnHeader column={column} title="File nộp" />
-        //   ),
-        //   cell: ({ row }) => {
-        //     return (
-        //       <div className="flex space-x-2">
-        //         <span className="max-w-[31.25rem] truncate font-medium">
-        //           {row.getValue("submissionUrl")}
-        //         </span>
-        //       </div>
-        //     )
-        //   },
-        // },
-
-
-        // {
-        //   accessorKey: "score",
-        //   header: ({ column }) => (
-        //     <DataTableColumnHeader column={column} title="Điểm" />
-        //   ),
-        //   cell: ({ row }) => {
-        //     return (
-        //       <div className="flex space-x-2">
-        //         <span className="max-w-[31.25rem] truncate font-medium">
-        //           {row.getValue("score")}
-        //         </span>
-        //       </div>
-        //     )
-        //   },
-        // },
-
 
 
         {
@@ -143,43 +141,6 @@ export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse
             enableHiding: false,
         },
 
-        {
-            id: "actions",
-            cell: function Cell({ row }) {
-
-                const [isOpen, setIsOpen] =
-                    React.useState(false)
-
-                return (
-                    <>
-                        <SubmissionCommentDialog
-                            isOpen={isOpen}
-                            setIsOpen={setIsOpen}
-                            submission={row.original}
-                        />
-                        {/* <DeleteCategoriesDialog
-                  open={showDeleteCategoryDialog}
-                  onOpenChange={setShowDeleteCategoryDialog}
-                  categories={[row.original]}
-                  showTrigger={false}
-                  onSuccess={() => row.toggleSelected(false)}
-                /> */}
-                        <Button
-                            aria-label="Open menu"
-                            variant="ghost"
-                            className="flex size-8 p-0 data-[state=open]:bg-muted "
-                            onClick={
-                                () => { setIsOpen(true) }
-                            }
-                        >
-                            {/* <Ellipsis className="size-4" aria-hidden="true" /> */}
-
-                            <div className="bg-gray-200 p-1 rounded-[5px]"> Chi tiết</div>
-
-                        </Button>
-                    </>
-                )
-            },
-        },
+      
     ]
 }

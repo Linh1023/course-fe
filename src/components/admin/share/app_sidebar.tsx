@@ -8,12 +8,17 @@ import {
 import { SidebarLogo } from "./sidebar_logo";
 import { SidebarNav } from "./sidebar_nav";
 import { SidebarUser } from "./sidebar_user";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 // Menu items.
 
 export function AppSidebar() {
+  const pathname = usePathname();
+  const [open,setOpen] = useState(false);
+
   return (
-    <Sidebar side="left" className="w-64" variant="floating" collapsible="icon">
+    <Sidebar  side="left" className="w-64" variant="floating" collapsible="icon">
       <SidebarHeader>
         <SidebarLogo />
       </SidebarHeader>

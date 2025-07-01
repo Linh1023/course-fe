@@ -199,8 +199,16 @@
 }
 
 
+.sidebar-trigger-custom::before {
+  content: "📘 Danh sách";
+  font-weight: 500;
+  font-size: 14px;
+  
+}
 
-
+.sidebar-trigger-custom svg {
+  display: none;
+}
 /* #loading-spiner {
     width: 3rem;
     height: 3rem;

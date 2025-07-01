@@ -1,6 +1,6 @@
 "use server"
 
-import { FetchServerGetApi, FetchServerGetApiNoToken } from "@/actions/server/fetch_server_api"
+import { FetchServerGetApi, FetchServerGetApiNoRediect, FetchServerGetApiNoToken } from "@/actions/server/fetch_server_api"
 import API from "@/api/api"
 import CourseInfoSection from "@/components/client/course/course_info"
 import CourseInfoSkeleton from "@/components/client/course/course_info_skeleton"
@@ -16,7 +16,7 @@ interface CoursePageProps {
     }
 }
 const CoursePage = async ({ params }: CoursePageProps) => {
-    const res = await FetchServerGetApiNoToken(`${API.COURSE.ROOT}/${params.id}`);
+    const res = await FetchServerGetApiNoRediect(`${API.COURSE.ROOT}/${params.id}`);
     let courseResponse: CourseClientResponse | null = null
 
     const commentResponse: CommentClientResponse = await FetchServerGetApiNoToken(
@@ -27,7 +27,8 @@ const CoursePage = async ({ params }: CoursePageProps) => {
     }
     if (res && res.status === 200) {
         courseResponse = res.result
-    } else {
+    } 
+    else {
         redirect('/');
     }
 

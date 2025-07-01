@@ -155,7 +155,7 @@ export const FetchServerGetApiRangeNoToken = async (api: string, range:any) => {
 }
 
 // Ham fetch get api khi can access token tu dong
-export const FetchServerGetApi = async (api: string, path = "") => {
+export const FetchServerGetApi = async (api: string, path = "", isRedirect = true) => {
   try {
 
     const access_token = await getToken("access_token")
@@ -176,7 +176,9 @@ export const FetchServerGetApi = async (api: string, path = "") => {
     return data;
 
   } catch (error) {
-    redirect('/login');
+    if (isRedirect) {
+      redirect('/login');
+    }
   }
 }
 

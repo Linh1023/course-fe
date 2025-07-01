@@ -88,6 +88,18 @@ const Navigation = () => {
   //   () => searchParams.get("keyword") || ""
   // );
 
+  const pathname = usePathname()
+  const [open, setOpen] = useState(false)
+  const [openSheet, setOpenSheet] = useState(false)
+
+
+
+  // Đóng Popover mỗi khi route/pathname thay đổi
+  useEffect(() => {
+    setOpen(false)
+    setOpenSheet(false)
+  }, [pathname, searchParams])
+
   const { querySearch, setQuerySearch, isLoading, setIsLoading } = useQuerySearchClientContext()
 
   useEffect(() => {
@@ -107,7 +119,7 @@ const Navigation = () => {
         );
 
         if (res && res.status === 200) {
-      
+
           setSuggestions(res.result || []);
           setPage(res.totalPages || 0);
         } else {
@@ -203,7 +215,7 @@ const Navigation = () => {
           setQuerySearch(newQuerySearch)
         }
       } else {
-     
+
 
         const newQuerySearch = `keyword=${keyword.trim()}&page=1&size=12`
         if (newQuerySearch != querySearch) {
@@ -211,8 +223,8 @@ const Navigation = () => {
         }
         params.set("keyword", keyword.trim());
         params.set("page", "1");
-         nProgress.start()
-  
+        nProgress.start()
+
         router.push(`/search?${params.toString()}`);
 
 
@@ -221,6 +233,10 @@ const Navigation = () => {
       setSuggestions([]); // Ẩn gợi ý
     };
   }
+
+  useEffect(() => {
+    setShowSuggestions(false)
+  }, [pathName])
 
   return (
     <>
@@ -295,7 +311,7 @@ const Navigation = () => {
 
             <div className="hidden items-center gap-4 lg:flex">
               <div className="relative max-w-xl mx-auto">
-                <div className="flex items-center border rounded-md px-2 shadow-sm">
+                <div className="flex items-center border rounded-md px-2 pr-0 shadow-sm">
                   <Search
                     className="mr-2 text-gray-500"
                     onClick={updateUrlKeyword}
@@ -305,7 +321,7 @@ const Navigation = () => {
                     placeholder="Tìm kiếm khóa học..."
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
-                    className="w-full border-none focus:ring-0"
+                    className="w-[300px] border-none focus:ring-0"
                     onKeyDown={handleKeyDown}
                   />
                 </div>
@@ -326,11 +342,11 @@ const Navigation = () => {
                             className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
                           >
                             <img
-                              src={course.imageUrl}
+                              src={`${API.IMAGE.VIEW}/${course.imageUrl}`}
                               alt={course.name}
                               className="w-10 h-10 rounded object-cover"
                             />
-                            <span className="font-bold text-sm w-4/5 truncate">
+                            <span className="font-bold text-sm w-4/5  line-clamp-2">
                               {course.name}
                             </span>
                           </Link>
@@ -353,7 +369,7 @@ const Navigation = () => {
                 )}
               </div>
 
-              <Popover>
+              <Popover open={open} onOpenChange={setOpen}>
                 {currentAccount == null ? (
                   <>
                     <Link href={"/login"}>
@@ -425,7 +441,7 @@ const Navigation = () => {
               </Popover>
             </div>
 
-            <Sheet>
+            <Sheet open={openSheet} onOpenChange={setOpenSheet}>
               <div className="flex justify-end  items-center lg:hidden">
 
                 <div className="relative flex-1 max-w-xl mx-auto mr-[10px] ml-[10px] search-reponsive">
@@ -460,7 +476,7 @@ const Navigation = () => {
                               className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100  cursor-pointer"
                             >
                               <img
-                                src={course.imageUrl}
+                                src={`${API.IMAGE.VIEW}/${course.imageUrl}`}
                                 alt={course.name}
                                 className="w-10 h-10 rounded object-cover"
                               />
@@ -489,7 +505,7 @@ const Navigation = () => {
 
 
 
-                <SheetTrigger asChild >
+                <SheetTrigger asChild  >
                   <div className="flex  items-center" >
                     {currentAccount === null && (<>
                       <Link href={"/login"} className="mr-[10px]">
@@ -627,63 +643,7 @@ const Navigation = () => {
                   )}
 
                   <div className="flex flex-col gap-6">
-                    {/* <div className="relative  mx-auto w-full">
-                      <div className="flex items-center border rounded-md px-2 shadow-sm w-full">
-                        <Search
-                          className="mr-2 text-gray-500"
-                          onClick={updateUrlKeyword}
-                        />
-                        <Input
-                          type="text"
-                          placeholder="Tìm kiếm khóa học..."
-                          value={keyword}
-                          onChange={(e) => setKeyword(e.target.value)}
-                          className="w-full border-none focus:ring-0"
-                          onKeyDown={handleKeyDown}
-                        />
-                      </div>
 
-                      {showSuggestions && keyword.trim() && (
-                        <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-md mt-1 z-50 max-h-60 overflow-y-auto border">
-                          {isSearching ? (
-                            <div className="flex items-center gap-2 px-4 py-2 text-sm text-gray-500">
-                              <LoaderIcon className="animate-spin size-4" />
-                              Đang tìm kiếm...
-                            </div>
-                          ) : suggestions.length > 0 ? (
-                            <>
-                              {suggestions.slice(0, 4).map((course) => (
-                                <div
-                                  key={course.id}
-                                  className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100 cursor-default"
-                                >
-                                  <img
-                                    src={course.imageUrl}
-                                    alt={course.name}
-                                    className="w-10 h-10 rounded object-cover"
-                                  />
-                                  <span className="font-bold text-sm w-4/5 truncate">
-                                    {course.name}
-                                  </span>
-                                </div>
-                              ))}
-                              {page > 1 && (
-                                <div
-                                  className="px-4 py-2 text-sm text-red-500 hover:underline cursor-pointer"
-                                  onClick={updateUrlKeyword}
-                                >
-                                  Xem thêm...
-                                </div>
-                              )}
-                            </>
-                          ) : hasSearched ? (
-                            <div className="px-4 py-2 text-sm text-gray-500 italic">
-                              Không có kết quả tìm kiếm
-                            </div>
-                          ) : null}
-                        </div>
-                      )}
-                    </div> */}
 
                     <Link href="/" className="font-medium">
                       Trang chủ
@@ -731,18 +691,6 @@ const Navigation = () => {
                     </Link>
                   </div>
 
-                  {/* {currentAccount === null && (
-                    <>
-                      <div className="mt-6 flex flex-col gap-4">
-                        <Link href={"/login"}>
-                          <Button className="bg-[#FE4444] hover:bg-[#F87171] w-full">
-                            {" "}
-                            Đăng nhập{" "}
-                          </Button>
-                        </Link>
-                      </div>
-                    </>
-                  )} */}
                 </div>
               </SheetContent>
             </Sheet>

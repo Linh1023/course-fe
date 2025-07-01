@@ -62,6 +62,7 @@ export const CreateCourseEnrollmentDialog = ({
         fetchData();
         form.reset();
         toast.success("Tạo đăng ký khóa học thành công");
+        console.log("COURSE_ENROLLMENT >>> ",res)
         setOpen(false);
         setIsLoading(true);
       } else {

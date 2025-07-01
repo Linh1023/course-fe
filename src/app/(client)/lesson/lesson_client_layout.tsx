@@ -34,7 +34,7 @@ export default function LessonClientLayout({ children }: { children: React.React
     }, [pathName])
 
 
-    
+
     useEffect(() => {
 
         const fetchGetCourseInfo = async () => {
@@ -107,7 +107,7 @@ export default function LessonClientLayout({ children }: { children: React.React
         }
 
         if (!found) {
-         
+
         }
     };
 
@@ -131,7 +131,7 @@ export default function LessonClientLayout({ children }: { children: React.React
                     router.push(`/lesson/${nextLessonId}?${randomQueryString()}`);
 
                 } else if (i < courseInfoResponse.chapters.length - 1) {
-                     nProgress.start()
+                    nProgress.start()
                     // Tới chương kế tiếp, bài đầu tiên
                     const nextChapter = courseInfoResponse.chapters[i + 1];
                     const nextLessonId = nextChapter.lessons[0].id;
@@ -144,12 +144,10 @@ export default function LessonClientLayout({ children }: { children: React.React
         }
 
         if (!found) {
-       
+
         }
     };
 
-
-    // const viewportHeight = useViewportHeight();
 
     return (
         <>
@@ -160,7 +158,6 @@ export default function LessonClientLayout({ children }: { children: React.React
                     style={{
                         "--sidebar-width": "400px"
                     } as React.CSSProperties}
-
                 >
 
                     <main className="flex-1 overflow-y-auto h-[calc(100dvh-132px)] ">
@@ -235,7 +232,8 @@ export default function LessonClientLayout({ children }: { children: React.React
                                 </div>
 
                                 {/* Sidebar trigger */}
-                                <SidebarTrigger className="group bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 h-11 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 ease-in-out flex items-center gap-2 min-w-[120px] justify-center sidebar-trigger-custom" />
+                                <SidebarTrigger className="sidebar-trigger-custom group bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 h-11 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 ease-in-out flex items-center gap-2 min-w-[120px] justify-center sidebar-trigger-custom
+                                " />
                             </div>
                         </div>
 

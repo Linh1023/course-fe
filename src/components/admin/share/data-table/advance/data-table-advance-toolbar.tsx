@@ -10,6 +10,7 @@ import { DataTableFilterCombobox } from "./data-table-filter-combobox"
 import { DataTableMultiFilter } from "./data-table-multi-filter"
 import { DataTableFilterItem } from "./data-table-filter-item"
 import { flexRender, type Table as TanstackTable } from "@tanstack/react-table"
+import { v4 as uuidv4 } from 'uuid';
 interface DataTableAdvancedToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
   filterFields?: DataTableFilterField<TData>[]
@@ -31,7 +32,7 @@ export function DataTableAdvancedToolbar<TData>({
 
   const options = React.useMemo<DataTableFilterOption<TData>[]>(() => {
     return filterFields.map((field) => ({
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       label: field.label,
       value: field.value,
       options: field.options ?? [],
