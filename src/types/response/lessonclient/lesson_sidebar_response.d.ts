@@ -5,4 +5,5 @@ interface LessonSidebarResponse {
     duration: number;
     status: string;
     viewed: boolean;
+    assignmentUrl:string | null;
 }

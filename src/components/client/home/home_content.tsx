@@ -63,7 +63,7 @@ const HomeContent = ({ data_hot, data_newest, data_my_lesson }: HomeProps) => {
             <Carousel
               className="w-full h-72"
               loop
-              plugins={[Autoplay({ delay: 2000 })]}
+              plugins={[Autoplay({ delay: 4000 })]}
             >
               <CarouselContent>
                 <CarouselItem>

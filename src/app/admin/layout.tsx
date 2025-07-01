@@ -17,8 +17,8 @@ export default function AdminLayout({
         enableSystem
         // disableTransitionOnChange
       >
-        <SidebarProvider>
-          <AppSidebar />
+        <SidebarProvider >
+          <AppSidebar  />
           <main className="relative flex w-full flex-1 flex-col bg-background ">
             <header className="flex h-16 shrink-0 items-center gap-2 ">
               <div className="flex items-center gap-2 p-4">

@@ -20,11 +20,11 @@ const LessonCollapsibleItem = (props: Props) => {
     const parts = pathName.split('/');
     const lessonId = parts[2];
     const handleLesson = () => {
-      
+
         if (lessonId != lessonSidebarResponse.id) {
             router.push(`/lesson/${lessonSidebarResponse.id}?${randomQueryString()}`)
         }
-      
+
     }
     return (
         <>
@@ -61,7 +61,7 @@ const LessonCollapsibleItem = (props: Props) => {
 
                     <div className="flex-1 min-w-0">
                         <p className={`
-                text-sm font-medium truncate leading-relaxed
+                text-sm font-medium line-clamp-2 leading-relaxed
                 ${lessonId === lessonSidebarResponse.id
                                 ? 'text-white'
                                 : 'text-gray-800 group-hover:text-gray-900'
@@ -72,6 +72,7 @@ const LessonCollapsibleItem = (props: Props) => {
 
                         {/* Lesson status indicator */}
                         <div className="flex items-center mt-1 space-x-2">
+
                             {(lessonSidebarResponse.viewed || clickedLessons.includes(lessonSidebarResponse.id)) && (
                                 <span className={`
                         text-xs px-2 py-0.5 rounded-full font-medium
@@ -79,23 +80,32 @@ const LessonCollapsibleItem = (props: Props) => {
                                         ? 'bg-white/20 text-white'
                                         : 'bg-green-100 text-green-700'
                                     }
-                    `}>
+                                  `}>
                                     Đã xem
                                 </span>
                             )}
 
-                            {lessonId === lessonSidebarResponse.id && (
-                                <span className="text-xs bg-white/20 text-white px-2 py-0.5 rounded-full font-medium">
-                                    Đang học
-                                </span>
-                            )}
+
+                            {
+                                lessonSidebarResponse.assignmentUrl && (<>
+                                    <span className={`
+                                    text-xs px-2 py-0.5 rounded-full font-medium
+                                    ${lessonId === lessonSidebarResponse.id
+                                            ? 'bg-white/20 text-white'
+                                            : 'bg-red-400 text-white'
+                                        }
+                                  `}>
+                                        Có bài tập
+                                    </span>
+                                </>)
+                            }
                         </div>
                     </div>
                 </div>
 
                 {/* Right side - Duration */}
-                <div className={`
-        flex items-center ml-4 text-sm font-medium
+                <div className={` 
+        sm:flex  items-center ml-4 text-sm font-medium 
         ${lessonId === lessonSidebarResponse.id
                         ? 'text-white/90'
                         : 'text-gray-500 group-hover:text-gray-700'

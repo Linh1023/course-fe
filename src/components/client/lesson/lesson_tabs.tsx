@@ -30,7 +30,7 @@ const LessonTabs = (props: Props) => {
     const [isSubmitted, setIsSubmitted] = useState(lessonResponse.submissionUrl ? true : false)
     const [isLoadingSubmitted, setIsLoadingSubmitted] = useState(false)
 
-    const [previewSubmisison, setPreviewSubmission] = useState<{ url: string; name: string } | null>({url : lessonResponse.submissionUrl, name: lessonResponse.submissionUrl})
+    const [previewSubmisison, setPreviewSubmission] = useState<{ url: string; name: string } | null>({ url: lessonResponse.submissionUrl, name: lessonResponse.submissionUrl })
 
 
     const pathName = usePathname()
@@ -44,7 +44,7 @@ const LessonTabs = (props: Props) => {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
 
- 
+
 
 
     const uploadDocuments = async (file: any) => {
@@ -71,7 +71,7 @@ const LessonTabs = (props: Props) => {
                 toast.error("Nộp bài thất bại vui lòng thử lại sau")
                 return
             }
-   
+
             const req: SubmissionClientRequest = {
                 lessonId: lessonResponse.id,
                 submissionUrl: dataDocument
@@ -82,7 +82,7 @@ const LessonTabs = (props: Props) => {
                 toast.success("Nộp bài thành công")
                 setIsSubmitted(true)
                 // await fetch(dataDocument)
-          
+
 
             } else {
                 toast.error("Lỗi")
@@ -96,17 +96,33 @@ const LessonTabs = (props: Props) => {
     }
 
 
-    const handleFileChange = async (event: any) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
+        if (!file) return;
 
-        setFile(file)
-        const url = URL.createObjectURL(file)
+        // Kiểm tra định dạng cho phép
+        const allowedTypes = [
+            'application/pdf', // .pdf
+            'application/msword', // .doc
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' // .docx
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            toast.error("Chỉ cho phép nộp file .pdf, .doc, hoặc .docx");
+            event.target.value = ""; // reset input
+            return;
+        }
+
+        // Nếu đúng định dạng thì xử lý
+        setFile(file);
+        const url = URL.createObjectURL(file);
         setPreviewSubmission({
             url: url,
             name: file.name,
-        })
-        setIsEmptyInputSubmiss(false)
-    }
+        });
+        setIsEmptyInputSubmiss(false);
+    };
+
 
     return (
         <>
@@ -145,7 +161,7 @@ const LessonTabs = (props: Props) => {
                                 <UploadedFilePreview
                                     fileUrl={""}
                                     fileName={lessonResponse.documentUrl}
-                                    api = {API.DOCUMENT.DOWNLOAD_DOCUMENT}
+                                    api={API.DOCUMENT.DOWNLOAD_DOCUMENT}
                                 />
                             </div>
                         </>)}
@@ -190,7 +206,7 @@ const LessonTabs = (props: Props) => {
                                         <UploadedFilePreview
                                             fileUrl={""}
                                             fileName={lessonResponse.assignmentUrl}
-                                            api = {API.DOCUMENT.DOWNLOAD_ASSIGNMENT}
+                                            api={API.DOCUMENT.DOWNLOAD_ASSIGNMENT}
                                         />
                                     }
                                 </div>
@@ -204,14 +220,14 @@ const LessonTabs = (props: Props) => {
 
 
 
-                            {(isSubmitted ) ? (
+                            {(isSubmitted) ? (
                                 <>
                                     {
                                         previewSubmisison && (<>
                                             <UploadedFilePreview
                                                 fileUrl={previewSubmisison.url}
                                                 fileName={previewSubmisison.name}
-                                                 api = {API.DOCUMENT.DOWNLOAD_SUBMISSION}
+                                                api={API.DOCUMENT.DOWNLOAD_SUBMISSION}
                                             />
                                         </>)
                                     }
@@ -232,7 +248,7 @@ const LessonTabs = (props: Props) => {
                                 </>
                             )}
 
-                            {isSubmitted === false  && (
+                            {isSubmitted === false && (
 
                                 <div className="flex  justify-center">
 

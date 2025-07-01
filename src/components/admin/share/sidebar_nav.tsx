@@ -20,6 +20,7 @@ import {
   Settings,
   Users,
 } from "lucide-react";
+import { useState } from "react";
 
 export const SidebarNav = () => {
   const items = [
@@ -68,9 +69,9 @@ export const SidebarNav = () => {
   };
   const pathname = usePathname();
   return (
-    <SidebarGroup>
-      <SidebarGroupContent>
-        <SidebarMenu>
+    <SidebarGroup  >
+      <SidebarGroupContent >
+        <SidebarMenu >
           {items.map((item) => {
             const isActive = pathname === item.url;
 
