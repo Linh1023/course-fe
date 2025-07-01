@@ -122,7 +122,7 @@ export const SidebarUser = () => {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               
-              <a href={"/profile"}>
+              <a href={"/profile/course?page=1"}>
                 <DropdownMenuItem className="cursor-pointer">
                   <CircleUserRound />
                   Thông tin cá nhân

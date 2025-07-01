@@ -9,7 +9,7 @@ interface CourseListProps {
   layout?: 'grid' | 'list'
   seeMoreLink?: string
   isProgress?: boolean
-  
+  svg?:React.ReactNode
 }
 
 const CourseList: React.FC<CourseListProps> = ({
@@ -18,6 +18,7 @@ const CourseList: React.FC<CourseListProps> = ({
   layout = 'grid',
   seeMoreLink,
   isProgress,
+  svg
 }) => {
   const layoutClass =
     layout === 'grid'
@@ -28,7 +29,13 @@ const CourseList: React.FC<CourseListProps> = ({
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
+       <div className='flex items-center gap-x-2' >
+        {svg && (<>
+         {svg}
+        </>)}
         <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
+       </div>
+        
         {seeMoreLink && (
           <Link
             href={`/search?${seeMoreLink}`}
