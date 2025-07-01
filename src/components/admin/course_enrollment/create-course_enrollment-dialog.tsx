@@ -58,15 +58,22 @@ export const CreateCourseEnrollmentDialog = ({
         API.COURSE_ENROLLMENT.CREATE_COURSE_ENROLLMENT,
         input
       ); // Updated to correct endpoint
+
+      console.log(res);
       if (res.status === 200) {
         fetchData();
         form.reset();
         toast.success("Tạo đăng ký khóa học thành công");
-        console.log("COURSE_ENROLLMENT >>> ",res)
+        console.log("COURSE_ENROLLMENT >>> ", res);
         setOpen(false);
         setIsLoading(true);
       } else {
-        toast.error("Tạo đăng ký khóa học thất bại, vui lòng thử lại sau");
+        console.log(res.errors[0].code)
+        if ((res.errors[0].code == "COURSE_ENROLLMENT_1"))
+          toast.error("Khóa học không tồn tại");
+        if ((res.errors[0].code == "COURSE_ENROLLMENT_2"))
+          toast.error("Khóa học đã được đăng ký trước đó");
+        else toast.error("Tạo đăng ký khóa học thất bại, vui lòng thử lại sau");
       }
     });
   };
@@ -98,7 +105,7 @@ export const CreateCourseEnrollmentDialog = ({
                   <FormLabel>Khóa học</FormLabel>
                   <FormControl>
                     <CreateCourseEnrollmentItem
-                      endpointType={'courseId'}
+                      endpointType={"courseId"}
                       placeholder="Tìm khóa học..."
                       onSelect={(item) => field.onChange(item.id)}
                     />
