@@ -67,7 +67,13 @@ export const CreateCourseEnrollmentDialog = ({
         setOpen(false);
         setIsLoading(true);
       } else {
-        handleError(res.errors);
+        if (res.errors && Array.isArray(res.errors)) {
+          res.errors.forEach((err: { code: string }) => {
+            handleError(err.code);
+          });
+        } else {
+          toast.error("Có lỗi xảy ra. Vui lòng thử lại sau.");
+        }
       }
     });
   };
@@ -77,7 +83,6 @@ export const CreateCourseEnrollmentDialog = ({
         errorCode as keyof typeof CourseEnrollmentErrorCode
       ];
     if (errorMessage) {
-      toast.error(errorMessage);
       switch (errorCode) {
         case "COURSE_ENROLLMENT_2":
           toast.error("Khóa học đã được đăng ký trước đó");

@@ -13,6 +13,9 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
 import { toast } from "sonner";
 import { DataTableColumnHeader } from "../share/data-table/data-table-column-header";
+import { useState } from "react";
+import { DeleteCourseEnrolmentsDialog } from "./delete_course_enrollment_dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const statusMap = {
   active: {
@@ -46,6 +49,7 @@ export function getColumns(
         API.COURSE_ENROLLMENT.ADMIN_CHANGE_STATUS,
         { status: newStatus, courseEnrollmentId: Number(id) }
       );
+      console.log(res);
 
       if (res.status != 200) throw new Error("Update failed");
       else {
@@ -58,6 +62,31 @@ export function getColumns(
   };
   return [
     {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+          className="translate-y-0.5"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          className="translate-y-0.5"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    { accessorKey: "accountId", header: () => null, cell: () => null },
+    {
       accessorKey: "accountName",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Tên học viên" />
@@ -68,12 +97,22 @@ export function getColumns(
           href={`/admin/user/${row.getValue("accountId")}`}
         >
           <span className="max-w-[10rem] truncate font-medium">
-            {row.getValue("accountName")}  ({row.getValue("username")})
+            {row.getValue("accountName")}
           </span>
         </a>
       ),
     },
-    { accessorKey: "username", header: () => null, cell: () => null },
+    {
+      accessorKey: "username",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Tên tài khoản" />
+      ),
+      cell: ({ row }) => (
+        <span className="max-w-[10rem] truncate font-medium">
+          {row.getValue("username")}
+        </span>
+      ),
+    },
     {
       accessorKey: "courseName",
       header: ({ column }) => (
@@ -90,7 +129,6 @@ export function getColumns(
         </a>
       ),
     },
-    { accessorKey: "accountId", header: () => null, cell: () => null },
     {
       accessorKey: "status",
       header: ({ column }) => (
@@ -133,69 +171,92 @@ export function getColumns(
     },
     {
       id: "actions",
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="flex size-8 p-0 data-[state=open]:bg-muted"
-            >
-              <Ellipsis className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
-            {row.original.status === "active" && (
-              <DropdownMenuItem
-                className="bg-red-100 hover:bg-red-200 text-red-800"
-                onSelect={async () =>
-                  await updateStatus("inactive", row.original.id)
-                }
-              >
-                Ngưng kích hoạt
-              </DropdownMenuItem>
-            )}
-            {row.original.status === "inactive" && (
-              <DropdownMenuItem
-                className="bg-green-100 hover:bg-green-200 text-green-800"
-                onSelect={async () =>
-                  await updateStatus("active", row.original.id)
-                }
-              >
-                Kích hoạt
-              </DropdownMenuItem>
-            )}
-            {row.original.status === "pending" && (
-              <>
-                <DropdownMenuItem
-                  className="dark:bg-slate-500 dark:text-white bg-green-100 hover:bg-green-200 text-green-800"
-                  onSelect={async () =>
-                    await updateStatus("active", row.original.id)
-                  }
+      cell: function ({ row }) {
+        const [showDeleteCommentDialog, setShowDeleteCommentDialog] =
+          useState(false);
+
+        return (
+          <>
+            <DeleteCourseEnrolmentsDialog
+              open={showDeleteCommentDialog}
+              onOpenChange={setShowDeleteCommentDialog}
+              courseEnrolments={[row.original]}
+              showTrigger={false}
+              onSuccess={() => {
+                row.toggleSelected(false);
+                setIsLoading(true);
+                fetchData();
+              }}
+            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="flex size-8 p-0 data-[state=open]:bg-muted"
                 >
-                  Duyệt
-                </DropdownMenuItem>
+                  <Ellipsis className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                {row.original.status === "active" && (
+                  <DropdownMenuItem
+                    className="bg-red-100 hover:bg-red-200 text-red-800"
+                    onSelect={async () =>
+                      await updateStatus("inactive", row.original.id)
+                    }
+                  >
+                    Ngưng kích hoạt
+                  </DropdownMenuItem>
+                )}
+                {row.original.status === "inactive" && (
+                  <DropdownMenuItem
+                    className="bg-green-100 hover:bg-green-200 text-green-800"
+                    onSelect={async () =>
+                      await updateStatus("active", row.original.id)
+                    }
+                  >
+                    Kích hoạt
+                  </DropdownMenuItem>
+                )}
+                {row.original.status === "pending" && (
+                  <>
+                    <DropdownMenuItem
+                      className="dark:bg-slate-500 dark:text-white bg-green-100 hover:bg-green-200 text-green-800"
+                      onSelect={async () =>
+                        await updateStatus("active", row.original.id)
+                      }
+                    >
+                      Duyệt
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className=" bg-red-100 hover:bg-red-200 text-red-800"
+                      onSelect={async () =>
+                        await updateStatus("inactive", row.original.id)
+                      }
+                    >
+                      Từ chối
+                    </DropdownMenuItem>
+                  </>
+                )}
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className=" bg-red-100 hover:bg-red-200 text-red-800"
-                  onSelect={async () =>
-                    await updateStatus("inactive", row.original.id)
-                  }
+                  onSelect={() => {
+                    setTimeout(() => {
+                      setShowDeleteCommentDialog(true);
+                    }, 0);
+                  }}
+                  // onSelect={async () =>
+                  //   await updateStatus("deleted", row.original.id)
+                  // }
                 >
-                  Từ chối
+                  Xóa
                 </DropdownMenuItem>
-              </>
-            )}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className=" bg-red-100 hover:bg-red-200 text-red-800"
-              onSelect={async () =>
-                await updateStatus("deleted", row.original.id)
-              }
-            >
-              Xóa
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </>
+        );
+      },
     },
   ];
 }
