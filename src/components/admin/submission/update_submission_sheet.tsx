@@ -62,7 +62,9 @@ export function UpdateSubmissionSheet(props: Props) {
       courseLessonName: `${submission.courseName} (${submission.lessonName})`,
       score: submission.score == null ? "0" : submission.score.toString(),
       comment: submission.comment ?? "",
-      submissionUrl: submission.submissionUrl ?? ""
+      submissionUrl: submission.submissionUrl ?? "",
+      assignmentUrl: submission.assignmentUrl ?? ""
+      
     },
   })
 
@@ -72,7 +74,8 @@ export function UpdateSubmissionSheet(props: Props) {
       courseLessonName: `${submission.courseName} (${submission.lessonName})`,
       score: submission.score == null ? "0" : submission.score.toString(),
       comment: submission.comment ?? "",
-      submissionUrl: submission.submissionUrl ?? ""
+      submissionUrl: submission.submissionUrl ?? "",
+      assignmentUrl: submission.assignmentUrl ?? ""
     })
   }, [submission, form])
 
@@ -160,6 +163,24 @@ export function UpdateSubmissionSheet(props: Props) {
                       className="resize-none"
                       readOnly
                       {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="assignmentUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>File bài tập</FormLabel>
+                  <FormControl>
+                    <UploadedFilePreview
+                      fileUrl={""}
+                      fileName={submission.assignmentUrl}
+                      api={API.DOCUMENT.DOWNLOAD}
                     />
                   </FormControl>
                   <FormMessage />

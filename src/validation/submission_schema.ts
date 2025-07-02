@@ -14,6 +14,7 @@ export const updateSubmissionSchema = z.object({
         ),
     comment :z.string().default(""),
     submissionUrl : z.string(),
+    assignmentUrl: z.string(),
 
 })
 

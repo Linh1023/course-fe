@@ -67,22 +67,15 @@ export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse
             ),
             cell: ({ row }) => {
 
-                const [isOpen, setIsOpen] =
-                    React.useState(false)
+              
 
                 return (
                     <>
-                        <SubmissionCommentDialog
-                            isOpen={isOpen}
-                            setIsOpen={setIsOpen}
-                            submission={row.original}
-
-                        />
+                      
 
                         <div className="flex space-x-2 "
-                        onClick={() => {setIsOpen(true)}}
                         >
-                            <span className="max-w-[31.25rem] truncate font-medium  hover:underline cursor-pointer">
+                            <span className="max-w-[31.25rem] truncate font-medium">
                                 {row.getValue("courseName")}
                             </span>
                         </div>

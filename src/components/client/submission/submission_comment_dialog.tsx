@@ -57,9 +57,9 @@ export function SubmissionCommentDialog(props: DeleteSubmissionsDialogProps) {
                     </DialogHeader>
                 </div>
 
-                <div className="p-2 space-y-2">
+                <div className="p-1 space-y-2">
                     {/* Course and Lesson Info */}
-                    <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                    <div className="bg-white rounded-lg border border-gray-200 p-2 shadow-sm">
                         <div className="flex items-start gap-3">
                             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                 <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,30 +78,45 @@ export function SubmissionCommentDialog(props: DeleteSubmissionsDialogProps) {
                     </div>
 
                     {/* Score Section */}
-                    <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                    <div className="bg-white rounded-lg border border-gray-200 p-2 shadow-sm">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                 <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
-                            <div className="flex-1">
-                                <h3 className="font-medium text-gray-800 mb-1">File bài làm</h3>
-                                <div className="flex items-center gap-2">
-                                
+                            <div>
+                                <div className="flex-1 mb-[10px]">
+                                    <h3 className="font-medium text-gray-800 mb-1">File bài tập của bài học</h3>
+                                    <div className="flex items-center gap-2">
+
+                                        <UploadedFilePreview
+                                            fileUrl={""}
+                                            fileName={submission.assignmentUrl}
+                                            api={API.DOCUMENT.DOWNLOAD_ASSIGNMENT}
+                                        />
+
+                                    </div>
+                                </div>
+                                <div className="flex-1">
+                                    <h3 className="font-medium text-gray-800 mb-1">File bài làm của bạn</h3>
+                                    <div className="flex items-center gap-2">
+
                                         <UploadedFilePreview
                                             fileUrl={""}
                                             fileName={submission.submissionUrl}
-                                            api = {API.DOCUMENT.DOWNLOAD_SUBMISSION}
+                                            api={API.DOCUMENT.DOWNLOAD_SUBMISSION}
                                         />
-                                   
+
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
 
                     {/* Score Section */}
-                    <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                    <div className="bg-white rounded-lg border border-gray-200 p-2 shadow-sm">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                 <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,7 +138,7 @@ export function SubmissionCommentDialog(props: DeleteSubmissionsDialogProps) {
                     </div>
 
                     {/* Comment Section */}
-                    <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                    <div className="bg-white rounded-lg border border-gray-200 p-2 shadow-sm">
                         <div className="flex items-start gap-3">
                             <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
                                 <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
