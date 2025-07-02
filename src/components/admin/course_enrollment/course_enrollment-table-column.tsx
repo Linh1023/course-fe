@@ -172,10 +172,9 @@ export function getColumns(
     },
     {
       id: "actions",
-      cell: function ({ row }) {
-        const [showDeleteCommentDialog, setShowDeleteCommentDialog] =
-          useState(false);
-
+      cell: function Cell({ row }) {
+        const [showDeleteCommentDialog, setShowDeleteCommentDialog] =  useState(false);
+      
         return (
           <>
             <DeleteCourseEnrolmentsDialog
