@@ -77,7 +77,7 @@ export default function MyCourse() {
             value={tab.value}
             className="rounded-none bg-background h-full data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-primary"
           >
-            <code className="text-[15px] font-mono">{tab.name}</code>
+            <span className="text-[15px]">{tab.name}</span>
             {tab.count ? (
               <span className="ml-1 inline-flex items-center justify-center h-4 px-2 text-xs font-medium bg-primary text-primary-foreground rounded-full">
                 {tab.count}

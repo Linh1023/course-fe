@@ -25,17 +25,17 @@ export const formatTimeShort = (dateString: string): string => {
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
 
-  export const formatTimeWithDaysHoursMinutes = (seconds: number) => {
+  export const formatTimeWithDaysHoursMinutes = (seconds: number, isFullText = true) => {
     const days = Math.floor(seconds / 86400);
     const hours = Math.floor((seconds % 86400) / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
     if (days > 0) {
-      return `${days} ngày ${hours} giờ ${mins} phút`;
+      return `${days} ${isFullText ? "ngày":"d"} ${hours} ${isFullText ? "giờ":"h"} ${mins} ${isFullText ? "phút":"p"}`;
     }
     if (hours > 0) {
-      return `${hours} giờ ${mins} phút`;
+      return `${hours} ${isFullText ? "giờ":"h"} ${mins} ${isFullText ? "phút":"p"}`;
     }
-    return `${mins} phút`;
+    return `${mins} ${isFullText ? 'phút' : 'p'}`;
   }
 
   export function formatDateTime(input: string): string {

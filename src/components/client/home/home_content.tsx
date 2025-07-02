@@ -19,6 +19,9 @@ import CourseList from "./CourseList";
 import { Facebook, PhoneCall } from "lucide-react";
 import Link from "next/link";
 import { useQuerySearchClientContext } from "@/context/query_search_client_context";
+import { SvgHot } from "../share/svgHot";
+import SvgNew from "../share/svgNew";
+import { SvgLearning } from "../share/svgLearning";
 
 interface HomeProps {
   data_hot: CourseCardResponse[];
@@ -28,7 +31,7 @@ interface HomeProps {
 
 const HomeContent = ({ data_hot, data_newest, data_my_lesson }: HomeProps) => {
   const router = useRouter();
-  
+
   const { startLoadingSpiner, stopLoadingSpiner } = useLoadingContext();
   const [enrollCourse, setEnrollCourse] = useState<CourseCardResponse[]>(data_my_lesson);
   const [isProgress, setIsProgress] = useState(true);
@@ -238,7 +241,7 @@ const HomeContent = ({ data_hot, data_newest, data_my_lesson }: HomeProps) => {
 
                         {/* CTA Button */}
                         <Link href={"/search?page=1&sort=newest"}
-                        onClick={() => {
+                          onClick={() => {
                             const newQuerySearch = `page=1&size=12&sort=newest`
                             if (newQuerySearch != querySearch) {
                               setQuerySearch(newQuerySearch)
@@ -284,70 +287,108 @@ const HomeContent = ({ data_hot, data_newest, data_my_lesson }: HomeProps) => {
             </Carousel>
           </div>
 
-          {/* Khóa học đang học - HIỂN THỊ trên mobile/tablet, ẨN desktop */}
-          {enrollCourse.length > 0 && (
-            <div className="block lg:hidden mb-8">
-              <CourseList
-                title="Khóa học đang học"
-                courses={enrollCourse}
-                layout="list"
-                isProgress={isProgress}
-              />
-            </div>
-          )}
 
           {/* Các danh sách khóa học khác */}
           <div className="space-y-8">
             <CourseList
+              svg={<SvgHot size={40} />}
               title="Khóa học nổi bật"
               courses={data_hot}
               layout="grid"
               seeMoreLink="sort=hot&page=1&size=12"
             />
             <CourseList
+              svg={<SvgNew size={45} />}
               title="Khóa học mới ra mắt"
               courses={data_newest}
               layout="grid"
               seeMoreLink="sort=newest&page=1&size=12"
             />
-            {/* <CourseList
-              title="Khóa học mới ra mắt"
-              courses={data_newest}
-              layout="grid"
-              seeMoreLink="/search?category=newest"
-            /> */}
           </div>
         </div>
 
+
+          {/* Khóa học đang học - HIỂN THỊ trên mobile/tablet, ẨN desktop */}
+          {enrollCourse.length > 0 && (
+            <div className="block lg:hidden mb-8 bg-gradient-to-br from-white to-gray-50 p-4 rounded-3xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+              <CourseList
+                svg={<SvgLearning />}
+                title="Khóa học đang học"
+                courses={enrollCourse}
+                layout="list"
+                isProgress={isProgress}
+              />
+              {enrollCourse.length > 2 && (
+                <div className="flex justify-center pt-3">
+                  <Link
+                    href="/profile/course?page=1"
+                    className="group relative inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105"
+                  >
+                    <span>Xem thêm</span>
+                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+
         {/* Cột phải - KHÓA HỌC ĐANG HỌC chỉ hiện desktop asdasd */}
-        { enrollCourse.length > 0 && (
-          <div className="hidden lg:flex lg:col-span-1 flex-col space-y-4 bg-gray-100 p-4 rounded-xl">
-            <CourseList
-              title="Khóa học đang học"
-              courses={enrollCourse}
-              layout="list"
-              isProgress={isProgress}
-            />
-
-            {enrollCourse.length > 3 && (<>
-              <div className="flex justify-center">
-                <Link href={"/profile/course"} className="text-[#fe7171]">Xem thêm</Link>
+        {enrollCourse.length > 0 && (
+          <div className="hidden lg:flex lg:col-span-1 flex-col space-y-1 bg-gradient-to-br from-white to-gray-50 p-4 rounded-3xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+            {/* Header với icon */}
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
               </div>
+              <h3 className="text-lg font-bold text-gray-800 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                Khóa học đang học
+              </h3>
+            </div>
 
-            </>)}
+            {/* Course List Container */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl opacity-30"></div>
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-3 pt-1 border border-white/50 shadow-sm">
+                <CourseList
+                  title=""
+                  courses={enrollCourse}
+                  layout="list"
+                  isProgress={isProgress}
+                />
+              </div>
+            </div>
 
-            {/* <div className="flex gap-4 items-center justify-center pt-4">
-              <Facebook
-                href=""
-                className="w-8 h-8 hover:text-red-500 cursor-pointer rounded"
-              />
-              <PhoneCall
-                href=""
-                className="w-8 h-8 hover:text-red-500 cursor-pointer rounded"
-              />
-            </div> */}
+            {/* View More Button */}
+            {enrollCourse.length > 2 && (
+              <div className="flex justify-center pt-1">
+                <Link
+                  href="/profile/course?page=1"
+                  className="group relative inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105"
+                >
+                  <span>Xem thêm</span>
+                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+
+                </Link>
+              </div>
+            )}
+
+            {/* Decorative elements */}
+            <div className="absolute top-4 right-4 w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full opacity-60"></div>
+            <div className="absolute bottom-6 left-4 w-1 h-1 bg-gradient-to-r from-pink-400 to-rose-500 rounded-full opacity-40"></div>
           </div>
         )}
+
+
+
+
+
       </div>
     </div>
   );
