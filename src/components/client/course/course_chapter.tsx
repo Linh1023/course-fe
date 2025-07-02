@@ -7,7 +7,7 @@ interface CourseChaptersProps {
 }
 export function CourseChapters({ chapters }: CourseChaptersProps) {
   return (
-    <Accordion type="multiple" className="w-full flex flex-col space-y-2"  defaultValue={["item-0"]}>
+    <Accordion type="multiple" className="w-full flex flex-col  "  defaultValue={["item-0"]}>
       <div className=" from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
         <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
           <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -17,7 +17,7 @@ export function CourseChapters({ chapters }: CourseChaptersProps) {
         </h2>
       </div>
       {chapters.length === 0 && (
-        <div className="text-sm text-muted-foreground">Chưa có nội dung</div>
+        <div className="text-sm text-muted-foreground p-2 mt-0">Chưa có nội dung</div>
       )}
       {/* {chapters.map((chapter, index) => (
         <AccordionItem key={index} value={`item-${index}`} className="border-none">
