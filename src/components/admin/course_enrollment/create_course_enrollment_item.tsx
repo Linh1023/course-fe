@@ -61,7 +61,6 @@ export function CreateCourseEnrollmentItem({
         else
           endpoint = `${API.COURSE.COURSE_FILTER}?keyword=${debounceQuery}&page=1&size=5`;
 
-        console.log(endpoint);
         const data = await FetchServerGetApi(endpoint);
 
         setResults(data.result ?? []);

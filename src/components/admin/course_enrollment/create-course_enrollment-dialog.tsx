@@ -31,6 +31,7 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { CreateCourseEnrollmentItem } from "./create_course_enrollment_item";
+import CourseEnrollmentErrorCode from "@/exception/course_enrollment_error_code";
 
 interface CreateCourseEnrollmentDialogProps {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -58,17 +59,40 @@ export const CreateCourseEnrollmentDialog = ({
         API.COURSE_ENROLLMENT.CREATE_COURSE_ENROLLMENT,
         input
       ); // Updated to correct endpoint
+
       if (res.status === 200) {
         fetchData();
         form.reset();
         toast.success("Tạo đăng ký khóa học thành công");
-        console.log("COURSE_ENROLLMENT >>> ",res)
         setOpen(false);
         setIsLoading(true);
       } else {
-        toast.error("Tạo đăng ký khóa học thất bại, vui lòng thử lại sau");
+        handleError(res.errors);
       }
     });
+  };
+  const handleError = (errorCode: string) => {
+    const errorMessage: string =
+      CourseEnrollmentErrorCode[
+        errorCode as keyof typeof CourseEnrollmentErrorCode
+      ];
+    if (errorMessage) {
+      toast.error(errorMessage);
+      switch (errorCode) {
+        case "COURSE_ENROLLMENT_2":
+          toast.error("Khóa học đã được đăng ký trước đó");
+          break;
+        case "COURSE_ENROLLMENT_1":
+          toast.error("Khóa học không tồn tại");
+          break;
+
+        default:
+          toast.error("Có lỗi xảy ra. Vui lòng thử lại sau.");
+          break;
+      }
+    } else {
+      toast.error("Có lỗi xảy ra. Vui lòng thử lại sau.");
+    }
   };
 
   return (
@@ -98,7 +122,7 @@ export const CreateCourseEnrollmentDialog = ({
                   <FormLabel>Khóa học</FormLabel>
                   <FormControl>
                     <CreateCourseEnrollmentItem
-                      endpointType={'courseId'}
+                      endpointType={"courseId"}
                       placeholder="Tìm khóa học..."
                       onSelect={(item) => field.onChange(item.id)}
                     />

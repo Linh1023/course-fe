@@ -68,12 +68,12 @@ export function getColumns(
           href={`/admin/user/${row.getValue("accountId")}`}
         >
           <span className="max-w-[10rem] truncate font-medium">
-            {row.getValue("accountName")}
+            {row.getValue("accountName")}  ({row.getValue("username")})
           </span>
         </a>
       ),
     },
-    { accessorKey: "accountId", header: () => null, cell: () => null },
+    { accessorKey: "username", header: () => null, cell: () => null },
     {
       accessorKey: "courseName",
       header: ({ column }) => (
@@ -90,7 +90,7 @@ export function getColumns(
         </a>
       ),
     },
-    { accessorKey: "courseId", header: () => null, cell: () => null },
+    { accessorKey: "accountId", header: () => null, cell: () => null },
     {
       accessorKey: "status",
       header: ({ column }) => (
@@ -113,6 +113,7 @@ export function getColumns(
         );
       },
     },
+    { accessorKey: "courseId", header: () => null, cell: () => null },
     {
       accessorKey: "enrolledAt",
       header: () => "Ngày đăng ký",

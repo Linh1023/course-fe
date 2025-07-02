@@ -58,7 +58,7 @@ const CommentLessonSection = ({ lessonId }: CommentSectionProps) => {
       await fetchComments(0);
       setNewCommentContent("");
     } else {
-      console.error("Failed to submit reply:");
+      console.error("Failed to submit reply:",res );
     }
     setIsSubmitting(false);
   };

@@ -3,6 +3,7 @@ interface CourseEnrollmentAdmin {
   courseId: string;
   accountId: string;
   courseName: string;
+  username: string;
   accountName: string;
   enrolledAt: string;
   status: "active" | "inactive" | "pending";
