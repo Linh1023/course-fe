@@ -54,14 +54,14 @@ export function getCommentColumns(
       ),
       cell: ({ row }) => {
         return (
-          <Link
-          className="hover:underline"
-          href={`/admin/course?page=1&perPage=10&name=${row.getValue("courseName")}`}
-        >
+          <a
+            className="hover:underline"
+            href={`/course/${row.getValue("courseId")}`}
+          >
             <span className="max-w-[10rem] truncate font-medium">
               {row.getValue("courseName")}
             </span>
-          </Link>
+          </a>
         );
       },
     },
@@ -73,12 +73,14 @@ export function getCommentColumns(
       ),
       cell: ({ row }) => {
         return (
-          <div
-        >
+          <a    
+           className="hover:underline"
+            href={`/lesson/${row.getValue("lessonId")}`}
+          >
             <span className="max-w-[10rem] truncate font-medium">
               {row.getValue("lessonName")}
             </span>
-          </div>
+          </a>
         );
       },
     },
@@ -91,9 +93,9 @@ export function getCommentColumns(
       cell: ({ row }) => {
         return (
           <Link
-          className="hover:underline"
-          href={`/admin/user?page=1&perPage=10&name=${row.getValue("authorName")}`}
-        >
+            className="hover:underline"
+            href={`/admin/user?page=1&perPage=10&name=${row.getValue("authorName")}`}
+          >
             <span className="max-w-[31.25rem] truncate font-medium">
               {row.getValue("authorName")}
             </span>
@@ -178,14 +180,14 @@ export function getCommentColumns(
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem>
-                  <a
-                    href={`/lesson/${row.original.lessonId}?comment=${row.original.id}`}
-                  >
+                {/* <a
+                  href={`/lesson/${row.original.lessonId}`}
+                >
+                  <DropdownMenuItem>
                     Xem chi tiết
-                  </a>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
+                  </DropdownMenuItem>
+                </a> */}
+                {/* <DropdownMenuSeparator /> */}
                 <DropdownMenuItem
                   onSelect={() => {
                     setTimeout(() => {
