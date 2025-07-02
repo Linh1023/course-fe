@@ -94,12 +94,17 @@ export function CourseEnrollmentTable() {
     {
       label: "Tên học viên",
       value: "accountName",
-      placeholder: "Lọc tên danh mục...",
+      placeholder: "Lọc tên học viên...",
+    },
+    {
+      label: "Tên tài khoản",
+      value: "username",
+      placeholder: "Lọc tên tài khoản...",
     },
     {
       label: "Tên khóa học",
       value: "courseName",
-      placeholder: "Lọc theo mô tả danh mục...",
+      placeholder: "Lọc theo tên khóa học...",
     },
     {
       label: "Trạng thái",

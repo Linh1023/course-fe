@@ -11,6 +11,7 @@ import {
 import { TrashIcon, X } from "lucide-react"
 // import { DeleteCESDialog } from "./delete-ces-dialog"
 import { toast } from "sonner"
+import { DeleteCourseEnrolmentsDialog } from "./delete_course_enrollment_dialog"
 
 interface CESTableFloatingBarProps {
   table: Table<CourseEnrollmentAdmin>
@@ -18,28 +19,30 @@ interface CESTableFloatingBarProps {
   fetchData: () => void
 }
 
-export function CESTableFloatingBar({ table }: CESTableFloatingBarProps) {
+export function CESTableFloatingBar({ table,setIsLoading, fetchData  }: CESTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
   const [isOpen, setIsOpen] = React.useState(false)
   return (
     <div className="fixed inset-x-0 bottom-4 z-50 mx-auto w-fit px-4">
       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-        // <DeleteCESDialog
-        //   open={isOpen}
-        //   onOpenChange={setIsOpen}
-        //   ces={table
-        //     .getFilteredSelectedRowModel()
-        //     .rows.map((row) => row.original)}
-        //   onSuccess={() => {
-        //     toast.success(
-        //       `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} danh mục thành công!`
-        //     )
-        //     table.toggleAllRowsSelected(false)
-        //   }
-        //   }
-        //   showTrigger={false}
-        // />
-        <></>
+        <DeleteCourseEnrolmentsDialog
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          courseEnrolments={table
+            .getFilteredSelectedRowModel()
+            .rows.map((row) => row.original)}
+          onSuccess={() => {
+            setIsLoading(true)
+            fetchData()
+            toast.success(
+              `Đã xóa ${table.getFilteredSelectedRowModel().rows.length} danh mục thành công!`
+            )
+            table.toggleAllRowsSelected(false)
+          }
+          }
+          showTrigger={false}
+        />
+        
       ) : null}
       <div className="w-full overflow-x-auto">
         <div className="mx-auto flex w-fit items-center gap-2 rounded-md border bg-card p-2 shadow-2xl">
