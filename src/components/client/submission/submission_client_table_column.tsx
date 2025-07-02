@@ -24,9 +24,11 @@ import { set } from "date-fns"
 import { formatDateTime } from "@/utils/format_time"
 
 export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse>[] {
+
+
     return [
 
-          {
+        {
             id: "actions",
             cell: function Cell({ row }) {
 
@@ -50,7 +52,7 @@ export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse
                         >
                             {/* <Ellipsis className="size-4" aria-hidden="true" /> */}
 
-                            <div className="bg-gray-200 p-1 rounded-[5px] font-bold">Chi tiết</div>
+                            <div className="bg-red-500 p-1 rounded-[5px] font-bold text-white">Chi tiết</div>
 
                         </Button>
                     </>
@@ -64,12 +66,28 @@ export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse
                 <DataTableColumnHeader column={column} title="Khóa học" />
             ),
             cell: ({ row }) => {
+
+                const [isOpen, setIsOpen] =
+                    React.useState(false)
+
                 return (
-                    <div className="flex space-x-2">
-                        <span className="max-w-[31.25rem] truncate font-medium">
-                            {row.getValue("courseName")}
-                        </span>
-                    </div>
+                    <>
+                        <SubmissionCommentDialog
+                            isOpen={isOpen}
+                            setIsOpen={setIsOpen}
+                            submission={row.original}
+
+                        />
+
+                        <div className="flex space-x-2 "
+                        onClick={() => {setIsOpen(true)}}
+                        >
+                            <span className="max-w-[31.25rem] truncate font-medium  hover:underline cursor-pointer">
+                                {row.getValue("courseName")}
+                            </span>
+                        </div>
+                    </>
+
                 )
             },
             enableSorting: false,
@@ -132,7 +150,7 @@ export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse
                 return (
                     <div className="flex space-x-2">
                         <span className="max-w-[31.25rem] truncate font-medium">
-                            {formatDateTime(row.getValue("submittedAt"))  }
+                            {formatDateTime(row.getValue("submittedAt"))}
                         </span>
                     </div>
                 )
@@ -141,6 +159,6 @@ export function getSubmissionClientColumns(): ColumnDef<SubmissionClientResponse
             enableHiding: false,
         },
 
-      
+
     ]
 }

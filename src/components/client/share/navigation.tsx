@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { Fingerprint, MenuIcon, Search } from "lucide-react";
+import { Award, Fingerprint, MenuIcon, Search } from "lucide-react";
 
 import {
   BadgeCheck,
@@ -421,6 +421,12 @@ const Navigation = () => {
                             nhân
                           </div>
                         </Link>
+                        <Link href={"/profile/submission?page=1"}>
+                          <div className="dropdown-item-custom">
+
+                            <Award className="mr-[15px]" /> Điểm số
+                          </div>
+                        </Link>
                         <Link href={"/setting"}>
                           <div className="dropdown-item-custom">
                             <Settings className="mr-[15px]" /> Cài đặt và bảo mật
@@ -610,7 +616,19 @@ const Navigation = () => {
                                   </p>
                                 </div>
                               </Link>
-                              
+
+                              <Link
+                                href={"/profile/submission?page=1"}
+                                className="rounded-md p-3 transition-colors hover:bg-muted/70"
+                              >
+                                <div className="flex">
+                                  <Award className="mr-[15px]" />
+                                  <p className="mb-1 font-semibold text-foreground">
+                                    Điểm số
+                                  </p>
+                                </div>
+                              </Link>
+
                               <Link
                                 href={"/setting"}
                                 className="rounded-md p-3 transition-colors hover:bg-muted/70"
