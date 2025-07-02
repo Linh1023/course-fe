@@ -60,6 +60,8 @@ export const CreateCourseEnrollmentDialog = ({
         input
       ); // Updated to correct endpoint
 
+      console.log(res)
+
       if (res.status === 200) {
         fetchData();
         form.reset();
@@ -67,37 +69,36 @@ export const CreateCourseEnrollmentDialog = ({
         setOpen(false);
         setIsLoading(true);
       } else {
-        if (res.errors && Array.isArray(res.errors)) {
-          res.errors.forEach((err: { code: string }) => {
-            handleError(err.code);
-          });
-        } else {
-          toast.error("Có lỗi xảy ra. Vui lòng thử lại sau.");
-        }
+        for(const error of res.errors) {
+          handleError(error.code)
+        } 
+        // if (res.errors && Array.isArray(res.errors)) {
+        //   res.errors.forEach((err: { code: string }) => {
+        //     handleError(err.code);
+        //   });
+        // } else {
+        //   toast.error("Có lỗi xảy ra. Vui lòng thử lại sau.");
+        // }
       }
     });
   };
   const handleError = (errorCode: string) => {
-    const errorMessage: string =
-      CourseEnrollmentErrorCode[
-        errorCode as keyof typeof CourseEnrollmentErrorCode
-      ];
-    if (errorMessage) {
-      switch (errorCode) {
-        case "COURSE_ENROLLMENT_2":
-          toast.error("Khóa học đã được đăng ký trước đó");
-          break;
-        case "COURSE_ENROLLMENT_1":
-          toast.error("Khóa học không tồn tại");
-          break;
 
+      switch (errorCode) {
+        case "COURSE_ENROLLMENT_4":
+          toast.error("Khóa học đã được đăng ký cho người dùng này");
+          break;
+        case "COURSE_ENROLLMENT_5":
+          toast.error("Khóa học đã được đăng ký cho người dùng này nhưng đang bị khóa");
+          break;
+        case "COURSE_ENROLLMENT_6":
+          toast.error("Người dùng đã đăng ký khóa học này và đang chờ xác nhận");
+          break;
         default:
           toast.error("Có lỗi xảy ra. Vui lòng thử lại sau.");
           break;
       }
-    } else {
-      toast.error("Có lỗi xảy ra. Vui lòng thử lại sau.");
-    }
+   
   };
 
   return (
