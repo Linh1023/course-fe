@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { DataTableColumnHeader } from "@/components/admin/share/data-table/data-table-column-header"
 
 import { set } from "date-fns"
+import { formatDateTime } from "@/utils/format_time"
 
 export function getCourseProgressColumns(
 ): ColumnDef<CourseProgressResponse>[] {
@@ -106,7 +107,7 @@ export function getCourseProgressColumns(
                 return (
                     <div className="flex space-x-2">
                         <span className="max-w-[31.25rem] truncate font-medium">
-                            {row.getValue("enrolledAt")}
+                            { formatDateTime( row.getValue("enrolledAt"))}
                         </span>
                     </div>
                 )

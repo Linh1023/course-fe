@@ -4,7 +4,7 @@ interface SubmissionClientResponse {
     lessonName:string; // ten bai hoc
     
     submissionUrl:string;
-    
+    assignmentUrl:string;
     score:number;
     comment:string;
     submittedAt:string

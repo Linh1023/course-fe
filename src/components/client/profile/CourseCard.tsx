@@ -56,7 +56,7 @@ const CourseCard: React.FC<CourseCardProps> = React.memo(({ course, isProgress }
         </h3>
 
         {typeof course.price === 'number' && course.price > 0 && !isProgress && (
-          <p className="text-md text-red-500 mb-3 font-bold truncate">
+          <p className="text-[17px] text-red-500 mb-3 font-bold truncate">
             {course.price.toLocaleString('vi-VN')}đ
           </p>
         )}

@@ -12,6 +12,7 @@ import StatCourseCard from './stat_course_card';
 import { useTheme } from 'next-themes';
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 const DashboardWrapper = () => {
     const [count, setCount] = useState<CountResponse[]>([])
     const [statCourseEnroll, setStatCourseEnroll] = useState<StatCourseEnrollResponse[]>([])
@@ -155,7 +156,8 @@ const DashboardWrapper = () => {
                         {/* Course List */}
                         <div className="space-y-4">
                             {statCourseEnroll.map((course, index) => (
-                                <div key={index} className="flex items-center space-x-4">
+                            
+                                <Link href={`/admin/course?page=1&perPage=10&name=${course.name}`} key={index} className= {`flex items-center space-x-4 ${theme === 'dark' ? "hover:bg-gray-900" : "hover:bg-gray-100"}  cursor-pointer`}>
                                     {/* Rank Number */}
                                     <div className="flex-shrink-0">
                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-yellow-100 text-black bg-gray-40`}>
@@ -165,7 +167,7 @@ const DashboardWrapper = () => {
                                     <StatCourseCard
                                         course={course}
                                     />
-                                </div>
+                                </Link>
                             ))}
                         </div>
 

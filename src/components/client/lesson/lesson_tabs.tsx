@@ -17,6 +17,7 @@ import { LoaderIcon } from "@/components/share/loading-icon"
 import { UploadedFilePreview } from "@/components/share/upload-file-preview"
 import { FetchClientGetApiBlob } from "@/actions/client/fetch_client_api"
 import { getMimeType } from "@/utils/getMimeType"
+import Link from "next/link"
 interface Props {
     lessonResponse: LessonClientDetailResponse
 
@@ -231,7 +232,17 @@ const LessonTabs = (props: Props) => {
                                             />
                                         </>)
                                     }
-                                    <span className="text-green-600 font-bold flex items-center"> <Check className="mr-[10px]" /> Đã nộp bài tập</span>
+
+                                    <div className="mb-[10px]">
+                                        <span className="text-green-600 font-bold flex items-center"> <Check className="mr-[10px]" /> Đã nộp bài tập
+                                        </span>
+                                    </div>
+
+                                    <Link href={`/profile/submission?page=1&lessonName=${lessonResponse.name}`} className="text-blue-600 underline hover:text-blue-800"> Vui lòng nhấn vào đây để xem điểm</Link>
+
+
+
+
                                 </>
                             ) : (<>
                                 <Input

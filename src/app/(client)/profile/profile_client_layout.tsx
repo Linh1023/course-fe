@@ -34,13 +34,28 @@ export default function ProfileClientLayout({ children }: { children: React.Reac
     const router = useRouter();
     const pathname = usePathname();
     const [isMobile, setIsMobile] = useState(false);
+    const [activeTab, setActiveTab] = useState<string>("")
 
     // Determine active tab based on current path
-    const getActiveTab = () => {
-        if (pathname.includes('/course')) return 'courses';
-        if (pathname.includes('/submission')) return 'assignment';
-        return 'profile';
-    };
+    // const getActiveTab = () => {
+    //     if (pathname.includes('/course')) return 'courses';
+    //     if (pathname.includes('/submission')) return 'assignment';
+    //     return 'profile';
+    // };
+
+    useEffect(() => {
+       
+        if (pathname.includes('/course')) {
+            setActiveTab("courses")
+
+        } else if (pathname.includes('/submission')) {
+            setActiveTab("assignment")
+
+        }
+        else {
+            setActiveTab("profile")
+        }
+    }, [pathname])
 
     useEffect(() => {
         const checkMobile = () => {
@@ -90,7 +105,7 @@ export default function ProfileClientLayout({ children }: { children: React.Reac
                             className="flex-1"
                         >
                             <button
-                                className={`w-full py-3 px-2 text-xs font-medium transition-colors relative ${getActiveTab() === tab.value
+                                className={`w-full py-3 px-2 text-xs font-medium transition-colors relative ${activeTab=== tab.value
                                     ? 'text-blue-600 border-b-2 border-blue-600'
                                     : 'text-gray-600 hover:text-gray-900'
                                     }`}
@@ -116,8 +131,9 @@ export default function ProfileClientLayout({ children }: { children: React.Reac
     return (
         <Tabs
             orientation="vertical"
-            defaultValue={getActiveTab()}
+            // defaultValue={activeTab}
             className="max-w-7xl w-full flex items-start gap-6"
+            value={activeTab}
         >
             <div>
                 <div className="p-6 text-center border-b border-gray-200">
@@ -139,7 +155,8 @@ export default function ProfileClientLayout({ children }: { children: React.Reac
                             <TabsTrigger
                                 value={tab.value}
                                 className="w-full border-l-2 border-transparent justify-start rounded-none data-[state=active]:shadow-none data-[state=active]:border-primary data-[state=active]:bg-primary/5 py-1.5"
-                            >
+                               
+                           >
                                 <tab.icon className="h-5 w-5 me-2" /> {tab.name}
                             </TabsTrigger>
                         </Link>

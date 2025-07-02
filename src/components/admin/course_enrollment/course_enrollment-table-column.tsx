@@ -16,6 +16,7 @@ import { DataTableColumnHeader } from "../share/data-table/data-table-column-hea
 import { useState } from "react";
 import { DeleteCourseEnrolmentsDialog } from "./delete_course_enrollment_dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import Link from "next/link";
 
 const statusMap = {
   active: {
@@ -92,14 +93,14 @@ export function getColumns(
         <DataTableColumnHeader column={column} title="Tên học viên" />
       ),
       cell: ({ row }) => (
-        <a
+        <Link
           className="hover:underline"
-          href={`/admin/user/${row.getValue("accountId")}`}
+          href={`/admin/user?page=1&perPage=10&name=${row.getValue("accountName")}`}
         >
           <span className="max-w-[10rem] truncate font-medium">
             {row.getValue("accountName")}
           </span>
-        </a>
+        </Link>
       ),
     },
     {
@@ -119,14 +120,14 @@ export function getColumns(
         <DataTableColumnHeader column={column} title="Tên khóa học" />
       ),
       cell: ({ row }) => (
-        <a
+        <Link
           className="hover:underline"
-          href={`/admin/course/${row.getValue("courseId")}`}
+          href={`/admin/course?page=1&perPage=10&name=${row.getValue("courseName")}`}
         >
           <span className="max-w-[10rem] truncate font-medium">
             {row.getValue("courseName")}
           </span>
-        </a>
+        </Link>
       ),
     },
     {

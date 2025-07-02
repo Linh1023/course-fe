@@ -222,7 +222,7 @@ const MyContact = () => {
                 type="tel"
                 placeholder="Số điện thoại của bạn"
                 name="phone"
-                pattern="[0-9]{10,11}"
+                pattern="0[0-9]{9,10}"
                 onChange={handleInputChange}
                 className={`w-full bg-gray-50 border-2 ${errors.phone ? 'border-red-300' : 'border-gray-200'
                   } p-3 rounded-xl outline-none focus:border-red-500 focus:bg-white transition-all duration-300 text-gray-800`}
@@ -233,7 +233,7 @@ const MyContact = () => {
                   {errors.phone}
                 </p>
               )}
-              <p className="text-xs text-gray-500">Nhập 10-11 chữ số (Ví dụ: 0987654321)</p>
+              <p className="text-xs text-gray-500">Nhập 10-11 chữ số bắt đầu bằng số 0 (Ví dụ: 0987654321)</p>
             </div>
 
             <div className="space-y-2">

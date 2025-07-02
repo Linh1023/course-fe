@@ -78,7 +78,7 @@ export function getColumns({ setIsLoading, fetchData }: getColumnsProps): Column
         return (
           <div className="flex space-x-2">
             <span className="max-w-[10rem] truncate font-medium">
-              <a href={`/lesson/${row.getValue("id")}`}>{row.getValue("name") }</a>  
+              <a href={`/lesson/${row.getValue("id")}`}  className="hover:underline">{row.getValue("name") }</a>  
             </span>
           </div>
         )
