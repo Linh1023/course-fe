@@ -86,7 +86,7 @@ export function getColumns({ listCategory, setIsLoading, fetchData }: getColumns
         return (
           <div className="flex space-x-2">
             <span className="max-w-[10rem] truncate font-medium">
-               <a href={`/course/${row.getValue("id")}`}>{row.getValue("name") }</a>  
+               <a href={`/course/${row.getValue("id")}`}  className="hover:underline" >{row.getValue("name") }</a>  
             </span>
           </div>
         )

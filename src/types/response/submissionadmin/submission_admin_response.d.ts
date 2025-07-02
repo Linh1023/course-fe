@@ -6,6 +6,7 @@ interface SubmissionAdminResponse {
     submitterUsername:string; //  nguoi nop
     submitterName:string; // ten nguoi nop
     submissionUrl:string;
+    assignmentUrl:string;
     
     graderEmail:string;
     graderName:string; 

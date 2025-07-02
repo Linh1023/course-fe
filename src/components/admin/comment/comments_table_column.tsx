@@ -54,14 +54,14 @@ export function getCommentColumns(
       ),
       cell: ({ row }) => {
         return (
-          <a
+          <Link
           className="hover:underline"
-          href={`/admin/comment?courseName=${row.getValue("courseName")}`}
+          href={`/admin/course?page=1&perPage=10&name=${row.getValue("courseName")}`}
         >
             <span className="max-w-[10rem] truncate font-medium">
               {row.getValue("courseName")}
             </span>
-          </a>
+          </Link>
         );
       },
     },
@@ -73,14 +73,12 @@ export function getCommentColumns(
       ),
       cell: ({ row }) => {
         return (
-          <a
-          className="hover:underline"
-          href={`/admin/comment?lessonName=${row.getValue("lessonName")}`}
+          <div
         >
             <span className="max-w-[10rem] truncate font-medium">
               {row.getValue("lessonName")}
             </span>
-          </a>
+          </div>
         );
       },
     },
@@ -92,14 +90,14 @@ export function getCommentColumns(
       ),
       cell: ({ row }) => {
         return (
-          <a
+          <Link
           className="hover:underline"
-          href={`/admin/user/${row.getValue("authorId")}`}
+          href={`/admin/user?page=1&perPage=10&name=${row.getValue("authorName")}`}
         >
             <span className="max-w-[31.25rem] truncate font-medium">
               {row.getValue("authorName")}
             </span>
-          </a>
+          </Link>
         );
       },
     },

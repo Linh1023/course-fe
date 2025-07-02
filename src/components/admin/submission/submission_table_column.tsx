@@ -21,6 +21,7 @@ import { Ellipsis } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { UpdateSubmissionSheet } from "./update_submission_sheet"
 import { formatDateTime } from "@/utils/format_time"
+import Link from "next/link"
 export function getSubmissionColumns(
 
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
@@ -63,7 +64,8 @@ export function getSubmissionColumns(
         return (
           <div className="flex space-x-2">
             <span className="max-w-[10rem] truncate font-medium">
-              {row.getValue("submitterUsername")}
+              <Link href={`/admin/user?page=1&perPage=10&username=${row.getValue("submitterUsername")}`} className="hover:underline">
+                {row.getValue("submitterUsername")}</Link>
             </span>
           </div>
         )
@@ -80,7 +82,9 @@ export function getSubmissionColumns(
         return (
           <div className="flex space-x-2">
             <span className="max-w-[31.25rem] truncate font-medium">
-              {row.getValue("submitterName")}
+              <Link href={`/admin/user?page=1&perPage=10&name=${row.getValue("submitterName")}`} className="hover:underline" >
+                {row.getValue("submitterName")}
+              </Link>
             </span>
           </div>
         )
@@ -97,7 +101,9 @@ export function getSubmissionColumns(
         return (
           <div className="flex space-x-2">
             <span className="max-w-[31.25rem] truncate font-medium">
-              {row.getValue("courseName")}
+              <Link  href={`/admin/course?page=1&perPage=10&name=${row.getValue("courseName")}`} className="hover:underline">
+                {row.getValue("courseName")}
+              </Link>
             </span>
           </div>
         )
@@ -158,7 +164,7 @@ export function getSubmissionColumns(
         return (
           <div className="flex space-x-2">
             <span className="max-w-[31.25rem] truncate font-medium">
-              {formatDateTime(row.getValue("submittedAt"))  }
+              {formatDateTime(row.getValue("submittedAt"))}
             </span>
           </div>
         )
