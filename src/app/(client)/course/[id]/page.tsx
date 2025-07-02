@@ -25,11 +25,20 @@ const CoursePage = async ({ params }: CoursePageProps) => {
     if (commentResponse && commentResponse.status != 200) {
         redirect("/");
     }
+
     if (res && res.status === 200) {
         courseResponse = res.result
-    } 
-    else {
-        redirect('/');
+    }
+    else if (res && res.status === 401) {
+        const res = await FetchServerGetApiNoToken(`${API.COURSE.ROOT}/${params.id}`);
+        if (res && res.status === 200) {
+            courseResponse = res.result
+        } else {
+            redirect("/");
+        }
+
+    } else if (res && res.status === 404) {
+        redirect("/");
     }
 
     if (!courseResponse) {
