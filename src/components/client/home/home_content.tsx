@@ -38,20 +38,6 @@ const HomeContent = ({ data_hot, data_newest, data_my_lesson }: HomeProps) => {
 
   const { querySearch, setQuerySearch } = useQuerySearchClientContext()
 
-  // useEffect(() => {
-  //   const fetchEnrollCourse = async () => {
-
-
-  //     const res = await FetchServerGetApi(
-  //       `${API.ACCOUNT.MY_COURSE}?perPage=3`
-  //     );
-  //     if (res && res.status === 200) {
-  //       setEnrollCourse(res.result);
-  //     }
-  //   };
-
-  //   fetchEnrollCourse();
-  // }, []);
 
   return (
     <div className="p-4 h-full mb-8">
@@ -288,26 +274,6 @@ const HomeContent = ({ data_hot, data_newest, data_my_lesson }: HomeProps) => {
           </div>
 
 
-          {/* Các danh sách khóa học khác */}
-          <div className="space-y-8">
-            <CourseList
-              svg={<SvgHot size={40} />}
-              title="Khóa học nổi bật"
-              courses={data_hot}
-              layout="grid"
-              seeMoreLink="sort=hot&page=1&size=12"
-            />
-            <CourseList
-              svg={<SvgNew size={45} />}
-              title="Khóa học mới ra mắt"
-              courses={data_newest}
-              layout="grid"
-              seeMoreLink="sort=newest&page=1&size=12"
-            />
-          </div>
-        </div>
-
-
           {/* Khóa học đang học - HIỂN THỊ trên mobile/tablet, ẨN desktop */}
           {enrollCourse.length > 0 && (
             <div className="block lg:hidden mb-8 bg-gradient-to-br from-white to-gray-50 p-4 rounded-3xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
@@ -334,6 +300,28 @@ const HomeContent = ({ data_hot, data_newest, data_my_lesson }: HomeProps) => {
               )}
             </div>
           )}
+
+          {/* Các danh sách khóa học khác */}
+          <div className="space-y-8">
+            <CourseList
+              svg={<SvgHot size={40} />}
+              title="Khóa học nổi bật"
+              courses={data_hot}
+              layout="grid"
+              seeMoreLink="sort=hot&page=1&size=12"
+            />
+            <CourseList
+              svg={<SvgNew size={45} />}
+              title="Khóa học mới ra mắt"
+              courses={data_newest}
+              layout="grid"
+              seeMoreLink="sort=newest&page=1&size=12"
+            />
+          </div>
+        </div>
+
+
+
 
         {/* Cột phải - KHÓA HỌC ĐANG HỌC chỉ hiện desktop asdasd */}
         {enrollCourse.length > 0 && (

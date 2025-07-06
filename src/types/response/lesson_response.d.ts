@@ -5,8 +5,8 @@ interface Lesson {
   lessonNumber: number;
   videoUrl: string;
   duration: number;
-  documentUrl: string;
-  assignmentUrl: string;
+  documentUrl: string |null;
+  assignmentUrl: string |null;
   chapterId: number;
   status: "active" | "inactive";
 }

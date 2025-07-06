@@ -4,6 +4,6 @@ interface UpdateCourseRequest {
   categoryId: string;
   price: number;
   imageUrl?: string;
-  videoUrl?: string;
+  videoUrl?: string | null;
   status: "active" | "inactive";
 }

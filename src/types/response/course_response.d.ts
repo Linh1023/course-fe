@@ -3,7 +3,7 @@ interface Course {
   name: string;
   detail: string;
   imageUrl: string;
-  videoUrl: string;
+  videoUrl: string | null;
   price: number;
   category: Category;
   status: "active" | "inactive";

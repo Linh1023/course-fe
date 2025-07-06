@@ -10,9 +10,9 @@ export default async function LessonLayout({
     return (
         <>
 
-                <LessonClientLayout>
-                    {children}
-                </LessonClientLayout>
+            <LessonClientLayout>
+                {children}
+            </LessonClientLayout>
 
 
         </>

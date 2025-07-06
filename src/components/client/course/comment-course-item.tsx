@@ -169,6 +169,7 @@ export const CommentCourseItem = ({
         content: "Bình luận đã bị xóa",
         id: "",
       }));
+      setReplies([])
     } else {
       console.error("Failed to delete comment:", res);
     }

@@ -31,6 +31,7 @@ import { toast } from "sonner"
 import { updateLessonSchema, UpdateLessonSchema } from "@/validation/lessonSchema"
 import { UploadedFilePreview } from "@/components/share/upload-file-preview"
 import VideoPlayer from "@/components/client/video/video_player"
+import { CircleX } from "lucide-react"
 
 interface UpdateLessonSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
@@ -127,6 +128,8 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, open, onOpe
         status: input.status
       }
 
+      console.log("data update >>> ", updateData)
+
 
       const res = await FetchServerPutApi(
         `${API.LESSON.ROOT}/${lesson.id}`, updateData)
@@ -168,6 +171,18 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, open, onOpe
           name: files[0].name,
         })
       }
+    }
+  }
+
+  const handleDeleted = (type: "document" | "assignment") => {
+    if (type === "assignment") {
+      lesson.assignmentUrl = null
+      setPreviewAssignment(null)
+      form.setValue("assignment", undefined)
+    } else if (type === "document") {
+      lesson.documentUrl = null
+      setPreviewDocument(null)
+      form.setValue("document", undefined)
     }
   }
 
@@ -274,7 +289,12 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, open, onOpe
                       onChange={(e) => handleFileChange(e.target.files || undefined, "document")}
                     />
                     {previewDocument ? (
-                      <UploadedFilePreview fileUrl={previewDocument.url} fileName={previewDocument.name} api = {API.DOCUMENT.DOWNLOAD}/>
+                      <div className="flex items-center w-full">
+                        <UploadedFilePreview fileUrl={previewDocument.url} fileName={previewDocument.name} api={API.DOCUMENT.DOWNLOAD} />
+                        <CircleX className=" cursor-pointer ml-[20px]"
+                          onClick={() => { handleDeleted("document") }}
+                        />
+                      </div>
                     ) : (<>
                       {/* <UploadedFilePreview fileUrl={assigmentBlob} fileName={dataAssignment.current} /> */}
 
@@ -294,8 +314,15 @@ export function UpdateLessonSheet({ lesson, fetchData, setIsLoading, open, onOpe
                       accept=".pdf,.docx"
                       onChange={(e) => handleFileChange(e.target.files || undefined, "assignment")}
                     />
-                    {previewAssignment ? (
-                      <UploadedFilePreview fileUrl={previewAssignment.url} fileName={previewAssignment.name}   api = {API.DOCUMENT.DOWNLOAD}/>
+                    {previewAssignment ? (<>
+                      <div className="flex items-center w-full">
+                        <UploadedFilePreview fileUrl={previewAssignment.url} fileName={previewAssignment.name} api={API.DOCUMENT.DOWNLOAD} />
+                        <CircleX className=" cursor-pointer ml-[20px]"
+                          onClick={() => { handleDeleted("assignment") }}
+                        />
+                      </div>
+                    </>
+
                     ) : (<>
 
                       {/* <UploadedFilePreview fileUrl={assigmentBlob} fileName={lesson.assignmentUrl} />  */}
