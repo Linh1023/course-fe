@@ -105,7 +105,7 @@ export function UpdateSubmissionSheet(props: Props) {
 
   return (
     <Sheet open={showUpdateSubmissionSheet} onOpenChange={setShowUpdateSubmissionSheet} >
-      <SheetContent className="flex flex-col gap-6 sm:max-w-md">
+      <SheetContent className="flex flex-col gap-6 sm:max-w-md  overflow-y-auto " >
         <SheetHeader className="text-left">
           <SheetTitle>Quản lý chấm bài</SheetTitle>
           <div className="flex items-center">
