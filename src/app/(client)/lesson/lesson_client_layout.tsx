@@ -38,10 +38,11 @@ export default function LessonClientLayout({ children }: { children: React.React
     useEffect(() => {
 
         const fetchGetCourseInfo = async () => {
+            
             startLoadingSpiner()
             const parts = pathName.split('/'); // ["", "lesson", "abc123"]
             const lessonId = parts[2]; // "abc123"
-
+            
             const res = await FetchServerGetApi(`${API.LESSON.GET_COURSE_INFO}/${lessonId}`)
             if (res && res.status === 200) {
                 const courseInfoResponse: CourseInfoResponse = res.result;

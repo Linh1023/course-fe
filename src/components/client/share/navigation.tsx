@@ -62,6 +62,7 @@ import { useQuerySearchClientContext } from "@/context/query_search_client_conte
 import { updateQueryStringManually } from "@/utils/handle_query";
 import { FetchClientGetApiNoToken } from "@/actions/client/fetch_client_api";
 import nProgress from "nprogress";
+import { randomQueryString } from "@/utils/random_query";
 type CourseType = {
   id: string;
   name: string;
@@ -338,7 +339,7 @@ const Navigation = () => {
                         {suggestions.slice(0, 4).map((course) => (
                           <Link
                             key={course.id}
-                            href={`/course/${course.id}`}
+                            href={`/course/${course.id}?${randomQueryString()}`}
                             className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
                           >
                             <img
@@ -477,7 +478,7 @@ const Navigation = () => {
                         <>
                           {suggestions.slice(0, 4).map((course) => (
                             <Link
-                              href={`/course/${course.id}`}
+                              href={`/course/${course.id}?${randomQueryString()}`}
                               key={course.id}
                               className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100  cursor-pointer"
                             >

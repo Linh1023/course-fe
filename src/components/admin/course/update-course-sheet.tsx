@@ -58,8 +58,8 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
     },
   })
 
-  const urlVideo = React.useRef(course.videoUrl)
-    const urlImage = React.useRef(course.imageUrl)
+  const urlVideo = React.useRef(course.videoUrl ? course.videoUrl : null)
+  const urlImage = React.useRef(course.imageUrl)
   const uploadVideo = async (file: any) => {
     const formData = new FormData();
     formData.append("file", file); // key phải đúng là "file"
@@ -99,8 +99,8 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
           toast.error("Tạo khóa học thất bại, vui lòng thử lại sau")
           return
         }
-       urlImage.current = dataImage
-      } 
+        urlImage.current = dataImage
+      }
 
 
 
@@ -109,7 +109,7 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
         detail: input.detail ?? "",
         categoryId: input.categoryId || "",
         price: Number(input.price), // Convert formatted price to number
-        imageUrl:  urlImage.current,
+        imageUrl: urlImage.current,
         videoUrl: urlVideo.current,
         status: input.status as "active" | "inactive",
       }
@@ -141,6 +141,13 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
       form.setValue("video", files)
       setPreviewVideo(URL.createObjectURL(files[0]))
     }
+  }
+
+  const handleDelete = () => {
+    course.videoUrl = null
+    urlVideo.current = null
+    form.setValue("video", undefined)
+    setPreviewVideo(null)
   }
 
   React.useEffect(() => {
@@ -266,15 +273,26 @@ export function UpdateCourseSheet({ listCategory, course, fetchData, setIsLoadin
                     <FormLabel>Video trailer</FormLabel>
                     <Input type="file" accept="video/mp4" onChange={(e) => handleVideoChange(e.target.files || undefined)} />
                     {previewVideo && previewVideo != urlVideo.current ? (
-                      <video key={previewVideo} controls className="mt-2 w-full max-w-full rounded shadow">
-                        <source src={previewVideo} type="video/mp4" />
-                        Trình duyệt của bạn không hỗ trợ video.
-                      </video>
+                      <>
+                        <video key={previewVideo} controls className="mt-2 w-full max-w-full rounded shadow">
+                          <source src={previewVideo} type="video/mp4" />
+                          Trình duyệt của bạn không hỗ trợ video.
+                        </video>
+                        
+                        <Button type="button"
+                          onClick={() => { handleDelete() }}
+                        >Xóa</Button>
+                      </>
+
+
                     ) : (
                       <>
                         <TrailerPlayer
-                          fileName={urlVideo.current}
+                          fileName={urlVideo.current ? urlVideo.current : ""}
                         />
+                        <Button type="button"
+                          onClick={() => { handleDelete() }}
+                        >Xóa</Button>
                       </>
                     )}
                     <FormMessage />

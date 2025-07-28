@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { PlusIcon } from "lucide-react"
+import { CircleX, PlusIcon } from "lucide-react"
 import { LoaderIcon } from "@/components/share/loading-icon"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import API from "@/api/api"
@@ -95,7 +95,7 @@ export function CreateLessonDialog({ chapterId, setIsLoading, fetchData }: Creat
       }
 
 
-     let dataAssignment= null
+      let dataAssignment = null
       if (data.assignment && data.assignment[0]) {
         dataAssignment = await uploadDocuments(data.assignment[0])
         if (dataAssignment === null) {
@@ -163,6 +163,17 @@ export function CreateLessonDialog({ chapterId, setIsLoading, fetchData }: Creat
           name: files[0].name,
         })
       }
+    }
+  }
+
+
+  const handleDeleted = (type: "document" | "assignment") => {
+    if (type === "assignment") {
+      setPreviewAssignment(null)
+      form.setValue("assignment", undefined)
+    } else if (type === "document") {
+      setPreviewDocument(null)
+      form.setValue("document", undefined)
     }
   }
 
@@ -264,7 +275,13 @@ export function CreateLessonDialog({ chapterId, setIsLoading, fetchData }: Creat
                       onChange={(e) => handleFileChange(e.target.files || undefined, "document")}
                     />
                     {previewDocument && (
-                      <UploadedFilePreview fileUrl={previewDocument.url} fileName={previewDocument.name} api = {API.DOCUMENT.DOWNLOAD} />
+
+                      <div className="flex items-center w-full">
+                        <UploadedFilePreview fileUrl={previewDocument.url} fileName={previewDocument.name} api={API.DOCUMENT.DOWNLOAD} />
+                        <CircleX className=" cursor-pointer ml-[20px]"
+                          onClick={() => { handleDeleted("document") }}
+                        />
+                      </div>
                     )}
                     <FormMessage />
                   </FormItem>
@@ -282,7 +299,14 @@ export function CreateLessonDialog({ chapterId, setIsLoading, fetchData }: Creat
                       onChange={(e) => handleFileChange(e.target.files || undefined, "assignment")}
                     />
                     {previewAssignment && (
-                      <UploadedFilePreview fileUrl={previewAssignment.url} fileName={previewAssignment.name} api = {API.DOCUMENT.DOWNLOAD} />
+
+                      <div className="flex items-center w-full">
+                        <UploadedFilePreview fileUrl={previewAssignment.url} fileName={previewAssignment.name} api={API.DOCUMENT.DOWNLOAD} />
+                        <CircleX className=" cursor-pointer ml-[20px]"
+                          onClick={() => { handleDeleted("assignment") }}
+                        />
+                      </div>
+
                     )}
                     <FormMessage />
                   </FormItem>

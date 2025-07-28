@@ -126,6 +126,11 @@ export function CreateCourseDialog({ listCategory, setIsLoading, fetchData }: Cr
     })
   }
 
+  const handleDelete = () => {
+    form.setValue("video", undefined)
+    setPreviewVideo(null)
+  }
+
   React.useEffect(() => {
     if (!open) {
       form.reset()
@@ -256,10 +261,16 @@ export function CreateCourseDialog({ listCategory, setIsLoading, fetchData }: Cr
                     <FormLabel>Video trailer</FormLabel>
                     <Input type="file" accept="video/mp4" onChange={(e) => handleVideoChange(e.target.files || undefined)} />
                     {previewVideo && (
-                      <video key={previewVideo} controls className="mt-2 w-full max-w-full rounded shadow">
-                        <source src={previewVideo} type="video/mp4" />
-                        Trình duyệt của bạn không hỗ trợ video.
-                      </video>
+                      <>
+                        <video key={previewVideo} controls className="mt-2 w-full max-w-full rounded shadow">
+                          <source src={previewVideo} type="video/mp4" />
+                          Trình duyệt của bạn không hỗ trợ video.
+                        </video>
+                        <Button type="button"
+                          onClick={() => { handleDelete() }}
+                        >Xóa</Button>
+                      </>
+
                     )}
                     <FormMessage />
                   </FormItem>
