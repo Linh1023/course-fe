@@ -15,17 +15,17 @@ import { useState } from "react";
 import { CommentCourseItem } from "./comment-course-item";
 
 interface CommentCourseSectionProps {
-  comments: CommentClient[];
+  commentsResponse: CommentClientResponse;
   courseId: string;
 }
 
 const CommentCourseSection = ({
-  comments: initComments,
+  commentsResponse: initComments,
   courseId,
 }: CommentCourseSectionProps) => {
-  const [comments, setComments] = useState<CommentClient[]>(initComments ?? []);
-  const [lastCreatedAt, setLastCreatedAt] = useState<string | null>(null); // Dùng để phân trang theo thời gian
-  const [hasMore, setHasMore] = useState(false); // Xác định có còn trang tiếp theo không
+  const [commentList, setComments] = useState<CommentClient[]>(initComments.result ?? []);
+  const [lastCreatedAt, setLastCreatedAt] = useState<string |null >(initComments.result[initComments.result.length - 1].createdAt); // Dùng để phân trang theo thời gian
+  const [hasMore, setHasMore] = useState(initComments.currentPage < initComments.totalPages - 1); // Xác định có còn trang tiếp theo không
   const [isLoadingMore, setIsLoadingMore] = useState(false); // Loading khi nhấn xem thêm
   const [newCommentContent, setNewCommentContent] = useState(""); // Nội dung comment mới
   const [isSubmitting, setIsSubmitting] = useState(false); // Trạng thái gửi comment
@@ -45,7 +45,6 @@ const CommentCourseSection = ({
     const data: CommentClientResponse = await FetchServerGetApi(
       `${API.COMMENT.PUBLIC_COMMENT_COURSE}?${params.toString()}`
     );
-
     const newComments = data.result;
 
     setComments((prev) => (append ? [...prev, ...newComments] : newComments));
@@ -124,7 +123,7 @@ const CommentCourseSection = ({
             {isLoadingMore ? (
               <LoaderIcon className="mr-1.5 size-9 animate-spin" />
             ) : (
-              "Xem thêm bình luận cũ hơn"
+              `Xem bình luận cũ hơn`
             )}
           </Button>
         </div>
@@ -132,12 +131,12 @@ const CommentCourseSection = ({
 
       {/* Danh sách bình luận */}
       <div className="space-y-4">
-        {isLoadingMore && comments.length === 0 ? (
+        {isLoadingMore && commentList.length === 0 ? (
           <div className="w-full flex justify-center">
             <LoaderIcon className="mr-1.5 size-9 animate-spin" />
           </div>
         ) : (
-          comments
+          commentList
             ?.slice()
             .reverse()
             .map((comment: CommentClient) => (

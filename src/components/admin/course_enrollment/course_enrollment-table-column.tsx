@@ -229,7 +229,7 @@ export function getColumns(
                       Duyệt
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      className=" bg-red-100 hover:bg-red-200 text-red-800"
+                      className=" bg-red-100 hover:bg-red-200 text-red-800 mt-2"
                       onSelect={async () =>
                         await updateStatus("inactive", row.original.id)
                       }

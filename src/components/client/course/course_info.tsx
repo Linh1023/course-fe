@@ -3,10 +3,11 @@ import CommentCourseSection from "./comment-course-section";
 
 interface Props {
   course: CourseClientResponse | null;
-  comments: CommentClient[];
+  commentsResponse: CommentClientResponse;
 }
 
-const CourseInfoSection = ({ course, comments }: Props) => {
+
+const CourseInfoSection = ({ course, commentsResponse }: Props) => {
   return (
     <>
 
@@ -59,8 +60,9 @@ const CourseInfoSection = ({ course, comments }: Props) => {
             </h2>
           </div>
           <div className="p-6">
+            {}
             <CommentCourseSection
-              comments={comments}
+              commentsResponse={commentsResponse}
               courseId={course?.id ?? ""}
             />
           </div>

@@ -1,6 +1,11 @@
 "use client";
 
+import {
+  FetchServerGetApi,
+  FetchServerPostApi,
+} from "@/actions/server/fetch_server_api";
 import API from "@/api/api";
+import { LoaderIcon } from "@/components/share/loading-icon";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -8,13 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCurrentAccountContext } from "@/context/current_account_context";
 import { formatTimeShort } from "@/utils/format_time";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { CommentLessonItem } from "./comment_lesson_item";
-import {
-  FetchServerGetApi,
-  FetchServerPostApi,
-} from "@/actions/server/fetch_server_api";
-import { LoaderIcon } from "@/components/share/loading-icon";
 
 interface CommentSectionProps {
   lessonId: string;
@@ -36,11 +36,13 @@ const CommentLessonSection = ({ lessonId }: CommentSectionProps) => {
     const data: CommentClientResponse = await FetchServerGetApi(
       `${API.COMMENT.COMMENT_LESSON}?lessonId=${lessonId}&page=${page}`
     );
+    console.log("data1: ",`${API.COMMENT.COMMENT_LESSON}?lessonId=${lessonId}&page=${page}`)
+    console.log("data: ",data)
     if (data.status === 200) {
       setComments((prev) =>
         append ? [...prev, ...data.result] : data?.result
       );
-      setCurrentPage(data.currentPage);
+      setCurrentPage(data.currentPage+1);
       setTotalComments(data.totalItems);
       setIsLoadingMore(false);
     }
@@ -87,7 +89,7 @@ const CommentLessonSection = ({ lessonId }: CommentSectionProps) => {
         Bình luận
       </h2>
 
-      {(currentPage + 1) * 10 < totalComments && (
+      {(currentPage) * 10 < totalComments && (
         <div className="flex mt-4">
           <Button
             variant="link"
@@ -103,7 +105,7 @@ const CommentLessonSection = ({ lessonId }: CommentSectionProps) => {
                 aria-hidden="true"
               ></LoaderIcon>
             ) : (
-              `Xem ${totalComments - (currentPage + 1) * 10} bình luận cũ hơn`
+              `Xem ${totalComments - (currentPage) * 10} bình luận cũ hơn`
             )}
           </Button>
         </div>

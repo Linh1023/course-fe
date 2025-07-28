@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  FetchServerGetApi,
   FetchServerGetApiNoToken,
   FetchServerPostApi,
   FetchServerPutApi,
@@ -31,8 +32,9 @@ export const CommentCourseItem = ({
   const [replies, setReplies] = useState<CommentClient[]>([]);
   const [showReplies, setShowReplies] = useState(false);
   const [isLoadingReplies, setIsLoadingReplies] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalItems, setTotalItems] = useState(0);
+  const [hasMore, setHasMore] = useState(comment.replyCount > 0); // Xác định có còn trang tiếp theo không
+  const [lastCreatedAt, setLastCreatedAt] = useState<string | null>(null);
+
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [newReplyContent, setNewReplyContent] = useState("");
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
@@ -48,18 +50,26 @@ export const CommentCourseItem = ({
 
   // Gọi API để lấy danh sách phản hồi của 1 bình luận
   const fetchReplies = async (
-    page: number,
-    commentId: string,
+    beforeCreatedAt: string | null = null,
     append = false
   ) => {
     setIsLoadingReplies(true);
-    const data: CommentClientResponse = await FetchServerGetApiNoToken(
-      `${API.COMMENT.PUBLIC_COMMENT_COURSE_REPLY}?commentId=${commentId}&page=${page}`
-    );
 
+    const params = new URLSearchParams({ commentId: comment.id });
+    if (beforeCreatedAt) params.append("createdAt", beforeCreatedAt);
+
+    const data: CommentClientResponse = await FetchServerGetApiNoToken(
+      `${API.COMMENT.PUBLIC_COMMENT_COURSE_REPLY}?${params.toString()}`
+    );
+    const newComments = data.result;
+
+    setLastCreatedAt(
+      newComments.length > 0
+        ? newComments[newComments.length - 1].createdAt
+        : null
+    );
     setReplies((prev) => (append ? [...prev, ...data.result] : data.result));
-    setCurrentPage(data.currentPage);
-    setTotalItems(data.totalItems || 0);
+    setHasMore(data.currentPage < data.totalPages - 1);
     setShowReplies(true);
     setIsLoadingReplies(false);
   };
@@ -69,33 +79,12 @@ export const CommentCourseItem = ({
     if (showReplies) {
       setShowReplies(false);
     } else if (!replies.length && mainComment.replyCount > 0) {
-      fetchReplies(0, mainComment.id);
+      fetchReplies(lastCreatedAt, false);
     } else {
       setShowReplies(true);
     }
   };
 
-  // Gửi phản hồi mới (API POST)
-  // const handleSubmitNewReply = async () => {
-  //   if (!newReplyContent.trim()) return;
-
-  //   setIsSubmittingReply(true);
-  //   const res = await FetchServerPostApi(API.COMMENT.COMMENT, {
-  //     courseId,
-  //     commentParentId: mainComment.id,
-  //     content: newReplyContent,
-  //   });
-
-  //   if (res.status === 200) {
-  //     setNewReplyContent("");
-  //     setShowReplyInput(false);
-  //     // Có thể fetch lại replies ở đây nếu cần cập nhật ngay
-  //   } else {
-  //     console.error("Failed to submit reply:", res);
-  //   }
-
-  //   setIsSubmittingReply(false);
-  // };
   const handleSubmitNewReply = async () => {
     const content = newReplyContent.trim();
     if (!content) return;
@@ -253,7 +242,7 @@ export const CommentCourseItem = ({
               variant="link"
               size="sm"
               className="text-blue-600 hover:underline"
-              onClick={handleViewReplies}
+              onClick={() => fetchReplies(lastCreatedAt, true)}
               disabled={isLoadingReplies}
             >
               {isLoadingReplies ? (
@@ -265,20 +254,18 @@ export const CommentCourseItem = ({
           )}
 
           {/* Nút tải thêm phản hồi nếu còn */}
-          {(currentPage + 1) * 10 < totalItems && showReplies && (
+          {hasMore && showReplies && (
             <Button
               variant="link"
               size="sm"
               className="text-blue-600 hover:underline ml-4"
-              onClick={() =>
-                fetchReplies(currentPage + 1, mainComment.id, true)
-              }
+              onClick={() => fetchReplies(lastCreatedAt, true)}
               disabled={isLoadingReplies}
             >
               {isLoadingReplies ? (
                 <LoaderIcon className="mr-1.5 size-9 animate-spin" />
               ) : (
-                `Xem ${totalItems - (currentPage + 1) * 10} phản hồi cũ hơn`
+                `Xem phản hồi cũ hơn`
               )}
             </Button>
           )}

@@ -7,7 +7,6 @@ import CourseInfoSkeleton from "@/components/client/course/course_info_skeleton"
 import CourseSidebarSection from "@/components/client/course/course_sidebar"
 import SidebarSkeleton from "@/components/client/course/sidebar_skeleton"
 import MyConnect from "@/components/client/share/MyConnect"
-import { randomQueryString } from "@/utils/random_query"
 import { redirect } from "next/navigation"
 
 interface CoursePageProps {
@@ -46,7 +45,7 @@ const CoursePage = async ({ params }: CoursePageProps) => {
             <div className="flex justify-center bg-gray-50">
                 <div className="flex flex-col-reverse md:flex-row max-w-[90rem] w-full px-4 gap-6 py-10">
                     {/* Cột trái: Nội dung khóa học */}
-                    <CourseInfoSection course={courseResponse} comments={commentResponse?.result} />
+                    <CourseInfoSection course={courseResponse} commentsResponse={commentResponse} />
                     {/* Cột phải: Sidebar khóa học */}
                     <CourseSidebarSection course={courseResponse} courseId={params.id} />
                 </div>

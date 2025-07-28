@@ -91,7 +91,7 @@ export const CommentLessonItem = ({
     setReplies((prev) =>
       append ? [...prev, ...data.result] : data?.result
     );
-    setReplyCurrentPage(data.currentPage);
+    setReplyCurrentPage(data.currentPage + 1);
     setReplyTotalItems(data.totalItems || 1); // Đảm bảo không phải 0 nếu có phản hồi
     setShowReplies(true); // Luôn hiển thị phản hồi sau khi tải
     setIsLoadingReplies(false);
@@ -287,7 +287,7 @@ export const CommentLessonItem = ({
           )}
 
           {/* Nút xem thêm phản hồi cũ */}
-          {(replyCurrentPage + 1) * 10 < replyTotalItems && (
+          {(replyCurrentPage) * 10 < replyTotalItems && (
             <Button
               variant="link"
               size="sm"
@@ -305,7 +305,7 @@ export const CommentLessonItem = ({
                   ></LoaderIcon>
                 </div>
               ) : (
-                `Xem ${replyTotalItems - (replyCurrentPage + 1) * 10} phản hồi cũ hơn`
+                `Xem ${replyTotalItems - (replyCurrentPage) * 10} phản hồi cũ hơn`
               )}
             </Button>
           )}
